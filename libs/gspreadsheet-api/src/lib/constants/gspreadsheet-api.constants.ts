@@ -1,0 +1,1 @@
+export const GSPREADSHEET_API_BASE_URL = 'https://www.googleapis.com';

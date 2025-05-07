@@ -1,0 +1,1 @@
+export const MONDAY_API_BASE_URL = 'https://api.monday.com/v2'

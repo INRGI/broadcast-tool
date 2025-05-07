@@ -1,0 +1,12 @@
+services:
+  app:
+    platform: linux/amd64
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      MONDAY_ACCESS_TOKEN: ${MONDAY_ACCESS_TOKEN}
+      GDRIVE_CLIENT_EMAIL: ${GDRIVE_CLIENT_EMAIL}
+      GDRIVE_PRIVATE_KEY: ${GDRIVE_PRIVATE_KEY}
+      PORT: 3000
+      HOST: 0.0.0.0
