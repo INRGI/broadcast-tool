@@ -1,0 +1,10 @@
+looker studio               (receiving all data about conv and clicks for copies)
+broadcast                   (receiving all data/manipulating with dates)
+prioriti                    (just checking if its priority)
+monday                      (statuses/ domain sending / domains searching)
+
+ui                          (easy to use if its possible)
+preview before applying     (render table with the old and new version)
+
+
+all broadcast logic         (rules)

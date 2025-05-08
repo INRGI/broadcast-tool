@@ -20,7 +20,7 @@ export class MondayApiService implements MondayApiServicePort {
     private readonly options: MondayApiConnectionOptions
   ) {}
 
-  private async queryItems(
+  private async queryItemsProduct(
     boardId: number,
     searchName: string
   ): Promise<MondayApiProductBoardData[]> {
@@ -28,7 +28,25 @@ export class MondayApiService implements MondayApiServicePort {
       await firstValueFrom(
         this.httpService.post(
           `${MONDAY_API_BASE_URL}`,
-          MondayApiUtils.queryData(boardId, searchName),
+          MondayApiUtils.queryDataProduct(boardId, searchName),
+          {
+            headers: MondayApiUtils.auth(this.options.accessToken),
+          }
+        )
+      );
+
+    return await data.data.boards[0].items_page.items;
+  }
+
+  private async queryItemsDomain(
+    boardId: number,
+    searchName: string
+  ): Promise<MondayApiProductBoardData[]> {
+    const { data }: { data: MondayApiGetProductDataResponse } =
+      await firstValueFrom(
+        this.httpService.post(
+          `${MONDAY_API_BASE_URL}`,
+          MondayApiUtils.queryDataDomain(boardId, searchName),
           {
             headers: MondayApiUtils.auth(this.options.accessToken),
           }
@@ -60,7 +78,7 @@ export class MondayApiService implements MondayApiServicePort {
     productName: string,
     boardId: number
   ): Promise<MondayApiProductBoardData[]> {
-    return await this.queryItems(boardId, productName);
+    return await this.queryItemsProduct(boardId, productName);
   }
 
   public async getProductDataByEndsWith(
@@ -74,6 +92,6 @@ export class MondayApiService implements MondayApiServicePort {
     domainName: string,
     boardId: number
   ): Promise<MondayApiDomainBoardData[]> {
-    return await this.queryItems(boardId, domainName);
+    return await this.queryItemsDomain(boardId, domainName);
   }
 }
