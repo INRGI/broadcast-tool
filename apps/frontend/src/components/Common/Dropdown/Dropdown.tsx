@@ -25,7 +25,8 @@ const DropdownButton = styled.button`
   text-align: left;
   cursor: pointer;
   position: relative;
-
+  min-height: 50px;
+  
   &:focus {
     border-color: #6a5acd;
     box-shadow: 0 0 8px rgba(106, 90, 205, 0.5);
