@@ -29,11 +29,40 @@ export const TabButton = styled.button<{ active: boolean }>`
   }
 `;
 
+export const TabControls = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+`;
+
+export const ControlsRight = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+export const BackButton = styled.button`
+  padding: 6px 12px;
+  background-color: #444;
+  border: 1px solid #666;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #555;
+  }
+`;
+
+
 export const TableWrapper = styled.div`
   max-width: 100%;
-  overflow-x: auto;
-  max-width: 100%;
+  max-height: calc(100%);
+  overflow: auto;
+  position: relative;
 `;
+
 
 export const Table = styled.table`
   border-collapse: collapse;
@@ -42,21 +71,20 @@ export const Table = styled.table`
   min-width: 800px;
   height: calc(100%);
   max-height: calc(100%);
-
-  thead{
-    position: sticky;
-    z-index: 2;
-  }
 `;
 
 export const Th = styled.th<{ rotated?: boolean }>`
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #333;
   border: 1px solid #444;
   padding: 8px;
-  background-color: #333;
   font-weight: bold;
   color: #ddd;
-  ${(props) =>
-    props.rotated &&
+
+  ${({ rotated }) =>
+    rotated &&
     `
     writing-mode: vertical-rl;
     transform: rotate(180deg);
@@ -69,8 +97,8 @@ export const Th = styled.th<{ rotated?: boolean }>`
 export const Td = styled.td<{ isHighlighted?: boolean }>`
   border: 1px solid #444;
   padding: 6px 8px;
-  background-color: ${(props) => (props.isHighlighted ? "#006400" : "#2b2b2b")};
-  color: ${(props) => (props.isHighlighted ? "#b2ffb2" : "#ccc")};
+  background-color: ${(props) => (props.isHighlighted ? "#b37200" : "#2b2b2b")};
+  color: ${(props) => (props.isHighlighted ? "#000000" : "#ccc")};
   font-size: 14px;
   vertical-align: top;
   text-align: left;

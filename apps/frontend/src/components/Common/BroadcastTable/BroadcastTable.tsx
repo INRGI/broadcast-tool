@@ -1,13 +1,27 @@
 import React, { useState } from "react";
 import { BroadcastDomain } from "../../../types/finance/domain.types";
-import { Table, TableWrapper, Td, Th, DomainTd, TabsWrapper, TabHeader, TabButton } from "./BroadcastTable.styled";
+import {
+  Table,
+  TableWrapper,
+  Td,
+  Th,
+  DomainTd,
+  TabsWrapper,
+  TabHeader,
+  TabButton,
+  TabControls,
+  ControlsRight,
+  BackButton,
+} from "./BroadcastTable.styled";
 
 interface BroadcastTableProps {
   data: { sheetName: string; domains: BroadcastDomain[] }[];
+  onBack: () => void;
 }
 
-const BroadcastTable: React.FC<BroadcastTableProps> = ({ data }) => {
+const BroadcastTable: React.FC<BroadcastTableProps> = ({ data, onBack }) => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+
   const activeSheet = data[activeTabIndex];
   const domains = activeSheet.domains;
 
@@ -20,21 +34,25 @@ const BroadcastTable: React.FC<BroadcastTableProps> = ({ data }) => {
     };
     return parseDate(a) - parseDate(b);
   });
-  
 
   return (
     <TabsWrapper>
-      <TabHeader>
-        {data.map((sheet, index) => (
-          <TabButton
-            key={sheet.sheetName}
-            active={index === activeTabIndex}
-            onClick={() => setActiveTabIndex(index)}
-          >
-            {sheet.sheetName}
-          </TabButton>
-        ))}
-      </TabHeader>
+      <TabControls>
+        <TabHeader>
+          {data.map((sheet, index) => (
+            <TabButton
+              key={sheet.sheetName}
+              active={index === activeTabIndex}
+              onClick={() => setActiveTabIndex(index)}
+            >
+              {sheet.sheetName}
+            </TabButton>
+          ))}
+        </TabHeader>
+        <ControlsRight>
+          <BackButton onClick={onBack}>← Back</BackButton>
+        </ControlsRight>
+      </TabControls>
 
       <TableWrapper key={activeSheet.sheetName}>
         <Table>
@@ -42,7 +60,9 @@ const BroadcastTable: React.FC<BroadcastTableProps> = ({ data }) => {
             <tr>
               <Th rotated>Domain</Th>
               {domains.map((domain) => (
-                <Th key={domain.domain} rotated>{domain.domain}</Th>
+                <Th key={domain.domain} rotated>
+                  {domain.domain}
+                </Th>
               ))}
             </tr>
             <tr>
@@ -57,9 +77,11 @@ const BroadcastTable: React.FC<BroadcastTableProps> = ({ data }) => {
               <tr key={date}>
                 <DomainTd>{date}</DomainTd>
                 {domains.map((domain) => {
-                  const entry = domain.broadcastCopies.find((c) => c.date === date);
+                  const entry = domain.broadcastCopies.find(
+                    (c) => c.date === date
+                  );
                   return (
-                    <Td key={domain.domain + date} isHighlighted={!!entry}>
+                    <Td key={domain.domain + date} isHighlighted={entry?.isModdified}>
                       {entry ? entry.copies.join("\n") : ""}
                     </Td>
                   );

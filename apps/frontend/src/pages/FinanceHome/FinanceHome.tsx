@@ -11,7 +11,13 @@ const FinanceHome: React.FC = () => {
   return (
     <Container>
       {!broadcastData && <SelectBroadcastTeam setBroadcastData={setBroadcastData} broadcastTeams={broadcastTeams} />}
-      {broadcastData && <BroadcastTable data={broadcastData.sheets} />}
+      {broadcastData && (
+  <BroadcastTable
+    data={broadcastData.sheets}
+    onBack={() => setBroadcastData(undefined)}
+  />
+)}
+
     </Container>
   );
 };

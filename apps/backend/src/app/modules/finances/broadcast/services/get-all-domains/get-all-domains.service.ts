@@ -77,7 +77,7 @@ export class GetAllDomainsService {
           const domain = domains[colIdx];
           const esp = esps[colIdx] || "";
 
-          const broadcastCopies: { date: string; copies: string[] }[] = [];
+          const broadcastCopies: { date: string; copies: string[]; isModdified: boolean }[] = [];
 
           for (let rowIdx = 4; rowIdx < rows.length; rowIdx++) {
             const row = rows[rowIdx];
@@ -92,7 +92,7 @@ export class GetAllDomainsService {
             const date = dateCell.formattedValue;
             const copies = [contentCell.formattedValue];
           
-            broadcastCopies.push({ date, copies });
+            broadcastCopies.push({ date, copies, isModdified: false });
           }
           
 
