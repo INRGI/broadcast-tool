@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SelectBroadcastTeam from "../../components/Common/SelectBroadcastTeam/SelectBroadcastTeam";
+import SelectBroadcastTeam from "../../components/Finance/SelectBroadcastTeam/SelectBroadcastTeam";
 import { Container } from "./FinanceHome.styled";
 import { GetAllDomainsResponse } from "../../types/finance/get-all-domains.response";
 import BroadcastTable from "../../components/Common/BroadcastTable/BroadcastTable";

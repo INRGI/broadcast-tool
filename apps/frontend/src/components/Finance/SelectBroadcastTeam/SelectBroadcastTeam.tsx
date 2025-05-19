@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Dropdown from "../Dropdown/Dropdown";
+import Dropdown from "../../Common/Dropdown/Dropdown";
 import {
   Container,
   HeaderContainer,
@@ -8,9 +8,9 @@ import {
 } from "./SelectBroadcastTeam.styled";
 import axios from "axios";
 import { toastError } from "../../../helpers/toastify";
-import Loader from "../Loader";
+import Loader from "../../Common/Loader";
 import { GetAllDomainsResponse } from "../../../types/finance/get-all-domains.response";
-import { DateRangeSelector } from "../DateRangeSelector/DateRangeSelector";
+import { DateRangeSelector } from "../../Common/DateRangeSelector/DateRangeSelector";
 
 interface Props {
   broadcastTeams: string[];
