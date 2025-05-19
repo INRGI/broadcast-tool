@@ -1,6 +1,7 @@
 import { Provider } from "@nestjs/common";
+import { LookerStudioController } from "./controllers/looker-studio.controller";
 
-export const messageControllers = [];
+export const messageControllers = [LookerStudioController];
 
 export const applicationProviders: Provider[] = [];
 

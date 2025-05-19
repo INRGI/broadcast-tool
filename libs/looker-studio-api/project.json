@@ -1,0 +1,8 @@
+{
+  "name": "looker-studio-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/looker-studio-api/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {}
+}
