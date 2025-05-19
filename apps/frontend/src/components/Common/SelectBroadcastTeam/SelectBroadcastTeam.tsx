@@ -10,6 +10,7 @@ import axios from "axios";
 import { toastError } from "../../../helpers/toastify";
 import Loader from "../Loader";
 import { GetAllDomainsResponse } from "../../../types/finance/get-all-domains.response";
+import { DateRangeSelector } from "../DateRangeSelector/DateRangeSelector";
 
 interface Props {
   broadcastTeams: string[];
@@ -19,11 +20,26 @@ interface Props {
 const SelectBroadcastTeam: React.FC<Props> = ({ broadcastTeams, setBroadcastData }) => {
   const [selected, setSelected] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
 
   const fetchBroadcast = async () => {
+    const [startDate, endDate] = dateRange;
+
+    if (!startDate || !endDate) {
+      return toastError("Please select a valid date range");
+    }
+
     try {
       setLoading(true);
-      const response = await axios.get(`/api/finances/broadcast/${selected}`);
+
+      const response = await axios.get(`/api/finances/broadcast/${selected}`
+      //   , {
+      //   params: {
+      //     from: startDate.toISOString(),
+      //     to: endDate.toISOString(),
+      //   },
+      // }
+    );
 
       setBroadcastData(response.data);
     } catch (error) {
@@ -56,12 +72,15 @@ const SelectBroadcastTeam: React.FC<Props> = ({ broadcastTeams, setBroadcastData
           <h2>Broadcast Tool</h2>
         </ServicesBlockHeader>
       </HeaderContainer>
+
       <Dropdown
         placeholder="Select Team"
         options={broadcastTeams}
         selected={selected}
         onSelect={(value) => setSelected(value)}
       />
+
+      <DateRangeSelector onDateRangeChange={setDateRange} />
 
       <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
     </Container>
