@@ -5,6 +5,7 @@ import {
   InjectGSpreadsheetApiService,
 } from "@epc-services/gspreadsheet-api";
 import {
+  BroadcastCopy,
   BroadcastDomain,
   GetAllDomainsResponse,
 } from "@epc-services/interface-adapters";
@@ -14,6 +15,7 @@ import {
   GDriveApiServicePort,
   InjectGDriveApiService,
 } from "@epc-services/gdrive-api";
+import { CheckAllForPriorityService } from "../../../priority/services/check-all-for-priority/check-all-for-priority.service";
 
 @Injectable()
 export class GetAllDomainsService {
@@ -64,12 +66,14 @@ export class GetAllDomainsService {
         const rows = sheet.data?.[0]?.rowData || [];
         if (!rows.length) continue;
 
-        const domainsRow = rows[0];
-        const domains =
-          domainsRow.values?.map((cell) => cell.formattedValue) || [];
-
-        const espRow = rows[3];
-        const esps = espRow.values?.map((cell) => cell.formattedValue) || [];
+        const domainsRowValues = rows[0]?.values;
+        if (!domainsRowValues) continue;
+        
+        const domains = domainsRowValues.map((cell) => cell.formattedValue || "");
+        
+        const espRowValues = rows[3]?.values || [];
+        const esps = espRowValues.map((cell) => cell.formattedValue || "");
+        
 
         const domainsInSheet: BroadcastDomain[] = [];
 
@@ -77,24 +81,55 @@ export class GetAllDomainsService {
           const domain = domains[colIdx];
           const esp = esps[colIdx] || "";
 
-          const broadcastCopies: { date: string; copies: string[]; isModdified: boolean }[] = [];
+          const broadcastCopies: {
+            date: string;
+            copies: BroadcastCopy[];
+            isModdified: boolean;
+          }[] = [];
 
           for (let rowIdx = 4; rowIdx < rows.length; rowIdx++) {
             const row = rows[rowIdx];
             const cells = row.values || [];
-          
+
             const dateCell = cells[0];
             if (!dateCell?.formattedValue) continue;
-          
-            const contentCell = colIdx < cells.length ? cells[colIdx] : { formattedValue: "" };
+
+            const contentCell =
+              colIdx < cells.length ? cells[colIdx] : { formattedValue: "" };
             if (!contentCell.formattedValue) continue;
-          
+
             const date = dateCell.formattedValue;
-            const copies = [contentCell.formattedValue];
-          
+            const rawText = contentCell.formattedValue || "";
+            const runs = contentCell.textFormatRuns || [];
+
+            const boldRanges: [number, number][] = runs
+              .filter((run) => run.format?.bold)
+              .map((run, i, arr) => {
+                const start = run.startIndex ?? 0;
+                const end = arr[i + 1]?.startIndex ?? rawText.length;
+                return [start, end];
+              });
+
+            const cleanText = this.cleanCopyValue(rawText);
+            const words = cleanText
+              .split(" ")
+              .filter((w) => w.trim() && w !== "-");
+
+            let currentIndex = 0;
+            const copies = words.map((word) => {
+              const start = rawText.indexOf(word, currentIndex);
+              if (start === -1) {
+                return { name: word, isPriority: false };
+              }
+              currentIndex = start + word.length;
+            
+              const isBold = boldRanges.some(([from, to]) => start >= from && start < to);
+              return { name: word, isPriority: isBold };
+            });
+            
+
             broadcastCopies.push({ date, copies, isModdified: false });
           }
-          
 
           const sortedBroadcastCopies = broadcastCopies.sort(
             (a, b) =>
@@ -116,7 +151,15 @@ export class GetAllDomainsService {
 
       return response;
     } catch (error) {
+      console.error("getDomains error:", error);
       return { sheets: [] };
     }
+  }
+
+  private cleanCopyValue(value: string): string {
+    return value
+      .replace(/[\n\r\t]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 }

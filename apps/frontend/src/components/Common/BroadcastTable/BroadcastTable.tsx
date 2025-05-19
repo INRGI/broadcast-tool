@@ -12,6 +12,8 @@ import {
   TabControls,
   ControlsRight,
   BackButton,
+  CopySpan,
+  CopyBlock,
 } from "./BroadcastTable.styled";
 
 interface BroadcastTableProps {
@@ -81,8 +83,17 @@ const BroadcastTable: React.FC<BroadcastTableProps> = ({ data, onBack }) => {
                     (c) => c.date === date
                   );
                   return (
-                    <Td key={domain.domain + date} isHighlighted={entry?.isModdified}>
-                      {entry ? entry.copies.join("\n") : ""}
+                    <Td
+                      key={domain.domain + date}
+                      isHighlighted={entry?.isModdified}
+                    >
+                      <CopyBlock>
+                        {entry?.copies.map((copy, idx) => (
+                          <CopySpan key={idx} bold={copy.isPriority}>
+                            {copy.name}
+                          </CopySpan>
+                        ))}
+                      </CopyBlock>
                     </Td>
                   );
                 })}

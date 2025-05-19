@@ -100,10 +100,22 @@ export const Td = styled.td<{ isHighlighted?: boolean }>`
   background-color: ${(props) => (props.isHighlighted ? "#b37200" : "#2b2b2b")};
   color: ${(props) => (props.isHighlighted ? "#000000" : "#ccc")};
   font-size: 14px;
-  vertical-align: top;
-  text-align: left;
-  white-space: pre-wrap;
+  text-align: center;
+  vertical-align: middle;
 `;
+
+export const CopyBlock = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+
+  span {
+    white-space: nowrap;
+    margin: 2px 6px;
+  }
+`;
+
 
 export const DomainTd = styled.td`
   background-color: #3a3a3a;
@@ -122,4 +134,10 @@ export const EspCell = styled.td`
   font-size: 14px;
   color: #fff;
   font-weight: bold;
+`;
+
+export const CopySpan = styled.span<{ bold?: boolean }>`
+  font-weight: ${({ bold }) => (bold ? "bold" : "normal")};
+  margin-right: 6px;
+  white-space: nowrap;
 `;

@@ -8,6 +8,7 @@ import { GSpreadsheetApiModule } from "@epc-services/gspreadsheet-api";
 import { GdriveConfigModule } from "@epc-services/core";
 import { GdriveApiOptionsFactoryService } from "../../../infrastructure/options-factory/gdrive-api.options-factory.service";
 import { GDriveApiModule } from "@epc-services/gdrive-api";
+import { PriorityModule } from "../priority/priority.module";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { GDriveApiModule } from "@epc-services/gdrive-api";
       imports: [GdriveConfigModule],
       useClass: GdriveApiOptionsFactoryService,
     }),
+    PriorityModule,
   ],
   controllers: [...messageControllers],
   providers: [...serviceProviders, ...applicationProviders],
