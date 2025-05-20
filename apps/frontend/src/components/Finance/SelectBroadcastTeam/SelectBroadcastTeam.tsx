@@ -3,8 +3,10 @@ import Dropdown from "../../Common/Dropdown/Dropdown";
 import {
   Container,
   HeaderContainer,
+  RootContainer,
   ServicesBlockHeader,
   SubmitButton,
+  LimitsContainer
 } from "./SelectBroadcastTeam.styled";
 import axios from "axios";
 import { toastError } from "../../../helpers/toastify";
@@ -68,6 +70,7 @@ const SelectBroadcastTeam: React.FC<Props> = ({ broadcastTeams, setBroadcastData
   }
 
   return (
+    <RootContainer>
     <Container>
       <HeaderContainer>
         <ServicesBlockHeader>
@@ -83,10 +86,20 @@ const SelectBroadcastTeam: React.FC<Props> = ({ broadcastTeams, setBroadcastData
       />
 
       <DateRangeSelector onDateRangeChange={setDateRange} />
-      <RulesContainer rules={rules} setRules={setRules} />
 
-      <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
+      <SubmitButton onClick={handleSubmit}>Make Broadcast</SubmitButton>
     </Container>
+
+    <LimitsContainer>
+    <HeaderContainer>
+        <ServicesBlockHeader>
+          <h2>Rules and Limits</h2>
+        </ServicesBlockHeader>
+      </HeaderContainer>
+
+      <RulesContainer rules={rules} setRules={setRules} />
+    </LimitsContainer>
+    </RootContainer>
   );
 };
 

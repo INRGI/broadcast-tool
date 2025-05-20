@@ -1,5 +1,13 @@
 import styled from "@emotion/styled";
 
+export const RootContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  align-items: flex-start;
+  width: 100%;
+`;
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,6 +32,10 @@ export const Container = styled.div`
   }
 `;
 
+export const LimitsContainer = styled(Container)`
+  background-color: #3c3b3b;
+`;
+
 export const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -41,7 +53,7 @@ export const ServicesBlockHeader = styled.div`
   align-content: center;
 
   h2 {
-    font-size: 30px;
+    font-size: 25px;
     line-height: 1.2;
     color: #fff;
     margin: 0;
@@ -86,6 +98,7 @@ export const SubmitButton = styled.button`
   border: none;
   border-radius: 8px;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.1s;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

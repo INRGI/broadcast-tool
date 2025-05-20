@@ -4,8 +4,8 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background-color: #282727;
-  padding: 10px;
+  /* background-color: #282727; */
+  /* padding: 10px; */
   border-radius: 12px;
 `;
 
