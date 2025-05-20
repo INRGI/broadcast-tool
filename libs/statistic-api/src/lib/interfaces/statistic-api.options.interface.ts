@@ -1,5 +1,5 @@
 import { HttpModuleOptions } from "@nestjs/axios";
 
-export interface LookerStudioApiModuleOptions extends HttpModuleOptions {
+export interface StatisticApiModuleOptions extends HttpModuleOptions {
   accessToken: string;
 }
