@@ -79,13 +79,6 @@ const SelectBroadcastTeam: React.FC<Props> = ({
     );
   }
 
-  const loadRulesFromLocalStorage = async () => {
-    const storedRules = localStorage.getItem("rules");
-    if (storedRules) {
-      setRules(JSON.parse(storedRules));
-    }
-  };
-
   const saveRulesToLocalStorage = async () => {
     localStorage.setItem("rules", JSON.stringify(rules));
   };

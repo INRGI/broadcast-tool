@@ -1,6 +1,6 @@
 import { ConfigurableModuleBuilder } from '@nestjs/common';
-import { StatisticApiModuleOptions } from './interfaces/statistic-api.options.interface';
 import { StatisticApiTokens } from './statistic-api.tokens';
+import { StatisticApiModuleOptions } from './interfaces';
 
 export const {
   ConfigurableModuleClass,
