@@ -113,3 +113,27 @@ export const SubmitButton = styled.button`
     box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.6);
   }
 `;
+
+
+export const UtilButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 20px;
+  transition: all 0.3s ease;
+  border: none;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
