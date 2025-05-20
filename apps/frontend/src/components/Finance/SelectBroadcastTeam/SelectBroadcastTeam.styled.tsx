@@ -25,11 +25,6 @@ export const Container = styled.div`
   }
   min-width: 0;
   transition: all 0.3s ease;
-
-  &.collapsed {
-    max-width: 270px;
-    padding: 15px;
-  }
 `;
 
 export const LimitsContainer = styled(Container)`

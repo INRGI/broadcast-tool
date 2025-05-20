@@ -4,8 +4,9 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  /* background-color: #282727; */
-  /* padding: 10px; */
+  height: calc(100%);
+  max-height: calc(40vh);
+  overflow: auto;
   border-radius: 12px;
 `;
 
