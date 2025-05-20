@@ -11,6 +11,7 @@ import { toastError } from "../../../helpers/toastify";
 import Loader from "../../Common/Loader";
 import { GetAllDomainsResponse } from "../../../types/finance/get-all-domains.response";
 import { DateRangeSelector } from "../../Common/DateRangeSelector/DateRangeSelector";
+import { Rule, RulesContainer } from "../RulesContainer/RulesContainer";
 
 interface Props {
   broadcastTeams: string[];
@@ -21,6 +22,7 @@ const SelectBroadcastTeam: React.FC<Props> = ({ broadcastTeams, setBroadcastData
   const [selected, setSelected] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+  const [rules, setRules] = useState<Rule[]>([]);
 
   const fetchBroadcast = async () => {
     const [startDate, endDate] = dateRange;
@@ -40,7 +42,7 @@ const SelectBroadcastTeam: React.FC<Props> = ({ broadcastTeams, setBroadcastData
       //   },
       // }
     );
-
+    if (!response.data) return toastError("Error fetching broadcast");
       setBroadcastData(response.data);
     } catch (error) {
       toastError("Error fetching broadcast");
@@ -81,6 +83,7 @@ const SelectBroadcastTeam: React.FC<Props> = ({ broadcastTeams, setBroadcastData
       />
 
       <DateRangeSelector onDateRangeChange={setDateRange} />
+      <RulesContainer rules={rules} setRules={setRules} />
 
       <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
     </Container>

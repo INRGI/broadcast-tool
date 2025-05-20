@@ -55,6 +55,20 @@ export const BackButton = styled.button`
   }
 `;
 
+export const ApproveButton = styled.button`
+  padding: 6px 12px;
+  background-color: #00c41d;
+  border: 1px solid #666;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #009b17;
+  }
+`;
+
 
 export const TableWrapper = styled.div`
   max-width: 100%;
@@ -97,7 +111,7 @@ export const Th = styled.th<{ rotated?: boolean }>`
 export const Td = styled.td<{ isHighlighted?: boolean }>`
   border: 1px solid #444;
   padding: 6px 8px;
-  background-color: ${(props) => (props.isHighlighted ? "#b37200" : "#2b2b2b")};
+  background-color: ${(props) => (props.isHighlighted ? "#f4a61f" : "#2b2b2b")};
   color: ${(props) => (props.isHighlighted ? "#000000" : "#ccc")};
   font-size: 14px;
   text-align: center;
