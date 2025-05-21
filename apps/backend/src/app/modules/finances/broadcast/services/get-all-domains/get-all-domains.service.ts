@@ -15,7 +15,6 @@ import {
   GDriveApiServicePort,
   InjectGDriveApiService,
 } from "@epc-services/gdrive-api";
-import { CheckAllForPriorityService } from "../../../priority/services/check-all-for-priority/check-all-for-priority.service";
 
 @Injectable()
 export class GetAllDomainsService {

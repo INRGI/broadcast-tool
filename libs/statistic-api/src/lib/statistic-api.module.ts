@@ -7,8 +7,8 @@ import {
   OPTIONS_TYPE,
 } from "./statistic-api.module.definition";
 import { HttpModule } from "@nestjs/axios";
-import { StatisticApiModuleOptions } from "./interfaces/statistic-api.options.interface";
 import { STATISTIC_API_BASE_URL } from "./constants/statistic-api.constants";
+import { StatisticApiModuleOptions } from "./interfaces";
 
 @Module({
   providers: [...serviceProviders],

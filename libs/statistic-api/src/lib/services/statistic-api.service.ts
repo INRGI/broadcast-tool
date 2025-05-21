@@ -28,25 +28,23 @@ export class StatisticApiService implements StatisticApiServicePort {
       SELECT
         Date, Company, Domain, Type, Copy, Offer, Month,
         ISP, UC, TC, Conversion
-      FROM \`delta-daylight-316213.copymaker.base\`
+      FROM \`${this.options.projectId}.developers.base\`
       ${whereClause}
       ORDER BY Date DESC
-      LIMIT 200
     `;
-
+    console.log(this.options.client_email)
     const [rows] = await bigquery.query({ query });
     return rows as StatisticRow[];
   }
 
   private async createClient(): Promise<BigQuery> {
     const bigquery = new BigQuery({
-        projectId: this.options.projectId,
         credentials: {
           client_email: this.options.client_email,
           private_key: this.options.private_key,
         },
+        projectId: this.options.projectId,
       });
-
     return bigquery;
   }
 }
