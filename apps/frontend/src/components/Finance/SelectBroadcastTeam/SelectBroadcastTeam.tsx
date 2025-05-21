@@ -73,9 +73,7 @@ const SelectBroadcastTeam: React.FC<Props> = ({
 
   if (loading) {
     return (
-      <Container>
         <Loader />
-      </Container>
     );
   }
 
