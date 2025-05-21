@@ -6,12 +6,13 @@ export const RootContainer = styled.div`
   gap: 30px;
   align-items: flex-start;
   width: 100%;
+  height: calc(35%);
 `;
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 20px;
   background-color: #3a3a3a;
   padding: 25px;
@@ -19,6 +20,7 @@ export const Container = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
   max-width: 470px;
   width: 100%;
+  height: 100%;
 
   @media (max-width: 768px) {
     max-width: 100%;

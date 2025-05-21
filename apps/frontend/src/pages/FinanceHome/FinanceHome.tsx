@@ -6,7 +6,7 @@ import BroadcastTable from "../../components/Common/BroadcastTable/BroadcastTabl
 
 const FinanceHome: React.FC = () => {
   const [broadcastData, setBroadcastData] = useState<GetAllDomainsResponse>();
-  const broadcastTeams = ["Warsaw", "Red", "Green"];
+  const broadcastTeams = ["Red", "Green"];
 
   return (
     <Container>
