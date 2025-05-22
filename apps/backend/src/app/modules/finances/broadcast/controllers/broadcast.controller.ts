@@ -2,16 +2,16 @@ import { Controller, Get, Param } from "@nestjs/common";
 import { GetAllDomainsService } from "../services/get-all-domains/get-all-domains.service";
 import { GetAllDomainsResponse } from "@epc-services/interface-adapters";
 import {
-  InjectStatisticApiService,
-  StatisticApiServicePort,
-} from "@epc-services/statistic-api";
+  InjectBigQueryApiService,
+  BigQueryApiServicePort,
+} from "@epc-services/bigquery-api";
 
 @Controller("finances/broadcast")
 export class BroadcastController {
   constructor(
     private readonly getAllDomainsService: GetAllDomainsService,
-    @InjectStatisticApiService()
-    private readonly statisticApiService: StatisticApiServicePort
+    @InjectBigQueryApiService()
+    private readonly statisticApiService: BigQueryApiServicePort
   ) {}
 
   @Get(":team")

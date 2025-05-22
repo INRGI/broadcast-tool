@@ -1,1 +1,0 @@
-export const STATISTIC_API_BASE_URL = "";

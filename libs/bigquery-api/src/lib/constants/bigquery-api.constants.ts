@@ -1,0 +1,1 @@
+export const BIGQUERY_API_BASE_URL = "";

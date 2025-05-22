@@ -1,5 +1,0 @@
-export interface StatisticApiConnectionOptions {
-  projectId: string;
-  client_email: string;
-  private_key: string;
-}
