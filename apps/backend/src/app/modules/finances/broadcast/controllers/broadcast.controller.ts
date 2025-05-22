@@ -22,14 +22,14 @@ export class BroadcastController {
       broadcastTeam: team,
     });
     const today = new Date();
-    const twoWeeksAgo = new Date();
-    twoWeeksAgo.setDate(today.getDate() - 14);
+    const weekAgo = new Date();
+    weekAgo.setDate(today.getDate() - 7);
 
-    const from = twoWeeksAgo.toISOString().split("T")[0]; // формат YYYY-MM-DD
+    const from = weekAgo.toISOString().split("T")[0]; // формат YYYY-MM-DD
     const to = today.toISOString().split("T")[0];
 
     const test = await this.statisticApiService.getStats({ from, to });
-    console.log(test);
+    // console.log(test);
     return await result;
   }
 }
