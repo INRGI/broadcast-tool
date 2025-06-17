@@ -5,12 +5,10 @@ import {
   serviceProviders,
 } from "./broadcast.providers";
 import { GSpreadsheetApiModule } from "@epc-services/gspreadsheet-api";
-import { GdriveConfigModule, BigQueryConfigModule } from "@epc-services/core";
+import { GdriveConfigModule } from "@epc-services/core";
 import { GdriveApiOptionsFactoryService } from "../../../infrastructure/options-factory/gdrive-api.options-factory.service";
 import { GDriveApiModule } from "@epc-services/gdrive-api";
 import { PriorityModule } from "../priority/priority.module";
-import { BigQueryApiModule } from "@epc-services/bigquery-api";
-import { BigQueryApiOptionsFactoryService } from "../../../infrastructure/options-factory/bigquery-api.options-factory.service";
 
 @Module({
   imports: [
@@ -21,10 +19,6 @@ import { BigQueryApiOptionsFactoryService } from "../../../infrastructure/option
     GDriveApiModule.registerAsync({
       imports: [GdriveConfigModule],
       useClass: GdriveApiOptionsFactoryService,
-    }),
-    BigQueryApiModule.registerAsync({
-      imports: [BigQueryConfigModule],
-      useClass: BigQueryApiOptionsFactoryService,
     }),
     PriorityModule,
   ],
