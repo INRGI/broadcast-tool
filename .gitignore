@@ -47,4 +47,7 @@ Thumbs.db
 .env
 .env.test
 .nx
-todo.txt
+.nx/workspace-data/d/daemon.log
+
+*.DS_Store
+*cache.json

@@ -1,0 +1,8 @@
+{
+  "name": "monday-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/monday-api/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {}
+}

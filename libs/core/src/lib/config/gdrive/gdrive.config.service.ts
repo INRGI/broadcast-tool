@@ -20,4 +20,12 @@ export class GdriveConfigService {
   get healthGdrivePrivateKey(): string {
     return this.configService.get<string>("gdrive.healthPrivateKey");
   }
+
+  get organicGdriveClientEmail(): string {
+    return this.configService.get<string>("gdrive.ogClientEmail");
+  }
+
+  get organicGdrivePrivateKey(): string {
+    return this.configService.get<string>("gdrive.ogPrivateKey");
+  }
 }
