@@ -205,7 +205,7 @@ const Menu: React.FC = () => {
       <Container className={isCollapsed ? "collapsed" : ""}>
         <HeaderContainer>
           <ServicesBlockHeader>
-            <h2>Broadcasts</h2>
+            <h2>BroadCats</h2>
           </ServicesBlockHeader>
           <Button
             onClick={toggleSidebar}

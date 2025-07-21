@@ -12,7 +12,7 @@ const AdminBroadcastTool: React.FC = () => {
   const [isUserAdmin, setIsUserAdmin] = useState(false);
 
   useEffect(() => {
-    document.title = "Admin Broadcast Tool";
+    document.title = "Admin BroadCats";
   }, []);
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import Menu from "../../components/BroadcastTool/Menu";
 import { AuthWrapper, Container, Title } from "./BroadcastTool.styled";
 import { toastError } from "../../helpers/toastify";
 import { googleAuth } from "../../api/auth.api";
+import WalkingCat from "../../components/Common/WalkingCat";
 
 const BroadcastTool: React.FC = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -49,6 +50,7 @@ const BroadcastTool: React.FC = () => {
           <Menu />
         )}
       </Container>
+      <WalkingCat />
     </GoogleOAuthProvider>
   );
 };
