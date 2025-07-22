@@ -25,7 +25,6 @@ export class GetUnavailableBroadcastCopiesService {
         const allDomains = broadcast.sheets.flatMap(
           (sheet) => sheet.domains ?? []
         );
-
         for (const domain of allDomains) {
           const copyNames = domain.broadcastCopies
             .find((c) => c.date === date)
@@ -40,14 +39,14 @@ export class GetUnavailableBroadcastCopiesService {
             const result = await this.reverifyCopyService.execute({
               broadcastDomain: domain,
               adminBroadcastConfig,
-              copyName,
+              copyName: cleanedCopyName,
               broadcastRules,
               sendingDate: date,
               productsData,
             });
 
-            if (result) {
-              unavailableCopies.add(copyName);
+            if (!result) {
+              unavailableCopies.add(cleanedCopyName);
             }
             checkedCopies.add(cleanedCopyName);
           }

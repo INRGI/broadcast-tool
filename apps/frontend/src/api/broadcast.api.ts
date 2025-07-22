@@ -48,6 +48,20 @@ export const makeBroadcast = async (
   }
 };
 
+export const redoBroadcast = async (
+  body: MakeBroadcastRequest
+): Promise<GetAllDomainsResponse> => {
+  try {
+    const response = await axios.post(
+      `${broadcastToolApiUrl}/redo-broadcast`,
+      body
+    );
+    return response.data;
+  } catch (error) {
+    return { sheets: [] };
+  }
+};
+
 export const approveBroadcast = async (
   body: ApproveBroadcastRequest
 ): Promise<ApproveBroadcastSheetResponse[]> => {

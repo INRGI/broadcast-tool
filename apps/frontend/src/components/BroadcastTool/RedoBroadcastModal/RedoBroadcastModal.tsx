@@ -3,12 +3,11 @@ import AdminModal from "../../Common/AdminModal";
 import styled from "@emotion/styled";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { makeBroadcast } from "../../../api/broadcast.api";
+import { redoBroadcast } from "../../../api/broadcast.api";
 import { BroadcastRulesEntity } from "../../../types/broadcast-tool";
 import { toastError, toastSuccess } from "../../../helpers/toastify";
 import Loader from "../../Common/Loader";
 import { GetAllDomainsResponse } from "../../../api/broadcast";
-import CatLoader from "../../Common/Loader/CatLoader";
 
 const ModalBody = styled.div`
   background-color: #181818;
@@ -116,7 +115,7 @@ interface LaunchBroadcastModalProps {
   onSuccess: (result: GetAllDomainsResponse) => void;
 }
 
-const LaunchBroadcastModal: React.FC<LaunchBroadcastModalProps> = ({
+const RedoBroadcastModal: React.FC<LaunchBroadcastModalProps> = ({
   isOpen,
   onClose,
   broadcastEntity,
@@ -139,22 +138,22 @@ const LaunchBroadcastModal: React.FC<LaunchBroadcastModalProps> = ({
       return toastError("'From' date must be before 'To' date");
     try {
       setIsLoading(true);
-      const result = await makeBroadcast({
+      const result = await redoBroadcast({
         broadcastRuleId: broadcastEntity._id,
         fromDate: formatDateToYYYYMMDD(fromDate),
         toDate: formatDateToYYYYMMDD(toDate),
       });
       if (!result || !result.sheets || !result.sheets.length) {
         setIsLoading(false);
-        return toastError("Failed to make broadcast");
+        return toastError("Failed to redo broadcast");
       }
       
-      toastSuccess("Broadcast made successfully");
+      toastSuccess("Done");
       setIsLoading(false);
 
       onSuccess(result);
     } catch (error) {
-      toastError("Failed to make broadcast");
+      toastError("Failed to redo broadcast");
       setIsLoading(false);
     }
   };
@@ -162,11 +161,11 @@ const LaunchBroadcastModal: React.FC<LaunchBroadcastModalProps> = ({
   return (
     <AdminModal isOpen={isOpen} onClose={onClose}>
       <ModalBody>
-        {isLoading && <CatLoader />}
+        {isLoading && <Loader />}
 
         {!isLoading && (
           <>
-            <h3 style={{ margin: 0, fontSize: 22 }}>Make Broadcast</h3>
+            <h3 style={{ margin: 0, fontSize: 22 }}>Redo Broadcast</h3>
 
             <DateContainer>
               <Label>From Date</Label>
@@ -195,7 +194,7 @@ const LaunchBroadcastModal: React.FC<LaunchBroadcastModalProps> = ({
 
             <ModalActions>
               <CancelButton onClick={onClose}>Cancel</CancelButton>
-              <ConfirmButton onClick={handleMakeBroadcast}>Make</ConfirmButton>
+              <ConfirmButton onClick={handleMakeBroadcast}>Redo</ConfirmButton>
             </ModalActions>
           </>
         )}
@@ -204,4 +203,4 @@ const LaunchBroadcastModal: React.FC<LaunchBroadcastModalProps> = ({
   );
 };
 
-export default LaunchBroadcastModal;
+export default RedoBroadcastModal;

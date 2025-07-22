@@ -26,7 +26,7 @@ export class GetAllDomainsService {
     return month * 100 + day;
   }
 
-  private readonly IGNORED_TABS = new Set(["Blacklist", "Rules"]);
+  private readonly IGNORED_TABS = new Set(["Blacklist", "Rules", "exOrange", "Rating", "COUNTER", "BC_Report", "Pivot Table 2"]);
 
   public async execute(
     payload: GetAllDomainsPayload

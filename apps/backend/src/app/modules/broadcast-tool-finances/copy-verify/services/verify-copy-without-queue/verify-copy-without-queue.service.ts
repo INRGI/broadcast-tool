@@ -106,16 +106,20 @@ export class VerifyCopyWithoutQueueService {
       return { isValid: false, broadcastDomain };
     }
 
-    const checkIfSectorCanBeSendServiceResult =
-      await this.checkIfSectorCanBeSendService.execute({
-        copyName,
-        broadcastDomain,
-        productRules: broadcastRules.productRules,
-        productsData,
-        sendingDate,
-      });
+    const productName = cleanProductName(copyName);
+    const matchingProducts = productsData.filter(
+      (product) =>
+        product.productName.startsWith(`${productName} -`) ||
+        product.productName.startsWith(`*${productName} -`)
+    );
+    const productData = matchingProducts.find((p) => p.productStatus);
+    if (!productData) return { isValid: false, broadcastDomain };
 
-    if (!checkIfSectorCanBeSendServiceResult) {
+    if (
+      broadcastRules.productRules.blacklistedSectors.includes(
+        productData.sector
+      )
+    ) {
       return { isValid: false, broadcastDomain };
     }
 
@@ -200,16 +204,28 @@ export class VerifyCopyWithoutQueueService {
           new Date(broadcastCopy.date).getUTCDay() ===
             new Date(sendingDate).getUTCDay()
         ) {
+          const copies = [...broadcastCopy.copies];
+
+          const indexToReplace = copies.findIndex(
+            (c) => c.copyType === CopyType.Conversion
+          );
+
+          const replacement = {
+            name: copyName,
+            isPriority: isCopyPriority,
+            copyType: CopyType.Unknown,
+          };
+
+          if (indexToReplace !== -1) {
+            console.log("replacement", replacement);
+            copies[indexToReplace] = replacement;
+          } else if (copies.length > 0) {
+            copies[copies.length - 1] = replacement;
+          }
+
           return {
             ...broadcastCopy,
-            copies: [
-              ...broadcastCopy.copies,
-              {
-                name: copyName,
-                isPriority: isCopyPriority,
-                copyType: CopyType.Unknown,
-              },
-            ],
+            copies,
             isModdified: true,
           };
         }

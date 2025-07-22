@@ -26,6 +26,34 @@ export class RecheckCopyService {
     const productData = matchingProducts.find((p) => p.productStatus);
     if (!productData) return false;
 
+    if (broadcastRules.productRules.blacklistedSectors.includes(productData.sector)) {
+      return false;
+    }
+
+    if (adminBroadcastConfig.partnerRules.blacklistedPartners.includes(productData.partner)) {
+      return false;
+    }
+
+    const sendingDayRule = adminBroadcastConfig.partnerRules.partnerAllowedSendingDays.find(
+      (rule) => rule.partner === productData.partner
+    );
+
+    if (sendingDayRule) {
+      const daysOfWeek = [
+        "sunday",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+      ];
+      const dayOfWeek = daysOfWeek[new Date(sendingDate).getDay()];
+      if (!sendingDayRule.allowedSendingDays[dayOfWeek]) {
+        return false;
+      }
+    }
+
     const dayRule = broadcastRules.productRules.productAllowedSendingDays.find(
       (rule) => rule.product === productName
     );
@@ -53,6 +81,5 @@ export class RecheckCopyService {
       );
 
     return isAllowed;
-    return;
   }
 }

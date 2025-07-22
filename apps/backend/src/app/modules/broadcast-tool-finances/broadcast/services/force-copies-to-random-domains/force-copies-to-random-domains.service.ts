@@ -29,75 +29,82 @@ export class ForceCopiesToRandomDomainsService {
     const dateRange = getDateRange(fromDate, toDate);
 
     for (const date of dateRange) {
-      let sentCount = 0;
-
       for (const { copyName, limit } of copiesToForce) {
-        const allDomains = broadcast.sheets.flatMap((sheet) => sheet.domains);
-        const shuffledDomains = this.shuffleArray(allDomains);
+        let sentCount = 0;
 
-        for (const domain of shuffledDomains) {
-          if (
-            !broadcastRules.copyAssignmentStrategyRules.domainStrategies.find(
+        while (sentCount < limit) {
+          let addedCopyThisRound = false;
+
+          const allDomains = broadcast.sheets.flatMap((sheet) => sheet.domains);
+          const shuffledDomains = this.shuffleArray(allDomains);
+
+          for (const domain of shuffledDomains) {
+            const strategy = broadcastRules.copyAssignmentStrategyRules.domainStrategies.find(
               (s) => s.domain === domain.domain
-            )?.copiesTypes ||
-            broadcastRules.copyAssignmentStrategyRules.domainStrategies.find(
-              (s) => s.domain === domain.domain
-            )?.copiesTypes.length < MIN_COPIES_DOMAIN_SEND
-          )
-            continue;
-
-          if (sentCount >= limit) break;
-
-          if (
-            domain.broadcastCopies.find(
-              (d) =>
-                d.date === date &&
-                d.copies.find((c) =>
-                  copiesToForce.some((f) => f.copyName === c.name)
-                )
-            )
-          )
-            continue;
-
-          const dailyEntry = domain.broadcastCopies.find(
-            (d) => d.date === date
-          );
-          if (!dailyEntry) continue;
-
-          const alreadyExists = dailyEntry.copies.some(
-            (c) => c.name === copyName
-          );
-          if (alreadyExists) continue;
-
-          const sheet = broadcast.sheets.find((sheet) =>
-            sheet.domains.some((d) => d.domain === domain.domain)
-          );
-          if (!sheet) continue;
-
-          const result = await this.copiesWithoutQueueValidator.execute({
-            broadcast,
-            sheetName: sheet.sheetName,
-            broadcastDomain: domain,
-            adminBroadcastConfig,
-            copyName,
-            broadcastRules,
-            sendingDate: date,
-            productsData,
-            domainsData,
-            priorityCopiesData,
-          });
-
-          if (result.isValid) {
-            const updatedDomain = result.broadcastDomain;
-
-            const domainIndex = sheet.domains.findIndex(
-              (d) => d.domain === domain.domain
             );
-            if (domainIndex !== -1) {
-              sheet.domains[domainIndex] = updatedDomain;
+
+            if (!strategy?.copiesTypes || strategy.copiesTypes.length < MIN_COPIES_DOMAIN_SEND) {
+              continue;
             }
 
-            sentCount++;
+            const alreadyHasCopy = domain.broadcastCopies.some(
+              (d) =>
+                d.date === date &&
+                d.copies.some((c) =>
+                  copiesToForce.some((f) => f.copyName === c.name)
+                )
+            );
+            if (alreadyHasCopy) continue;
+
+            const dailyEntry = domain.broadcastCopies.find(
+              (d) => d.date === date
+            );
+            if (!dailyEntry) continue;
+
+            const alreadyExists = dailyEntry.copies.some(
+              (c) => c.name === copyName
+            );
+            if (alreadyExists) continue;
+
+            const sheet = broadcast.sheets.find((sheet) =>
+              sheet.domains.some((d) => d.domain === domain.domain)
+            );
+            if (!sheet) continue;
+
+            const result = await this.copiesWithoutQueueValidator.execute({
+              broadcast,
+              sheetName: sheet.sheetName,
+              broadcastDomain: domain,
+              adminBroadcastConfig,
+              copyName,
+              broadcastRules,
+              sendingDate: date,
+              productsData,
+              domainsData,
+              priorityCopiesData,
+            });
+
+            if (result.isValid) {
+              const updatedDomain = result.broadcastDomain;
+
+              const domainIndex = sheet.domains.findIndex(
+                (d) => d.domain === domain.domain
+              );
+              if (domainIndex !== -1) {
+                sheet.domains[domainIndex] = updatedDomain;
+              }
+
+              sentCount++;
+              addedCopyThisRound = true;
+              if (sentCount >= limit) {
+                break;
+              }
+            }
+          }
+
+          if (!addedCopyThisRound) {
+            console.warn(`[ForceCopiesToRandomDomainsService] Копія "${copyName}" не досягла ліміту (${sentCount} < ${limit}). Не вдалося знайти підходящий домен на дату ${date}.`);
+            break;
           }
         }
       }

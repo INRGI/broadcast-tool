@@ -35,9 +35,11 @@ export class AddCustomLinkIndicatorService {
               ) {
                 return broadcastCopies;
               }
+              if(!broadcastCopies.isModdified) return broadcastCopies;
               return {
                 ...broadcastCopies,
                 copies: broadcastCopies.copies.map((c) => {
+                  if(c.name.includes("(L)")) return c;
                   return {
                     ...c,
                     name: handleCheckIfProductHaveCustomLink(cleanProductName(c.name)) ? `${c.name}(L)` : c.name,

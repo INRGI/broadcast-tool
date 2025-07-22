@@ -22,9 +22,11 @@ export class AddPriorityCopyIndicatorService {
               ) {
                 return broadcastCopies;
               }
+              if(!broadcastCopies.isModdified) return broadcastCopies;
               return {
                 ...broadcastCopies,
                 copies: broadcastCopies.copies.map((c) => {
+                  if(c.name.includes("(P)")) return c;
                   return {
                     ...c,
                     name: c.isPriority ? `${c.name}(P)` : c.name,

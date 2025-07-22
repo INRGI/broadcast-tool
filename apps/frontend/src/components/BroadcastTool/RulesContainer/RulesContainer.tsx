@@ -33,6 +33,8 @@ import LaunchBroadcastModal from "../LaunchBroadcastModal";
 import { GetAllDomainsResponse } from "../../../api/broadcast";
 import BroadcastTableModal from "../BroadcastTableModal";
 import BroadcastSendsModal from "../BroadcastSendsModal";
+import { CiRedo } from "react-icons/ci";
+import RedoBroadcastModal from "../RedoBroadcastModal";
 
 interface RulesContainerProps {
   onEntityUpdate: () => void;
@@ -54,6 +56,7 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
 
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isLaunchModalOpen, setIsLaunchModalOpen] = useState(false);
+  const [isRedoModalOpen, setIsRedoModalOpen] = useState(false);
   const [isBroadcastSendsModalOpen, setIsBroadcastSendsModalOpen] =
     useState(false);
 
@@ -122,6 +125,10 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
 
         <Button onClick={() => setIsUpdateModalOpen(true)}>
           <LiaSaveSolid />
+        </Button>
+
+        <Button onClick={() => setIsRedoModalOpen(true)}>
+          <CiRedo />
         </Button>
 
         <Button onClick={() => setIsLaunchModalOpen(true)}>
@@ -223,6 +230,19 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
           }}
           onSuccess={(result) => {
             setIsLaunchModalOpen(false);
+            setBroadcastResult(result);
+          }}
+        />
+      )}
+      {isRedoModalOpen && (
+        <RedoBroadcastModal
+          isOpen={isRedoModalOpen}
+          broadcastEntity={broadcastRules}
+          onClose={() => {
+            setIsRedoModalOpen(false);
+          }}
+          onSuccess={(result) => {
+            setIsRedoModalOpen(false);
             setBroadcastResult(result);
           }}
         />
