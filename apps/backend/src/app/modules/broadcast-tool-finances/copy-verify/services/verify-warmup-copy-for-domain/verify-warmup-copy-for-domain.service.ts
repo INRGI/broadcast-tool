@@ -123,6 +123,9 @@ export class VerifyWarmupCopyForDomainService {
         partnerRules: adminBroadcastConfig.partnerRules,
         productsData,
         sendingDate,
+        productRules: broadcastRules.productRules,
+        broadcast,
+        sheetName,
       });
 
     if (!checkIfPartnerCanBeSendServiceResult) {
@@ -152,6 +155,7 @@ export class VerifyWarmupCopyForDomainService {
         domainsData,
         productsData,
         sendingDate,
+        sheetName,
       });
 
     if (!checkIfProductCanBeSendResult) {

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CheckIfCopyCanBeSendPayload } from "./check-if-copy-can-be-send.payload";
 import { cleanCopyName } from "../../utils/cleanCopyName";
+import { GetAllDomainsResponseDto } from "@epc-services/interface-adapters";
 
 @Injectable()
 export class CheckIfCopyCanBeSendService {
@@ -22,10 +23,12 @@ export class CheckIfCopyCanBeSendService {
     );
 
     if (tabCopyLimit) {
+      if(tabCopyLimit.limit === 0) return false;
       const tabCopyCount = this.countCopiesOnDate(
         broadcast,
+        sheetName,
         sendingDate,
-        cleanedName
+        cleanedName,
       );
       if (tabCopyCount >= tabCopyLimit.limit) return false;
     }
@@ -37,6 +40,7 @@ export class CheckIfCopyCanBeSendService {
     if (sendingLimitRule) {
       const totalCopyCount = this.countCopiesOnDate(
         broadcast,
+        sheetName,
         sendingDate,
         cleanedName
       );
@@ -47,12 +51,14 @@ export class CheckIfCopyCanBeSendService {
   }
 
   private countCopiesOnDate(
-    broadcast: any,
+    broadcast: GetAllDomainsResponseDto,
+    sheetName: string,
     sendingDate: string,
     cleanedName: string
   ): number {
     let count = 0;
-    for (const sheet of broadcast.sheets) {
+    const sheet = broadcast.sheets.find((sheet) => sheet.sheetName === sheetName);
+    if(!sheet || !sheet?.domains) return 999;
       for (const domain of sheet.domains) {
         const sendingDateObj = domain.broadcastCopies.find(
           (date) => date.date === sendingDate
@@ -65,7 +71,7 @@ export class CheckIfCopyCanBeSendService {
         ) {
           count++;
         }
-      }
+      
     }
     return count;
   }

@@ -11,6 +11,9 @@ export class CheckIfPartnerCanBeSendService {
       copyName,
       broadcastDomain,
       partnerRules,
+      productRules,
+      broadcast,
+      sheetName,
       productsData,
       sendingDate,
     } = payload;
@@ -29,6 +32,39 @@ export class CheckIfPartnerCanBeSendService {
 
     if (partnerRules.blacklistedPartners.includes(productData.partner)) {
       return false;
+    }
+
+    const sendingLimit = productRules.partnersSendingLimitPerDay.find(
+      (rule) => rule.partnerName === productData.partner
+    );
+
+    if (sendingLimit) {
+      let sendingCount = 0;
+
+      const sheet = broadcast.sheets.find(
+        (sheet) => sheet.sheetName === sheetName
+      );
+      for (const d of sheet.domains) {
+        const sendingDateObj = d.broadcastCopies.find(
+          (date) => date.date === sendingDate
+        );
+
+        if (sendingDateObj) {
+          for (const copy of sendingDateObj.copies) {
+            const copyProductName = cleanProductName(copy.name);
+            const matchedProduct = productsData.find(
+              (p) =>
+                p.productName.startsWith(`${copyProductName} -`) ||
+                p.productName.startsWith(`*${copyProductName} -`)
+            );
+
+            if (matchedProduct?.partner === productData.partner) {
+              sendingCount++;
+              if (sendingCount >= sendingLimit.limit) return false;
+            }
+          }
+        }
+      }
     }
 
     const sendingDayRule = partnerRules.partnerAllowedSendingDays.find(

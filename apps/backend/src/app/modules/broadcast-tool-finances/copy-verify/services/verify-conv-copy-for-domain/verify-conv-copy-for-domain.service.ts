@@ -95,6 +95,9 @@ export class VerifyConvCopyForDomainService {
         partnerRules: adminBroadcastConfig.partnerRules,
         productsData,
         sendingDate,
+        productRules: broadcastRules.productRules,
+        broadcast,
+        sheetName,
       });
 
     if (!checkIfPartnerCanBeSendServiceResult) {
@@ -123,6 +126,7 @@ export class VerifyConvCopyForDomainService {
         domainRules: adminBroadcastConfig.domainRules,
         domainsData,
         productsData,
+        sheetName,
         sendingDate,
       });
 

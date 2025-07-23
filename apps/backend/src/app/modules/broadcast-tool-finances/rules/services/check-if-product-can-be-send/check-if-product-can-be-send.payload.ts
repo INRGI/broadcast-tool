@@ -9,6 +9,7 @@ import {
 export interface CheckIfProductCanBeSendPayload {
   broadcast: GetAllDomainsResponseDto;
   copyName: string;
+  sheetName: string;
   sendingDate: string;
   productRules: ProductRules;
   domainRules: DomainRules;

@@ -29,9 +29,9 @@ export class ForceCopiesToRandomDomainsService {
     const dateRange = getDateRange(fromDate, toDate);
 
     for (const date of dateRange) {
+      let sentCount = 0;
       for (const { copyName, limit } of copiesToForce) {
-        let sentCount = 0;
-
+        sentCount = 0;
         while (sentCount < limit) {
           let addedCopyThisRound = false;
 
@@ -39,11 +39,15 @@ export class ForceCopiesToRandomDomainsService {
           const shuffledDomains = this.shuffleArray(allDomains);
 
           for (const domain of shuffledDomains) {
-            const strategy = broadcastRules.copyAssignmentStrategyRules.domainStrategies.find(
-              (s) => s.domain === domain.domain
-            );
+            const strategy =
+              broadcastRules.copyAssignmentStrategyRules.domainStrategies.find(
+                (s) => s.domain === domain.domain
+              );
 
-            if (!strategy?.copiesTypes || strategy.copiesTypes.length < MIN_COPIES_DOMAIN_SEND) {
+            if (
+              !strategy?.copiesTypes ||
+              strategy.copiesTypes.length < MIN_COPIES_DOMAIN_SEND
+            ) {
               continue;
             }
 
@@ -103,7 +107,6 @@ export class ForceCopiesToRandomDomainsService {
           }
 
           if (!addedCopyThisRound) {
-            console.warn(`[ForceCopiesToRandomDomainsService] Копія "${copyName}" не досягла ліміту (${sentCount} < ${limit}). Не вдалося знайти підходящий домен на дату ${date}.`);
             break;
           }
         }

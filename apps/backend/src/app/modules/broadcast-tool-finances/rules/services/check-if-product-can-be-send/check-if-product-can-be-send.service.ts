@@ -11,6 +11,7 @@ export class CheckIfProductCanBeSendService {
     const {
       copyName,
       broadcast,
+      sheetName,
       productRules,
       domainRules,
       domain,
@@ -47,21 +48,23 @@ export class CheckIfProductCanBeSendService {
 
     if (sendingLimit) {
       let sendingCount = 0;
-      for (const sheet of broadcast.sheets) {
-        for (const d of sheet.domains) {
-          const sendingDateObj = d.broadcastCopies.find(
-            (date) => date.date === sendingDate
-          );
 
-          if (
-            sendingDateObj &&
-            sendingDateObj.copies.some(
-              (copy) => cleanProductName(copy.name) === productName
-            )
-          ) {
-            sendingCount++;
-            if (sendingCount >= sendingLimit.limit) return false;
-          }
+      const sheet = broadcast.sheets.find(
+        (sheet) => sheet.sheetName === sheetName
+      );
+      for (const d of sheet.domains) {
+        const sendingDateObj = d.broadcastCopies.find(
+          (date) => date.date === sendingDate
+        );
+
+        if (
+          sendingDateObj &&
+          sendingDateObj.copies.some(
+            (copy) => cleanProductName(copy.name) === productName
+          )
+        ) {
+          sendingCount++;
+          if (sendingCount >= sendingLimit.limit) return false;
         }
       }
     }

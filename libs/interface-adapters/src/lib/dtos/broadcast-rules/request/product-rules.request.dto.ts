@@ -3,6 +3,7 @@ import { ProductAllowedSendingDaysRequestDto } from "./product-allowed-sending-d
 import { ProductSendingLimitPerDayRequestDto } from "./product-sending-limit-per-day.request.dto";
 import { CopySendingLimitPerDayRequestDto } from "./copy-sending-limit-per-day.request.dto";
 import { CopyMinLimitPerDayRequestDto } from "./copy-min-limit-per-day.request.dto";
+import { PartnerSendingLimitPerDayRequestDto } from "./partner-sending-limit-per-day.request.dto";
 
 export class ProductRulesRequestDto {
   @IsArray()
@@ -13,6 +14,9 @@ export class ProductRulesRequestDto {
 
   @IsArray()
   public productAllowedSendingDays: ProductAllowedSendingDaysRequestDto[];
+
+  @IsArray()
+  partnersSendingLimitPerDay: PartnerSendingLimitPerDayRequestDto[];
 
   @IsArray()
   public productsSendingLimitPerDay: ProductSendingLimitPerDayRequestDto[];

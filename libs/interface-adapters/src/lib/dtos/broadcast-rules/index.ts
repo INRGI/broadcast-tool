@@ -22,3 +22,4 @@ export * from "./request/copy-assignment-strategy-rules.request.dto";
 export * from "./request/strategy.request.dto";
 export * from "./request/copy-min-limit-per-day.request.dto";
 export * from "./request/partner-allowed-sending-days.request.dto";
+export * from "./request/partner-sending-limit-per-day.request.dto";

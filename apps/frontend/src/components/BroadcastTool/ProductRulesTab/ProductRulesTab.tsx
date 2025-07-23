@@ -1,6 +1,4 @@
-import {
-  GetProductStatusesResponse,
-} from "../../../api/monday";
+import { GetProductStatusesResponse } from "../../../api/monday";
 import { ProductRules } from "../../../types/broadcast-tool";
 import ArrayInput from "../../Common/ArrayInput";
 import FloatingLabelNumberInput from "../../Common/FloatingLabelInput/FloatingLabelNumberInput";
@@ -14,17 +12,20 @@ import {
   RuleContainer,
 } from "../DomainRulesTab/DomainRulesTab.styled";
 import ProductAllowedDaysEditor from "../ProductAllowedDaysEditor";
+import PartnerMaxCopyLimit from "../PartnerMaxCopyLimit";
 
 interface ProductRulesTabProps {
   productRules: ProductRules;
   onChange: (updated: ProductRules) => void;
   productMondayStatuses: GetProductStatusesResponse;
+  partners: string[];
 }
 
 const ProductRulesTab: React.FC<ProductRulesTabProps> = ({
   productRules,
   onChange,
   productMondayStatuses,
+  partners,
 }) => {
   return (
     <RuleContainer style={{ flexDirection: "row" }}>
@@ -68,7 +69,7 @@ const ProductRulesTab: React.FC<ProductRulesTabProps> = ({
             }))}
             keyLabel="Product Name"
             valueLabel="Limit"
-            title="Products Sending Limit Per Day"
+            title="Products Sending Limit Per Day Tab"
             onChange={(newItems) =>
               onChange({
                 ...productRules,
@@ -89,7 +90,7 @@ const ProductRulesTab: React.FC<ProductRulesTabProps> = ({
             }))}
             keyLabel="Copy Name"
             valueLabel="Limit"
-            title="Copies Sending Limit Per Day"
+            title="Copies Sending Limit Per Day Tab"
             onChange={(newItems) =>
               onChange({
                 ...productRules,
@@ -139,23 +140,44 @@ const ProductRulesTab: React.FC<ProductRulesTabProps> = ({
         </InputGroup>
 
         <InputGroup>
-        <InputContainer>
-          <MultiSelectDropdown
-            options={productMondayStatuses.sectors}
-            selected={productRules.blacklistedSectors}
-            onChange={(newValues) =>
-              onChange({
-                ...productRules,
-                blacklistedSectors: newValues,
-              })
-            }
-            placeholder="Blacklisted Sectors"
-          />
-        </InputContainer>
-      </InputGroup>
+          <InputContainer>
+            <MultiSelectDropdown
+              options={productMondayStatuses.sectors}
+              selected={productRules.blacklistedSectors}
+              onChange={(newValues) =>
+                onChange({
+                  ...productRules,
+                  blacklistedSectors: newValues,
+                })
+              }
+              placeholder="Blacklisted Sectors"
+            />
+          </InputContainer>
+        </InputGroup>
       </LeftContainer>
 
       <RightContainer>
+        <InputGroup>
+          <PartnerMaxCopyLimit
+            items={productRules.partnersSendingLimitPerDay.map((item) => ({
+              key: item.partnerName,
+              value: item.limit.toString(),
+            }))}
+            valueLabel="Limit"
+            title="Partners Sending Limit Per Day Tab"
+            uniquePartners={partners}
+            onChange={(newItems) =>
+              onChange({
+                ...productRules,
+                partnersSendingLimitPerDay: newItems.map((item) => ({
+                  partnerName: item.key,
+                  limit: Number(item.value),
+                })),
+              })
+            }
+          />
+        </InputGroup>
+
         <InputGroup>
           <ProductAllowedDaysEditor
             items={productRules.productAllowedSendingDays}

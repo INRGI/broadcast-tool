@@ -95,6 +95,9 @@ export class VerifyCopyForDomainService {
         partnerRules: adminBroadcastConfig.partnerRules,
         productsData,
         sendingDate,
+        productRules: broadcastRules.productRules,
+        broadcast,
+        sheetName,
       });
 
     if (!checkIfPartnerCanBeSendServiceResult) {
@@ -124,6 +127,7 @@ export class VerifyCopyForDomainService {
         domainsData,
         productsData,
         sendingDate,
+        sheetName,
       });
 
     if (!checkIfProductCanBeSendResult) {

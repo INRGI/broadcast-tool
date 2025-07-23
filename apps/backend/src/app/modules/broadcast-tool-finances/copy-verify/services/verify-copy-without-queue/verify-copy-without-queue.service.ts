@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { CheckCopyLastSendService } from "../../../rules/services/check-copy-last-send/check-copy-last-send.service";
 import { CheckProductLastSendService } from "../../../rules/services/check-product-last-send/check-product-last-send.service";
 import { CheckIfProductCanBeSendService } from "../../../rules/services/check-if-product-can-be-send/check-if-product-can-be-send.service";
-import { CheckIfCopyCanBeSendService } from "../../../rules/services/check-if-copy-can-be-send/check-if-copy-can-be-send.service";
 import { CheckIfDomainActiveService } from "../../../rules/services/check-if-domain-active/check-if-domain-active.service";
 import { CheckIfCopyBlacklistedService } from "../../../rules/services/check-if-copy-blacklisted/check-if-copy-blacklisted.service";
 import {
@@ -12,7 +11,6 @@ import {
 import { CheckIfProductPriorityService } from "../../../rules/services/check-if-product-priority/check-if-product-priority.service";
 import { VerifyCopyWithoutQueuePayload } from "./verify-copy-without-queue.payload";
 import { CheckIfPartnerCanBeSendService } from "../../../rules/services/check-if-partner-can-be-send/check-if-partner-can-be-send.service";
-import { CheckIfSectorCanBeSendService } from "../../../rules/services/check-if-sector-can-be-send/check-if-sector-can-be-send.service";
 import { cleanCopyName } from "../../../rules/utils/cleanCopyName";
 import { cleanProductName } from "../../../rules/utils/cleanProductName";
 
@@ -22,12 +20,10 @@ export class VerifyCopyWithoutQueueService {
     private readonly checkCopyLastSendService: CheckCopyLastSendService,
     private readonly checkProductLastSendService: CheckProductLastSendService,
     private readonly checkIfProductCanBeSendService: CheckIfProductCanBeSendService,
-    private readonly checkIfCopyCanBeSendService: CheckIfCopyCanBeSendService,
     private readonly checkIfDomainActiveService: CheckIfDomainActiveService,
     private readonly checkIfCopyBlacklistedService: CheckIfCopyBlacklistedService,
     private readonly checkIfProductPriorityService: CheckIfProductPriorityService,
     private readonly checkIfPartnerCanBeSendService: CheckIfPartnerCanBeSendService,
-    private readonly checkIfSectorCanBeSendService: CheckIfSectorCanBeSendService
   ) {}
   public async execute(
     payload: VerifyCopyWithoutQueuePayload
@@ -44,6 +40,12 @@ export class VerifyCopyWithoutQueueService {
       broadcast,
       priorityCopiesData,
     } = payload;
+
+    const tabCopyLimit = broadcastRules.usageRules.copyTabLimit?.find(
+      (tab) => tab.sheetName === sheetName
+    );
+
+    if (tabCopyLimit.limit === 0) return { isValid: false, broadcastDomain };
 
     const checkCopyLastSendResult = await this.checkCopyLastSendService.execute(
       {
@@ -100,6 +102,9 @@ export class VerifyCopyWithoutQueueService {
         partnerRules: adminBroadcastConfig.partnerRules,
         productsData,
         sendingDate,
+        productRules: broadcastRules.productRules,
+        broadcast,
+        sheetName,
       });
 
     if (!checkIfPartnerCanBeSendServiceResult) {
@@ -133,6 +138,7 @@ export class VerifyCopyWithoutQueueService {
         domainsData,
         productsData,
         sendingDate,
+        sheetName,
       });
 
     if (!checkIfProductCanBeSendResult) {
@@ -217,7 +223,6 @@ export class VerifyCopyWithoutQueueService {
           };
 
           if (indexToReplace !== -1) {
-            console.log("replacement", replacement);
             copies[indexToReplace] = replacement;
           } else if (copies.length > 0) {
             copies[copies.length - 1] = replacement;

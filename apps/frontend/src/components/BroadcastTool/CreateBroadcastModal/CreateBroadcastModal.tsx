@@ -47,6 +47,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
       productRules: {
         blacklistedCopies: [],
         allowedMondayStatuses: [],
+        partnersSendingLimitPerDay: [],
         productAllowedSendingDays: [],
         productsSendingLimitPerDay: [],
         copySendingLimitPerDay: [],
@@ -104,6 +105,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
         return (
           <ProductRulesTab
             productRules={broadcastRules.productRules}
+            partners={productMondayStatuses.partners}
             onChange={(updated) => handleChange("productRules", updated)}
             productMondayStatuses={productMondayStatuses}
           />
