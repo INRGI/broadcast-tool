@@ -5,6 +5,7 @@ import {
   GetAllDomainsResponseDto,
   GetBroadcastDomainsListResponseDto,
   GetBroadcastsListResponseDto,
+  GetBroadcastsSendsRequestDto,
   GetBroadcastsSendsResponseDto,
   MakeBroadcastRequestDto,
 } from "@epc-services/interface-adapters";
@@ -25,7 +26,7 @@ export class BroadcastController {
     private readonly getBroadcastDomainsListService: GetBroadcastDomainsListService,
     private readonly getBroadcastsSendsService: GetBroadcastsSendsService,
     private readonly getBroadcastsSendsByIdService: GetBroadcastsSendsByIdService,
-    private readonly redoBroadcastService: RedoBroadcastService,
+    private readonly redoBroadcastService: RedoBroadcastService
   ) {}
 
   @Get("domains/:spreadsheetId")
@@ -56,16 +57,11 @@ export class BroadcastController {
     return await this.approveBroadcastService.execute(body);
   }
 
-  @Get("broadcasts-sends")
-  public async getBroadcastsSends(): Promise<GetBroadcastsSendsResponseDto> {
-    const fromDate = new Date();
-    fromDate.setDate(fromDate.getDate() - 2);
-
-    const toDate = new Date();
-    return await this.getBroadcastsSendsService.execute({
-      fromDate: fromDate.toISOString().split("T")[0],
-      toDate: toDate.toISOString().split("T")[0],
-    });
+  @Post("broadcasts-sends")
+  public async getBroadcastsSends(
+    @Body() body: GetBroadcastsSendsRequestDto
+  ): Promise<GetBroadcastsSendsResponseDto> {
+    return await this.getBroadcastsSendsService.execute(body);
   }
 
   @Get("broadcast-sends/:broadcastRuleId")

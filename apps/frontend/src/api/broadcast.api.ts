@@ -6,6 +6,7 @@ import { GetAllDomainsResponse } from "./broadcast/response/get-all-domains.resp
 import { ApproveBroadcastSheetResponse } from "./broadcast/response/approve-broadcast-sheet.response.dto";
 import { GetBroadcastDomainsListResponseDto } from "./broadcast/response/get-broadcast-domains-list.response.dto";
 import { GetBroadcastsSendsResponseDto } from "./broadcast/response/get-broadcasts-sends.response.dto";
+import { GetBroadcastsSendsRequestDto } from "./broadcast/request/get-broadcasts-sends.request.dto";
 
 const broadcastToolApiUrl = "/api/finances/broadcast-tool/broadcast";
 
@@ -76,17 +77,19 @@ export const approveBroadcast = async (
   }
 };
 
-export const getBroadcastsSends =
-  async (): Promise<GetBroadcastsSendsResponseDto> => {
-    try {
-      const response = await axios.get(
-        `${broadcastToolApiUrl}/broadcasts-sends`
-      );
-      return response.data;
-    } catch (error) {
-      return { broadcasts: [] };
-    }
-  };
+export const getBroadcastsSends = async (
+  body: GetBroadcastsSendsRequestDto
+): Promise<GetBroadcastsSendsResponseDto> => {
+  try {
+    const response = await axios.post(
+      `${broadcastToolApiUrl}/broadcasts-sends`,
+      body
+    );
+    return response.data;
+  } catch (error) {
+    return { broadcasts: [] };
+  }
+};
 
 export const getBroadcastSendsById = async (
   broadcastRuleId: string

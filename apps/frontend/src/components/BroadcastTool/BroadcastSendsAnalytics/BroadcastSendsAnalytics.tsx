@@ -51,85 +51,93 @@ const BroadcastSendsAnalytics: React.FC<Props> = ({ data }) => {
       : [];
   }, [data]);
 
-  const activeBroadcast = useMemo(() => {
-    return (
-      broadcasts.find((b) => b.name === selectedBroadcast) || broadcasts[0]
-    );
+  const activeBroadcasts = useMemo(() => {
+    if (selectedBroadcast === "All") return broadcasts;
+    return broadcasts.filter((b) => b.name === selectedBroadcast);
   }, [broadcasts, selectedBroadcast]);
 
   const availableDates = useMemo(() => {
-    return activeBroadcast?.result.map((d) => d.date) || [];
-  }, [activeBroadcast]);
+    const dateSet = new Set<string>();
+    activeBroadcasts.forEach((b) =>
+      b.result.forEach((r) => dateSet.add(r.date))
+    );
+    return Array.from(dateSet);
+  }, [activeBroadcasts]);
 
   const allPartners = useMemo(() => {
-    if (!activeBroadcast) return ["All"];
     const set = new Set<string>();
-    activeBroadcast.result.forEach((d) =>
-      d.partners.forEach((p) => set.add(p.partner))
+    activeBroadcasts.forEach((b) =>
+      b.result.forEach((d) => d.partners.forEach((p) => set.add(p.partner)))
     );
     return ["All", ...Array.from(set)];
-  }, [activeBroadcast]);
+  }, [activeBroadcasts]);
 
   const allProducts = useMemo(() => {
-    if (!activeBroadcast || selectedPartner === "All") return ["All"];
-    const productSet = new Set<string>();
-    activeBroadcast.result.forEach((day) => {
-      day.partners
-        .filter((p) => p.partner === selectedPartner)
-        .forEach((p) => {
-          p.products.forEach((prod) => productSet.add(prod.product));
-        });
-    });
-    return ["All", ...Array.from(productSet)];
-  }, [activeBroadcast, selectedPartner]);
+    if (selectedPartner === "All") return ["All"];
+    const set = new Set<string>();
+    activeBroadcasts.forEach((b) =>
+      b.result.forEach((d) =>
+        d.partners
+          .filter((p) => p.partner === selectedPartner)
+          .forEach((p) => p.products.forEach((prod) => set.add(prod.product)))
+      )
+    );
+    return ["All", ...Array.from(set)];
+  }, [activeBroadcasts, selectedPartner]);
 
   const chartData = useMemo(() => {
-    if (!activeBroadcast) return [];
-
-    const day = activeBroadcast?.result.find((d) => d.date === selectedDate);
-    if (!day) return [];
+    if (!selectedDate) return [];
 
     const entries: { copy: string; sends: number; partner: string }[] = [];
 
-    day.partners.forEach((p) => {
-      if (selectedPartner !== "All" && p.partner !== selectedPartner) return;
+    activeBroadcasts.forEach((b) => {
+      const day = b.result.find((d) => d.date === selectedDate);
+      if (!day) return;
 
-      p.products.forEach((prod) => {
-        if (selectedProduct !== "All" && prod.product !== selectedProduct)
-          return;
+      day.partners.forEach((p) => {
+        if (selectedPartner !== "All" && p.partner !== selectedPartner) return;
 
-        prod.copies.forEach((copy) => {
-          entries.push({
-            copy: copy.copy,
-            sends: copy.sends,
-            partner: p.partner,
+        p.products.forEach((prod) => {
+          if (selectedProduct !== "All" && prod.product !== selectedProduct)
+            return;
+
+          prod.copies.forEach((copy) => {
+            entries.push({
+              copy: copy.copy,
+              sends: copy.sends,
+              partner: p.partner,
+            });
           });
         });
       });
     });
 
     return entries;
-  }, [activeBroadcast, selectedPartner, selectedProduct, selectedDate]);
+  }, [activeBroadcasts, selectedPartner, selectedProduct, selectedDate]);
 
   const partnerStats = useMemo(() => {
-    if (!activeBroadcast) return [];
     const map = new Map<
       string,
       { sends: number; products: Record<string, number> }
     >();
-    activeBroadcast.result.forEach((day) => {
-      day.partners.forEach((p) => {
-        const existing = map.get(p.partner) || { sends: 0, products: {} };
-        existing.sends += p.sends;
-        p.products.forEach((prod) => {
-          existing.products[prod.product] =
-            (existing.products[prod.product] || 0) + prod.sends;
+
+    activeBroadcasts.forEach((b) => {
+      b.result.forEach((day) => {
+        if (day.date !== selectedDate) return;
+        day.partners.forEach((p) => {
+          const existing = map.get(p.partner) || { sends: 0, products: {} };
+          existing.sends += p.sends;
+          p.products.forEach((prod) => {
+            existing.products[prod.product] =
+              (existing.products[prod.product] || 0) + prod.sends;
+          });
+          map.set(p.partner, existing);
         });
-        map.set(p.partner, existing);
       });
     });
+
     return Array.from(map.entries()).map(([name, stat]) => ({ name, ...stat }));
-  }, [activeBroadcast]);
+  }, [activeBroadcasts, selectedDate]);
 
   const partnerColors = useMemo(() => {
     const partners = new Set(chartData.map((e) => e.partner));
@@ -143,27 +151,15 @@ const BroadcastSendsAnalytics: React.FC<Props> = ({ data }) => {
 
   useEffect(() => {
     if (broadcasts.length && !selectedBroadcast) {
-      setSelectedBroadcast(broadcasts[0]?.name);
+      setSelectedBroadcast("All");
     }
   }, [broadcasts]);
 
   useEffect(() => {
-    if (activeBroadcast?.result.length && !selectedDate) {
-      setSelectedDate(
-        activeBroadcast.result[activeBroadcast.result.length - 1].date
-      );
+    if (availableDates.length && !selectedDate) {
+      setSelectedDate(availableDates[availableDates.length - 1]);
     }
-  }, [activeBroadcast]);
-
-  if (!broadcasts.length || !activeBroadcast) {
-    return (
-      <Card sx={{ m: 3, p: 4 }}>
-        <Typography variant="h6" color="text.secondary">
-          No broadcast data available.
-        </Typography>
-      </Card>
-    );
-  }
+  }, [availableDates]);
 
   const series = Array.from(new Set(chartData.map((e) => e.partner))).map(
     (partner) => ({
@@ -175,9 +171,9 @@ const BroadcastSendsAnalytics: React.FC<Props> = ({ data }) => {
 
   const grouped = chartData.reduce((acc, curr) => {
     if (!acc[curr.copy]) acc[curr.copy] = { copy: curr.copy };
-    acc[curr.copy][curr.partner] = curr.sends;
+    acc[curr.copy][curr.partner] = (acc[curr.copy][curr.partner] || 0) + curr.sends;
     return acc;
-  }, {} as Record<string, any>);
+  }, {} as Record<string, any>);  
 
   const dataset = Object.values(grouped);
 
@@ -195,7 +191,7 @@ const BroadcastSendsAnalytics: React.FC<Props> = ({ data }) => {
 
                 <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
                   <Autocomplete
-                    options={broadcasts.map((b) => b.name)}
+                    options={["All", ...broadcasts.map((b) => b.name)]}
                     value={selectedBroadcast}
                     onChange={(_, v) => v && setSelectedBroadcast(v)}
                     renderInput={(params) => (
@@ -217,7 +213,6 @@ const BroadcastSendsAnalytics: React.FC<Props> = ({ data }) => {
                     )}
                     fullWidth
                   />
-
                   <Autocomplete
                     options={allProducts}
                     value={selectedProduct}
@@ -229,7 +224,6 @@ const BroadcastSendsAnalytics: React.FC<Props> = ({ data }) => {
                     )}
                     fullWidth
                   />
-
                   <Autocomplete
                     options={availableDates}
                     value={selectedDate}
