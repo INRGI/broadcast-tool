@@ -5,6 +5,7 @@ export * from "./request/get-domain-broadcast-with-date.request.dto";
 export * from "./request/get-domains-by-team.request.dto";
 export * from "./response/get-domains-by-team.response";
 export * from "./request/get-broadcasts-sends.request.dto";
+export * from "./request/get-broadcasts-sends-by-id.request.dto";
 
 export * from "./response/get-all-domains.response.dto.";
 export * from "./response/broadcast-sheet.response.dto";

@@ -4,6 +4,7 @@ import { ProductSendingLimitPerDayRequestDto } from "./product-sending-limit-per
 import { CopySendingLimitPerDayRequestDto } from "./copy-sending-limit-per-day.request.dto";
 import { CopyMinLimitPerDayRequestDto } from "./copy-min-limit-per-day.request.dto";
 import { PartnerSendingLimitPerDayRequestDto } from "./partner-sending-limit-per-day.request.dto";
+import { ProductMinLimitPerDayRequestDto } from "./product-min-limit-per-day.request.dto";
 
 export class ProductRulesRequestDto {
   @IsArray()
@@ -26,6 +27,9 @@ export class ProductRulesRequestDto {
 
   @IsArray()
   public copyMinLimitPerDay: CopyMinLimitPerDayRequestDto[];
+
+  @IsArray()
+  public productMinLimitPerDay: ProductMinLimitPerDayRequestDto[];
 
   @IsArray()
   public blacklistedSectors: string[];

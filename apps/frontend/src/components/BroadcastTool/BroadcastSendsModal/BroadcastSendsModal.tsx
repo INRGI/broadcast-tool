@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import AdminModal from "../../Common/AdminModal";
-import { Container, LoadingContainer } from "./BroadcastSendsModal.styled";
+import { Container } from "./BroadcastSendsModal.styled";
 import {
   Box,
   Card,
@@ -18,15 +18,12 @@ import {
 import { BarChart } from "@mui/x-charts/BarChart";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Grid } from "@mui/material";
-import Loader from "../../Common/Loader";
-import { toastError, toastSuccess } from "../../../helpers/toastify";
-import { getBroadcastSendsById } from "../../../api/broadcast.api";
 import { GetBroadcastsSendsResponseDto } from "../../../api/broadcast";
 
 interface BroadcastSendsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  broadcastRulesId: string;
+  broadcastsSends: GetBroadcastsSendsResponseDto | null;
 }
 const darkTheme = createTheme({
   palette: {
@@ -48,22 +45,11 @@ const darkTheme = createTheme({
 const BroadcastSendsModal: React.FC<BroadcastSendsModalProps> = ({
   isOpen,
   onClose,
-  broadcastRulesId,
+  broadcastsSends
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [broadcastsSends, setBroadcastsSends] =
-    useState<GetBroadcastsSendsResponseDto | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedPartner, setSelectedPartner] = useState<string>("All");
   const [selectedProduct, setSelectedProduct] = useState<string>("All");
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    Promise.allSettled([getBroadcastSends(broadcastRulesId)]).finally(() => {
-      setIsLoading(false);
-    });
-  }, []);
 
   useEffect(() => {
     if (broadcastsSends?.broadcasts[0].result.length && !selectedDate) {
@@ -73,18 +59,7 @@ const BroadcastSendsModal: React.FC<BroadcastSendsModalProps> = ({
         ].date
       );
     }
-  }, [broadcastsSends]);
-
-  const getBroadcastSends = async (broadcastRulesId: string) => {
-    try {
-      const response = await getBroadcastSendsById(broadcastRulesId);
-      if (!response) throw new Error("Failed to get broadcast sends");
-      setBroadcastsSends(response);
-      toastSuccess("Broadcast sends fetched successfully");
-    } catch (error) {
-      toastError("Failed to get broadcast sends");
-    }
-  };
+  }, [broadcastsSends, selectedDate]);
 
   const availableDates = useMemo(() => {
     return broadcastsSends?.broadcasts[0].result.map((d) => d.date) || [];
@@ -190,11 +165,7 @@ const BroadcastSendsModal: React.FC<BroadcastSendsModalProps> = ({
 
   return (
     <AdminModal isOpen={isOpen} onClose={onClose}>
-      {isLoading ? (
-        <LoadingContainer>
-          <Loader />
-        </LoadingContainer>
-      ) : !broadcastsSends ? (
+      {!broadcastsSends ? (
         <Container>
           <Card sx={{ m: 3, p: 4 }}>
             <Typography variant="h6" color="text.secondary">

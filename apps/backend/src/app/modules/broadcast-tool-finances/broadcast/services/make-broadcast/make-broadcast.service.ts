@@ -19,6 +19,7 @@ import { GetAdminBroadcastConfigByNicheQueryService } from "../../../rules/queri
 import { AddCustomLinkIndicatorService } from "../add-custom-link-indicator/add-custom-link-indicator.service";
 import { getDateRange } from "../../utils/getDateRange";
 import { normalizeDomain } from "../../../rules/utils/normalizeDomain";
+import { ForceProductsToRandomDomainsService } from "../force-products-to-random-domains/force-products-to-random-domains.service";
 
 @Injectable()
 export class MakeBroadcastService {
@@ -38,7 +39,8 @@ export class MakeBroadcastService {
     private readonly getPossibleReplacementCopiesService: GetPossibleReplacementCopiesService,
     private readonly getAdminBroadcastConfigByNicheQueryService: GetAdminBroadcastConfigByNicheQueryService,
     private readonly getDomainsRevenueService: GetDomainsRevenueService,
-    private readonly addCustomLinkIndicatorService: AddCustomLinkIndicatorService
+    private readonly addCustomLinkIndicatorService: AddCustomLinkIndicatorService,
+    private readonly forceProductsToRandomDomainsService: ForceProductsToRandomDomainsService
   ) {}
   public async execute(
     payload: MakeBroadcaastPayload
@@ -164,9 +166,23 @@ export class MakeBroadcastService {
         adminBroadcastConfig: adminConfig,
       });
 
+    const broadcastWithForcedProducts =
+      await this.forceProductsToRandomDomainsService.execute({
+        broadcastRules: broadcastRule,
+        copiesToForce: broadcastRule.productRules.productMinLimitPerDay,
+        broadcast: broadcastWithForcedCopies,
+        fromDate,
+        toDate,
+        domainsData,
+        productsData,
+        priorityCopiesData,
+        adminBroadcastConfig: adminConfig,
+        convertibleCopies,
+      });
+
     const broadcastWithPossibleCopies =
       await this.getPossibleReplacementCopiesService.execute({
-        broadcast: broadcastWithForcedCopies,
+        broadcast: broadcastWithForcedProducts,
         broadcastRules: broadcastRule,
         adminBroadcastConfig: adminConfig,
         dateRange,

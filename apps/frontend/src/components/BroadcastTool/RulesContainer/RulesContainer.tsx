@@ -20,7 +20,6 @@ import { Button } from "../Menu/Menu.styled";
 import { LiaSaveSolid } from "react-icons/lia";
 import { updateBroadcastRules } from "../../../api/broadcast-rules.api";
 import { toastError, toastSuccess } from "../../../helpers/toastify";
-import Loader from "../../Common/Loader";
 import {
   InputContainer,
   InputGroup,
@@ -30,11 +29,17 @@ import FloatingLabelInput from "../../Common/FloatingLabelInput/FloatingLabelInp
 import Dropdown from "../../Common/Dropdown/Dropdown";
 import ConfirmationModal from "../ConfirmationModal";
 import LaunchBroadcastModal from "../LaunchBroadcastModal";
-import { GetAllDomainsResponse } from "../../../api/broadcast";
+import {
+  GetAllDomainsResponse,
+  GetBroadcastsSendsResponseDto,
+} from "../../../api/broadcast";
 import BroadcastTableModal from "../BroadcastTableModal";
 import BroadcastSendsModal from "../BroadcastSendsModal";
 import { CiRedo } from "react-icons/ci";
 import RedoBroadcastModal from "../RedoBroadcastModal";
+import AnalyticsLaunchModal from "../AnalyticsLaunchModal";
+import { getBroadcastSendsById } from "../../../api/broadcast.api";
+import CatLoader from "../../Common/Loader/CatLoader";
 
 interface RulesContainerProps {
   onEntityUpdate: () => void;
@@ -62,6 +67,10 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
 
   const [broadcastResult, setBroadcastResult] =
     useState<GetAllDomainsResponse | null>(null);
+  const [isAnalyticsLaunchModalOpen, setIsAnalyticsLaunchModalOpen] =
+    useState(false);
+  const [broadcastsSends, setBroadcastsSends] =
+    useState<GetBroadcastsSendsResponseDto | null>(null);
 
   useEffect(() => {
     setBroadcastRules(broadcastEntity);
@@ -95,6 +104,33 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
     }
   };
 
+  const formatDateToYYYYMMDD = (date: Date) => {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, "0");
+    const day = `${date.getDate()}`.padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleGetBroadcastSendsById = async (fromDate: Date, toDate: Date) => {
+    try {
+      setIsAnalyticsLaunchModalOpen(false);
+      setIsLoading(true);
+      const response = await getBroadcastSendsById({
+        broadcastRuleId: broadcastEntity._id,
+        fromDate: formatDateToYYYYMMDD(fromDate),
+        toDate: formatDateToYYYYMMDD(toDate),
+      });
+      if (!response) throw new Error("Failed to get broadcast sends");
+      setBroadcastsSends(response);
+      setIsBroadcastSendsModalOpen(true);
+      toastSuccess("Broadcast sends fetched successfully");
+      setIsLoading(false);
+    } catch (error) {
+      toastError("Failed to get broadcast sends");
+      setIsLoading(false);
+    }
+  };
+
   const renderSection = (
     label: string,
     key: keyof BroadcastRulesEntity,
@@ -119,7 +155,7 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
   return (
     <Container>
       <ButtonsHeaderContainer>
-        <Button onClick={() => setIsBroadcastSendsModalOpen(true)}>
+        <Button onClick={() => setIsAnalyticsLaunchModalOpen(true)}>
           <VscGraph />
         </Button>
 
@@ -135,7 +171,7 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
           <VscDebugStart />
         </Button>
       </ButtonsHeaderContainer>
-      {isLoading && <Loader />}
+      {isLoading && <CatLoader />}
       {!isLoading && (
         <ListScrollContainer>
           {renderSection(
@@ -254,7 +290,7 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
           onClose={() => {
             setIsBroadcastSendsModalOpen(false);
           }}
-          broadcastRulesId={broadcastRules._id}
+          broadcastsSends={broadcastsSends}
         />
       )}
       {broadcastResult && (
@@ -263,6 +299,14 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
           onClose={() => setBroadcastResult(null)}
           broadcast={broadcastResult}
           spreadSheetId={broadcastRules.broadcastSpreadsheetId}
+        />
+      )}
+      {isAnalyticsLaunchModalOpen && (
+        <AnalyticsLaunchModal
+          isOpen={isAnalyticsLaunchModalOpen}
+          onSubmit={(from, to) => {
+            handleGetBroadcastSendsById(from, to)}}
+          onClose={() => setIsAnalyticsLaunchModalOpen(false)}
         />
       )}
     </Container>

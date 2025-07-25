@@ -21,13 +21,13 @@ import {
   getPaginatedBroadcastRules,
 } from "../../../api/broadcast-rules.api";
 import CreateBroadcastModal from "../CreateBroadcastModal";
-import Loader from "../../Common/Loader";
 import { GetProductStatusesResponse } from "../../../api/monday";
 import { BroadcastListItemResponse } from "../../../api/broadcast/response/broadcast-list-item.response.dto";
 import { getProductStatuses } from "../../../api/monday.api";
 import { getBroadcastsList } from "../../../api/broadcast.api";
 import ConfirmationModal from "../ConfirmationModal";
 import { getCachedData, setCachedData } from "../../../helpers/getCachedData";
+import CatLoader from "../../Common/Loader/CatLoader";
 
 const Menu: React.FC = () => {
   const [broadcastEntities, setBroadcastEntities] = useState<
@@ -197,7 +197,7 @@ const Menu: React.FC = () => {
       : [];
 
   if (isLoading) {
-    return <Loader />;
+    return <CatLoader />;
   }
 
   return (

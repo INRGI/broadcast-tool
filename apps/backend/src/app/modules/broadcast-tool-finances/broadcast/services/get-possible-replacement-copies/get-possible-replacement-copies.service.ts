@@ -47,7 +47,7 @@ export class GetPossibleReplacementCopiesService {
           domain.domain
         );
         if (!strategy) continue;
-
+        const proposedNames = new Set<string>();
         for (const day of domain.broadcastCopies) {
           if (
             day.date < dateRange[0] ||
@@ -58,7 +58,7 @@ export class GetPossibleReplacementCopiesService {
           const usedProducts = new Set(
             day.copies.map((c) => cleanProductName(c.name))
           );          
-          const proposedNames = new Set<string>();
+          
           const possible: BroadcastCopy[] = [];
 
           for (const type of strategy.copiesTypes) {

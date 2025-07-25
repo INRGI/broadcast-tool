@@ -6,7 +6,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { makeBroadcast } from "../../../api/broadcast.api";
 import { BroadcastRulesEntity } from "../../../types/broadcast-tool";
 import { toastError, toastSuccess } from "../../../helpers/toastify";
-import Loader from "../../Common/Loader";
 import { GetAllDomainsResponse } from "../../../api/broadcast";
 import CatLoader from "../../Common/Loader/CatLoader";
 

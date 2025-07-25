@@ -14,3 +14,4 @@ export * from "./copy-min-limit-per-day.interface";
 export * from "./copy-tab-limit.interface";
 export * from "./partner-allowed-sending-days.interface";
 export * from "./partner-sending-limit-per-day.interface";
+export * from "./product-min-limit-per-day.interface";

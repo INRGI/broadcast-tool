@@ -5,6 +5,7 @@ import {
   GetAllDomainsResponseDto,
   GetBroadcastDomainsListResponseDto,
   GetBroadcastsListResponseDto,
+  GetBroadcastsSendsByIdRequestDto,
   GetBroadcastsSendsRequestDto,
   GetBroadcastsSendsResponseDto,
   MakeBroadcastRequestDto,
@@ -64,19 +65,11 @@ export class BroadcastController {
     return await this.getBroadcastsSendsService.execute(body);
   }
 
-  @Get("broadcast-sends/:broadcastRuleId")
+  @Post("broadcast-sends-by-id")
   public async getBroadcastSendsById(
-    @Param("broadcastRuleId") broadcastRuleId: string
+    @Body() body: GetBroadcastsSendsByIdRequestDto
   ): Promise<GetBroadcastsSendsResponseDto> {
-    const fromDate = new Date();
-    fromDate.setDate(fromDate.getDate() - 2);
-
-    const toDate = new Date();
-    return await this.getBroadcastsSendsByIdService.execute({
-      fromDate: fromDate.toISOString().split("T")[0],
-      toDate: toDate.toISOString().split("T")[0],
-      broadcastRuleId,
-    });
+    return await this.getBroadcastsSendsByIdService.execute(body);
   }
 
   @Post("redo-broadcast")

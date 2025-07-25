@@ -125,6 +125,27 @@ const ProductRulesTab: React.FC<ProductRulesTabProps> = ({
         </InputGroup>
 
         <InputGroup>
+          <ArrayInput
+            items={productRules.productMinLimitPerDay.map((item) => ({
+              key: item.productName,
+              value: item.limit.toString(),
+            }))}
+            keyLabel="Product Name"
+            valueLabel="Limit"
+            title="Products Min Limit Per Day"
+            onChange={(newItems) =>
+              onChange({
+                ...productRules,
+                productMinLimitPerDay: newItems.map((item) => ({
+                  productName: item.key,
+                  limit: Number(item.value),
+                })),
+              })
+            }
+          />
+        </InputGroup>
+
+        <InputGroup>
           <InputContainer>
             <FloatingLabelNumberInput
               placeholder="Similar Sector Domain Limit"

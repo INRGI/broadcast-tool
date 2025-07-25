@@ -17,3 +17,4 @@ export * from "./request/make-broadcast.request.dto";
 export * from "./request/approve-broadcast-sheet.request.dto";
 export * from "./request/approve-broadcast.request.dto";
 export * from "./request/get-broadcast-domains-list.request.dto";
+export * from "./request/get-broadcasts-sends-by-id.request.dto";

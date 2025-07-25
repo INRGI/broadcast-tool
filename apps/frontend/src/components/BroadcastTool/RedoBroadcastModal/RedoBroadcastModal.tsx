@@ -6,8 +6,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { redoBroadcast } from "../../../api/broadcast.api";
 import { BroadcastRulesEntity } from "../../../types/broadcast-tool";
 import { toastError, toastSuccess } from "../../../helpers/toastify";
-import Loader from "../../Common/Loader";
 import { GetAllDomainsResponse } from "../../../api/broadcast";
+import CatLoader from "../../Common/Loader/CatLoader";
 
 const ModalBody = styled.div`
   background-color: #181818;
@@ -161,7 +161,7 @@ const RedoBroadcastModal: React.FC<LaunchBroadcastModalProps> = ({
   return (
     <AdminModal isOpen={isOpen} onClose={onClose}>
       <ModalBody>
-        {isLoading && <Loader />}
+        {isLoading && <CatLoader />}
 
         {!isLoading && (
           <>

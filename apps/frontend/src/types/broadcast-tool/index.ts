@@ -20,3 +20,4 @@ export * from "./copy-type.enum";
 export * from "./admin-broadcast-config-entity.interface";
 export * from "./partner-allowed-sending-days.interface";
 export * from "./partner-sending-limit-per-day.interface";
+export * from "./product-min-limit-per-day.interface";

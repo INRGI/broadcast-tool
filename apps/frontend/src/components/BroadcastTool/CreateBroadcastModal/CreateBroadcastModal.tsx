@@ -52,6 +52,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
         productsSendingLimitPerDay: [],
         copySendingLimitPerDay: [],
         copyMinLimitPerDay: [],
+        productMinLimitPerDay: [],
         similarSectorDomainLimit: 1,
         blacklistedSectors: [],
       },
