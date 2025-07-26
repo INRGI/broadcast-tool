@@ -20,6 +20,7 @@ import { AddCustomLinkIndicatorService } from "../add-custom-link-indicator/add-
 import { getDateRange } from "../../utils/getDateRange";
 import { normalizeDomain } from "../../../rules/utils/normalizeDomain";
 import { ForceProductsToRandomDomainsService } from "../force-products-to-random-domains/force-products-to-random-domains.service";
+import { ForcePartnersToRandomDomainsService } from "../force-partners-to-random-domains/force-partners-to-random-domains.service";
 
 @Injectable()
 export class MakeBroadcastService {
@@ -40,7 +41,8 @@ export class MakeBroadcastService {
     private readonly getAdminBroadcastConfigByNicheQueryService: GetAdminBroadcastConfigByNicheQueryService,
     private readonly getDomainsRevenueService: GetDomainsRevenueService,
     private readonly addCustomLinkIndicatorService: AddCustomLinkIndicatorService,
-    private readonly forceProductsToRandomDomainsService: ForceProductsToRandomDomainsService
+    private readonly forceProductsToRandomDomainsService: ForceProductsToRandomDomainsService,
+    private readonly forcePartnersToRandomDomainsService: ForcePartnersToRandomDomainsService,
   ) {}
   public async execute(
     payload: MakeBroadcaastPayload
@@ -180,9 +182,23 @@ export class MakeBroadcastService {
         convertibleCopies,
       });
 
+      const broadcastWithForcedPartners =
+      await this.forcePartnersToRandomDomainsService.execute({
+        broadcastRules: broadcastRule,
+        copiesToForce: broadcastRule.productRules.partnerMinLimitPerDay,
+        broadcast: broadcastWithForcedCopies,
+        fromDate,
+        toDate,
+        domainsData,
+        productsData,
+        priorityCopiesData,
+        adminBroadcastConfig: adminConfig,
+        convertibleCopies,
+      });
+
     const broadcastWithPossibleCopies =
       await this.getPossibleReplacementCopiesService.execute({
-        broadcast: broadcastWithForcedProducts,
+        broadcast: broadcastWithForcedPartners,
         broadcastRules: broadcastRule,
         adminBroadcastConfig: adminConfig,
         dateRange,

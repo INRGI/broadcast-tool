@@ -146,6 +146,27 @@ const ProductRulesTab: React.FC<ProductRulesTabProps> = ({
         </InputGroup>
 
         <InputGroup>
+          <PartnerMaxCopyLimit
+            items={productRules.partnerMinLimitPerDay.map((item) => ({
+              key: item.partnerName,
+              value: item.limit.toString(),
+            }))}
+            valueLabel="Limit"
+            title="Partner Min Limit Per Day"
+            uniquePartners={partners}
+            onChange={(newItems) =>
+              onChange({
+                ...productRules,
+                partnerMinLimitPerDay: newItems.map((item) => ({
+                  partnerName: item.key,
+                  limit: Number(item.value),
+                })),
+              })
+            }
+          />
+        </InputGroup>
+
+        <InputGroup>
           <InputContainer>
             <FloatingLabelNumberInput
               placeholder="Similar Sector Domain Limit"

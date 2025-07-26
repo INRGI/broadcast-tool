@@ -23,6 +23,7 @@ import { AddCustomLinkIndicatorService } from './services/add-custom-link-indica
 import { GetUnavailableBroadcastCopiesService } from './services/get-unavailable-broadcast-copies/get-unavailable-broadcast-copies.service';
 import { RedoBroadcastService } from './services/redo-broadcast/redo-broadcast.service';
 import { ForceProductsToRandomDomainsService } from './services/force-products-to-random-domains/force-products-to-random-domains.service';
+import { ForcePartnersToRandomDomainsService } from './services/force-partners-to-random-domains/force-partners-to-random-domains.service';
 
 export const messageControllers = [BroadcastController];
 
@@ -52,4 +53,5 @@ export const serviceProviders: Provider[] = [
   GetUnavailableBroadcastCopiesService,
   RedoBroadcastService,
   ForceProductsToRandomDomainsService,
+  ForcePartnersToRandomDomainsService,
 ];

@@ -24,3 +24,4 @@ export * from "./request/copy-min-limit-per-day.request.dto";
 export * from "./request/partner-allowed-sending-days.request.dto";
 export * from "./request/partner-sending-limit-per-day.request.dto";
 export * from "./request/product-min-limit-per-day.request.dto";
+export * from "./request/partner-min-limit-per-day.request.dto";

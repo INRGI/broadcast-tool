@@ -1,18 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { VerifyCopyWithoutQueueService } from "../../../copy-verify/services/verify-copy-without-queue/verify-copy-without-queue.service";
-import { ForceProductsToRandomDomainsPayload } from "./force-products-to-random-domains.payload";
 import { GetAllDomainsResponseDto } from "@epc-services/interface-adapters";
 import { getDateRange } from "../../utils/getDateRange";
 import { cleanProductName } from "../../../rules/utils/cleanProductName";
+import { ForcePartnersToRandomDomainsPayload } from "./force-partners-to-random-domains.payload";
 
 @Injectable()
-export class ForceProductsToRandomDomainsService {
+export class ForcePartnersToRandomDomainsService {
   constructor(
     private readonly copiesWithoutQueueValidator: VerifyCopyWithoutQueueService
   ) {}
 
   public async execute(
-    payload: ForceProductsToRandomDomainsPayload
+    payload: ForcePartnersToRandomDomainsPayload
   ): Promise<GetAllDomainsResponseDto> {
     const {
       broadcastRules,
@@ -32,12 +32,17 @@ export class ForceProductsToRandomDomainsService {
 
     for (const date of dateRange) {
       let sentCount = 0;
-      for (const { productName, limit } of copiesToForce) {
+      for (const { partnerName, limit } of copiesToForce) {
         sentCount = 0;
 
-        const convertibleCopiesForProduct = convertibleCopies.filter(
-          (copy) => cleanProductName(copy) === productName
-        );
+        const matchingProducts = productsData.filter(
+          (product) => product.partner === partnerName
+        )
+
+        const convertibleCopiesForPartner = convertibleCopies.filter(
+          (c) => matchingProducts.some((p) => p.productName === cleanProductName(c))
+        )
+        console.log(convertibleCopiesForPartner)
         let copyIndex = 0;
         while (sentCount < limit) {
           let addedCopyThisRound = false;
@@ -62,7 +67,7 @@ export class ForceProductsToRandomDomainsService {
               (d) =>
                 d.date === date &&
                 d.copies.some((c) =>
-                  convertibleCopiesForProduct.includes(c.name)
+                  convertibleCopiesForPartner.includes(c.name)
                 )
             );
             if (alreadyHasProduct) continue;
@@ -72,14 +77,14 @@ export class ForceProductsToRandomDomainsService {
             );
             if (!dailyEntry) continue;
           
-            const copyName = convertibleCopiesForProduct[copyIndex];
+            const copyName = convertibleCopiesForPartner[copyIndex];
             if (!copyName) break;
             
             const alreadyExists = dailyEntry.copies.some(
               (c) => c.name === copyName
             );
             if (alreadyExists) {
-              copyIndex = (copyIndex + 1) % convertibleCopiesForProduct.length;
+              copyIndex = (copyIndex + 1) % convertibleCopiesForPartner.length;
               continue;
             }
             
@@ -87,7 +92,7 @@ export class ForceProductsToRandomDomainsService {
               sheet.domains.some((d) => d.domain === domain.domain)
             );
             if (!sheet) {
-              copyIndex = (copyIndex + 1) % convertibleCopiesForProduct.length;
+              copyIndex = (copyIndex + 1) % convertibleCopiesForPartner.length;
               continue;
             }
             
@@ -116,10 +121,10 @@ export class ForceProductsToRandomDomainsService {
             
               sentCount++;
               addedCopyThisRound = true;
-              copyIndex = (copyIndex + 1) % convertibleCopiesForProduct.length;
+              copyIndex = (copyIndex + 1) % convertibleCopiesForPartner.length;
               break;
             } else {
-              copyIndex = (copyIndex + 1) % convertibleCopiesForProduct.length;
+              copyIndex = (copyIndex + 1) % convertibleCopiesForPartner.length;
             }
             
           
