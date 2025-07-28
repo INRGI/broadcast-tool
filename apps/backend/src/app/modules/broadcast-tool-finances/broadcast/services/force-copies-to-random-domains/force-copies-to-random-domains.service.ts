@@ -32,6 +32,7 @@ export class ForceCopiesToRandomDomainsService {
       let sentCount = 0;
       for (const { copyName, limit } of copiesToForce) {
         sentCount = 0;
+        if(limit === 0) continue
         while (sentCount < limit) {
           let addedCopyThisRound = false;
 

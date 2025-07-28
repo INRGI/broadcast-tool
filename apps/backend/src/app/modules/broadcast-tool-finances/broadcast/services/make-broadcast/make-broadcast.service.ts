@@ -186,7 +186,7 @@ export class MakeBroadcastService {
       await this.forcePartnersToRandomDomainsService.execute({
         broadcastRules: broadcastRule,
         copiesToForce: broadcastRule.productRules.partnerMinLimitPerDay,
-        broadcast: broadcastWithForcedCopies,
+        broadcast: broadcastWithForcedProducts,
         fromDate,
         toDate,
         domainsData,
