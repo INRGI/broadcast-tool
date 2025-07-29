@@ -4,11 +4,16 @@ import { GetAllDomainsResponseDto } from "@epc-services/interface-adapters";
 import { getDateRange } from "../../utils/getDateRange";
 import { cleanProductName } from "../../../rules/utils/cleanProductName";
 import { ForcePartnersToRandomDomainsPayload } from "./force-partners-to-random-domains.payload";
+import { GetConvertableCopiesService } from "../get-convertable-copies/get-convertable-copies.service";
+import { cleanCopyName } from "../../../rules/utils/cleanCopyName";
+import { GetClickableCopiesWithSendsService } from "../get-clickable-copies-by-sends/get-clickable-copies-by-sends.service";
 
 @Injectable()
 export class ForcePartnersToRandomDomainsService {
   constructor(
-    private readonly copiesWithoutQueueValidator: VerifyCopyWithoutQueueService
+    private readonly copiesWithoutQueueValidator: VerifyCopyWithoutQueueService,
+    private readonly getConvertableCopiesService: GetConvertableCopiesService,
+    private readonly getClickableCopiesWithSendsService: GetClickableCopiesWithSendsService
   ) {}
 
   public async execute(
@@ -39,14 +44,72 @@ export class ForcePartnersToRandomDomainsService {
           (product) => product.partner === partnerName
         );
 
-        const convertibleCopiesForPartner = convertibleCopies.filter((copy) =>
+        let convertibleCopiesForPartner = convertibleCopies.filter((copy) =>
           matchingProducts.some(
             (product) =>
               product.productName.startsWith(`${cleanProductName(copy)} -`) ||
               product.productName.startsWith(`*${cleanProductName(copy)} -`)
           )
         );
-        console.log(convertibleCopiesForPartner);
+
+        if (
+          convertibleCopiesForPartner.length === 0 ||
+          convertibleCopiesForPartner.length < limit * 2
+        ) {
+          const thirtyDaysConversions =
+            await this.getConvertableCopiesService.execute({
+              daysBeforeInterval: 30,
+            });
+          convertibleCopiesForPartner = [
+            ...convertibleCopiesForPartner,
+            ...thirtyDaysConversions.filter((copy) => {
+              if (
+                convertibleCopiesForPartner.some(
+                  (c) => cleanCopyName(c) === cleanCopyName(copy)
+                )
+              )
+                return false;
+              return matchingProducts.some(
+                (product) =>
+                  product.productName.startsWith(
+                    `${cleanProductName(copy)} -`
+                  ) ||
+                  product.productName.startsWith(`*${cleanProductName(copy)} -`)
+              );
+            }),
+          ];
+
+          if (
+            convertibleCopiesForPartner.length === 0 ||
+            convertibleCopiesForPartner.length < limit * 2
+          ) {
+            const thirtyDaysClicks =
+            await this.getClickableCopiesWithSendsService.execute({
+                daysBeforeInterval: 30,
+              });
+            convertibleCopiesForPartner = [
+              ...convertibleCopiesForPartner,
+              ...thirtyDaysClicks.filter((copy) => {
+                if (
+                  convertibleCopiesForPartner.some(
+                    (c) => cleanCopyName(c) === cleanCopyName(copy)
+                  )
+                )
+                  return false;
+                return matchingProducts.some(
+                  (product) =>
+                    product.productName.startsWith(
+                      `${cleanProductName(copy)} -`
+                    ) ||
+                    product.productName.startsWith(
+                      `*${cleanProductName(copy)} -`
+                    )
+                );
+              }),
+            ];
+          }
+        }
+
         let copyIndex = 0;
         while (sentCount < limit) {
           let addedCopyThisRound = false;

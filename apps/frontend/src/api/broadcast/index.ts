@@ -12,6 +12,7 @@ export * from "./response/partner-sends.response.dto";
 export * from "./response/product-sends.response.dto";
 export * from "./response/day-broadcast-sends.response.dto";
 export * from "./response/get-broadcasts-sends.response.dto";
+export * from "./response/domain-status.response.dto";
 
 export * from "./request/make-broadcast.request.dto";
 export * from "./request/approve-broadcast-sheet.request.dto";

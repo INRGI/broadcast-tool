@@ -15,6 +15,7 @@ export * from "./response/approve-broadcast-sheet.response.dto";
 export * from "./response/approve-broadcast.response.dto";
 export * from "./response/get-broadcast-domains-list.response.dto";
 export * from "./response/broadcast-domains-sheet.response.dto";
+export * from "./response/domain-status.response.dto";
 
 export * from "./response/calculated-broadcast-sends.response.dto";
 export * from "./response/copy-sends-count.response.dto";

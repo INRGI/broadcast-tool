@@ -8,6 +8,7 @@ import {
 import { Inject, Injectable } from "@nestjs/common";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
+import { GetNewTestCopiesPayload } from "./get-new-test-copies.payload";
 
 @Injectable()
 export class GetNewTestCopiesService {
@@ -19,7 +20,11 @@ export class GetNewTestCopiesService {
     private readonly cacheManager: Cache
   ) {}
 
-  public async execute(): Promise<GetTestCopyResponseDto[]> {
+  public async execute(
+    payload: GetNewTestCopiesPayload
+  ): Promise<GetTestCopyResponseDto[]> {
+    const { newTestCopiesGroupNames } = payload;
+    if (!newTestCopiesGroupNames.length) return [];
     const boardId = Number(this.mondayApiConfig.testCopiesBoardId);
     const cacheKey = `newTestCopies:${boardId}`;
 
@@ -44,75 +49,15 @@ export class GetNewTestCopiesService {
       variables: { boardId },
     });
 
-    const archiveGroupId = groups.find(
-      (g) => g.title.trim().toLowerCase() === "archive"
-    )?.id;
-
-    const archiveOlderGroupId = groups.find(
-      (g) =>
-        g.title.trim().toLowerCase() ===
-        "Archive (Jul-Aug'25)".trim().toLocaleLowerCase()
-    )?.id;
-
-    if (!archiveGroupId) return [];
-
     const result: GetTestCopyResponseDto[] = [];
     let cursor: string | null = null;
 
-    do {
-      const query = `
-        query ($boardId: ID!, $groupId: [String!], $cursor: String) {
-          boards(ids: [$boardId]) {
-            groups(ids: $groupId) {
-              items_page(limit: 500, cursor: $cursor) {
-                cursor
-                items {
-                  id
-                  name
-                  column_values {
-                    column { title }
-                    text
-                  }
-                }
-              }
-            }
-          }
-        }
-      `;
-
-      const variables = { boardId, groupId: archiveGroupId, cursor };
-
-      const { items, cursor: nextCursor } =
-        await this.mondayApiService.getGroupItemsWithCursor({
-          query,
-          variables,
-        });
-
-      const chunk = await Promise.all(
-        items.map(async (item) => {
-          if (item.name.endsWith(" SA")) return null;
-
-          const map = new Map(
-            item.column_values.map((c) => [c.column.title, c.text])
-          );
-          const get = (title: string) => map.get(title) ?? null;
-
-          return {
-            copyName: item.name,
-            checkStatus: get("Check Status"),
-            createDate: get("Create Date"),
-          };
-        })
-      );
-
-      result.push(...(chunk.filter(Boolean) as GetTestCopyResponseDto[]));
-
-      cursor = nextCursor;
-
-      await setImmediate();
-    } while (cursor);
-
-    if (archiveOlderGroupId) {
+    for (const groupName of newTestCopiesGroupNames) {
+      const archiveGroupId = groups.find(
+        (g) => g.title.trim().toLowerCase() === groupName.trim().toLowerCase()
+      )?.id;
+      if (!archiveGroupId) continue;
+      
       do {
         const query = `
         query ($boardId: ID!, $groupId: [String!], $cursor: String) {
@@ -134,7 +79,7 @@ export class GetNewTestCopiesService {
         }
       `;
 
-        const variables = { boardId, groupId: archiveOlderGroupId, cursor };
+        const variables = { boardId, groupId: archiveGroupId, cursor };
 
         const { items, cursor: nextCursor } =
           await this.mondayApiService.getGroupItemsWithCursor({

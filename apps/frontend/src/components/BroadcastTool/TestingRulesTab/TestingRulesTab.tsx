@@ -5,6 +5,7 @@ import {
   InputGroup,
   RuleContainer,
 } from "../DomainRulesTab/DomainRulesTab.styled";
+import StringArrayEditor from "../StringArrayEditor";
 
 interface TestingRulesTabProps {
   testingRules: TestingRules;
@@ -17,6 +18,21 @@ const TestingRulesTab: React.FC<TestingRulesTabProps> = ({
 }) => {
   return (
     <RuleContainer>
+      <InputGroup>
+          <StringArrayEditor
+            items={testingRules.newTestCopiesGroupNames}
+            onChange={(newList) =>
+              onChange({
+                ...testingRules,
+                newTestCopiesGroupNames: newList,
+              })
+            }
+            title="New Test Copies Group Names"
+            keyLabel="Group Name"
+            keyPlaceholder="Enter group name"
+          />
+        </InputGroup>
+
       <InputGroup>
         <InputContainer>
           <FloatingLabelNumberInput

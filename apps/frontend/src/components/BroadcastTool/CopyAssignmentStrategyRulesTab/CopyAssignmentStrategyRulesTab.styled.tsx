@@ -137,3 +137,21 @@ export const Indicator = styled.span<{ empty?: boolean }>`
     transform: scale(0.95);
   }
 `;
+export const StatusIndicator = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ccc;
+  background-color: #2e2e2e;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+`;
+
+export const ClearDiv = styled.div`
+padding: 0;
+margin: 0;
+display: flex;
+gap: 4px;
+align-items: center;
+`;

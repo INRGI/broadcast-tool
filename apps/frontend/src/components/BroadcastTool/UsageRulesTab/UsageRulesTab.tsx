@@ -24,6 +24,7 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [sheetNames, setSheetNames] = useState<string[]>([]);
+  const [sheetDomainStatuses, setSheetDomainStatuses] = useState<{sheetName: string, live: number, warmup: number}[]>();
 
   useEffect(() => {
     if (!spreadsheetId) return;
@@ -66,7 +67,15 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
         (sheet: { sheetName: string; domains: string[] }) => sheet.sheetName
       );
 
+      const sheetDomainStatuses = data.sheets.map(
+        (sheet: { sheetName: string; domains: {domainName: string, status: string}[] }) => {
+          const live = sheet.domains.filter(domain => domain.status.toLocaleLowerCase() === "live").length;
+          const warmup = sheet.domains.filter(domain => domain.status.toLocaleLowerCase() === "warm up").length;
+          return {sheetName: sheet.sheetName, live, warmup};
+        }
+      )
       setSheetNames(sheets);
+      setSheetDomainStatuses(sheetDomainStatuses);
 
       setIsLoading(false);
     };
@@ -110,6 +119,7 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
           <InputGroup>
             <CopyTabLimitInput
               title="Copy Limits Per Tab"
+              statuses={sheetDomainStatuses || []}
               items={usageRules.copyTabLimit}
               availableSheetNames={sheetNames}
               onChange={(items) =>

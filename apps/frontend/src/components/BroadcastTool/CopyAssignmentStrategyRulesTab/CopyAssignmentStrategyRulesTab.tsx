@@ -4,24 +4,30 @@ import { CopyAssignmentStrategyRules } from "../../../types/broadcast-tool";
 import Loader from "../../Common/Loader";
 import {
   AddTypeButton,
+  ClearDiv,
   CollapsibleTab,
   Column,
-  DomainCopiesLength,
   DomainTabHeader,
   Indicator,
   RemoveButton,
   ResetButton,
   SmallSelect,
+  StatusIndicator,
   StrategyRow,
   TabHeader,
   Wrapper,
 } from "./CopyAssignmentStrategyRulesTab.styled";
 import ConfirmationModal from "../ConfirmationModal";
 import { toastError, toastSuccess } from "../../../helpers/toastify";
-import { FaFireAlt, FaMousePointer } from "react-icons/fa";
+import { FaFireAlt, FaMousePointer, FaRegQuestionCircle } from "react-icons/fa";
 import { FaDollarSign } from "react-icons/fa6";
 import { GrTest } from "react-icons/gr";
 import { Box } from "@mui/material";
+import { DomainStatusResponseDto, GetBroadcastDomainsListResponseDto } from "../../../api/broadcast";
+import { IoIosSunny } from "react-icons/io";
+import { BsFire } from "react-icons/bs";
+import { AiOutlinePauseCircle } from "react-icons/ai";
+import { GiHastyGrave } from "react-icons/gi";
 
 interface DomainStrategy {
   domain: string;
@@ -36,7 +42,7 @@ interface Props {
 
 type SheetData = {
   sheetName: string;
-  domains: string[];
+  domains: DomainStatusResponseDto[];
 };
 
 const indicatorIcons: Record<
@@ -63,6 +69,8 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
   const [isConfirmationOpen, setConfirmationOpen] = useState(false);
   const [isTabConfirmationOpen, setTabConfirmationOpen] = useState(false);
   const [sheetForResetTypes, setSheetForResetTypes] = useState<string>();
+  const [sheetDomainStatuses, setSheetDomainStatuses] =
+    useState<GetBroadcastDomainsListResponseDto>();
 
   const [bulkType, setBulkType] =
     useState<DomainStrategy["copiesTypes"][number]>("click");
@@ -105,7 +113,7 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
           return;
         }
       }
-
+      setSheetDomainStatuses(data);
       const grouped = mergeDomainStrategies(
         data.sheets,
         copyAssignmentStrategyRules.domainStrategies
@@ -133,9 +141,9 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
 
     for (const sheet of sheets) {
       grouped[sheet.sheetName] = sheet.domains.map((domain) => {
-        const found = existingMap.get(domain);
+        const found = existingMap.get(domain.domainName);
         return {
-          domain,
+          domain: domain.domainName,
           copiesTypes: found?.copiesTypes || [],
         };
       });
@@ -298,6 +306,26 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
     }, {} as Record<string, number>);
   };
 
+  const handleFindStatus = (domain: string, sheetName: string) => {
+    const result = sheetDomainStatuses?.sheets
+      ?.find((d) => d.sheetName === sheetName)
+      ?.domains.find((d) => d.domainName === domain)?.status;
+
+      if (result?.toLocaleLowerCase() === "live") {
+        return <StatusIndicator><IoIosSunny /></StatusIndicator>;
+      }
+      if (result?.toLocaleLowerCase() === "warm up") {
+        return <StatusIndicator><BsFire /></StatusIndicator>;
+      }
+      if (result?.toLocaleLowerCase() === "hold") {
+        return <StatusIndicator><AiOutlinePauseCircle /></StatusIndicator>;
+      }
+      if (result?.toLocaleLowerCase() === "killing") {
+        return <StatusIndicator><GiHastyGrave /></StatusIndicator>;
+      }
+
+      return <StatusIndicator><FaRegQuestionCircle /></StatusIndicator>;
+  };
   return (
     <Wrapper>
       {isLoading && <Loader />}
@@ -359,7 +387,10 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
                       active={!!openDomains[strategy.domain]}
                       onClick={() => toggleDomain(strategy.domain)}
                     >
-                      {strategy.domain}
+                      <ClearDiv>
+                        {handleFindStatus(strategy.domain, sheetName)}
+                        {strategy.domain}
+                      </ClearDiv>
                       <Box
                         sx={{ display: "flex", gap: "8px", marginLeft: "auto" }}
                       >

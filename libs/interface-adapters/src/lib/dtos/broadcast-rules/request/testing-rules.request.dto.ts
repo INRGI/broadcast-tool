@@ -1,4 +1,4 @@
-import { IsNumber } from "class-validator";
+import { IsArray, IsNumber } from "class-validator";
 
 export class TestingRulesRequestDto {
   @IsNumber()
@@ -6,4 +6,7 @@ export class TestingRulesRequestDto {
 
   @IsNumber()
   public similarTestCopyLimitPerDay: number;
+
+  @IsArray()
+  public newTestCopiesGroupNames: string[];
 }

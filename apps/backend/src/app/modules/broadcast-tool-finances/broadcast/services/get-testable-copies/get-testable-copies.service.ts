@@ -11,13 +11,15 @@ export class GetTestableCopiesService {
   ) {}
 
   public async execute(payload: GetTestableCopiesPayload): Promise<string[]> {
-    const { daysBeforeInterval, maxSendsToBeTestCopy } = payload;
+    const { daysBeforeInterval, maxSendsToBeTestCopy, newTestCopiesGroupNames } = payload;
 
     const testableCopies = await this.getCopiesForTestService.execute({
       daysBefore: daysBeforeInterval,
     });
 
-    const newTestCopies = await this.getNewTestCopiesService.execute();
+    const newTestCopies = await this.getNewTestCopiesService.execute({
+      newTestCopiesGroupNames,
+    });
 
     const formattedNewTestCopies = newTestCopies.map((copy) => {
       return {

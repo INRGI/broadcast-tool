@@ -4,11 +4,16 @@ import { ForceProductsToRandomDomainsPayload } from "./force-products-to-random-
 import { GetAllDomainsResponseDto } from "@epc-services/interface-adapters";
 import { getDateRange } from "../../utils/getDateRange";
 import { cleanProductName } from "../../../rules/utils/cleanProductName";
+import { GetConvertableCopiesService } from "../get-convertable-copies/get-convertable-copies.service";
+import { GetClickableCopiesWithSendsService } from "../get-clickable-copies-by-sends/get-clickable-copies-by-sends.service";
+import { cleanCopyName } from "../../../rules/utils/cleanCopyName";
 
 @Injectable()
 export class ForceProductsToRandomDomainsService {
   constructor(
-    private readonly copiesWithoutQueueValidator: VerifyCopyWithoutQueueService
+    private readonly copiesWithoutQueueValidator: VerifyCopyWithoutQueueService,
+    private readonly getConvertableCopiesService: GetConvertableCopiesService,
+    private readonly getClickableCopiesWithSendsService: GetClickableCopiesWithSendsService
   ) {}
 
   public async execute(
@@ -35,9 +40,55 @@ export class ForceProductsToRandomDomainsService {
       for (const { productName, limit } of copiesToForce) {
         sentCount = 0;
 
-        const convertibleCopiesForProduct = convertibleCopies.filter(
+        let convertibleCopiesForProduct = convertibleCopies.filter(
           (copy) => cleanProductName(copy) === productName
         );
+
+        if (
+          convertibleCopiesForProduct.length === 0 ||
+          convertibleCopiesForProduct.length < limit * 2
+        ) {
+          const thirtyDaysConversions =
+            await this.getConvertableCopiesService.execute({
+              daysBeforeInterval: 30,
+            });
+          convertibleCopiesForProduct = [
+            ...convertibleCopiesForProduct,
+            ...thirtyDaysConversions.filter((copy) => {
+              if (
+                convertibleCopiesForProduct.some(
+                  (c) => cleanCopyName(c) === cleanCopyName(copy)
+                )
+              )
+                return false;
+              return cleanProductName(copy) === productName;
+            }),
+          ];
+
+          if (
+            convertibleCopiesForProduct.length === 0 ||
+            convertibleCopiesForProduct.length < limit * 2
+          ) {
+            const thirtyDaysClicks =
+              await this.getClickableCopiesWithSendsService.execute({
+                daysBeforeInterval: 30,
+              });
+
+            convertibleCopiesForProduct = [
+              ...convertibleCopiesForProduct,
+              ...thirtyDaysClicks.filter((copy) => {
+                if (
+                  convertibleCopiesForProduct.some(
+                    (c) => cleanCopyName(c) === cleanCopyName(copy)
+                  )
+                )
+                  return false;
+                return cleanProductName(copy) === productName;
+              }),
+            ];
+          }
+        }
+
         let copyIndex = 0;
         while (sentCount < limit) {
           let addedCopyThisRound = false;
@@ -50,14 +101,14 @@ export class ForceProductsToRandomDomainsService {
               broadcastRules.copyAssignmentStrategyRules.domainStrategies.find(
                 (s) => s.domain === domain.domain
               );
-          
+
             if (
               !strategy?.copiesTypes ||
               strategy.copiesTypes.length < MIN_COPIES_DOMAIN_SEND
             ) {
               continue;
             }
-          
+
             const alreadyHasProduct = domain.broadcastCopies.some(
               (d) =>
                 d.date === date &&
@@ -66,15 +117,15 @@ export class ForceProductsToRandomDomainsService {
                 )
             );
             if (alreadyHasProduct) continue;
-          
+
             const dailyEntry = domain.broadcastCopies.find(
               (d) => d.date === date
             );
             if (!dailyEntry) continue;
-          
+
             const copyName = convertibleCopiesForProduct[copyIndex];
             if (!copyName) break;
-            
+
             const alreadyExists = dailyEntry.copies.some(
               (c) => c.name === copyName
             );
@@ -82,7 +133,7 @@ export class ForceProductsToRandomDomainsService {
               copyIndex = (copyIndex + 1) % convertibleCopiesForProduct.length;
               continue;
             }
-            
+
             const sheet = broadcast.sheets.find((sheet) =>
               sheet.domains.some((d) => d.domain === domain.domain)
             );
@@ -90,7 +141,7 @@ export class ForceProductsToRandomDomainsService {
               copyIndex = (copyIndex + 1) % convertibleCopiesForProduct.length;
               continue;
             }
-            
+
             const result = await this.copiesWithoutQueueValidator.execute({
               broadcast,
               sheetName: sheet.sheetName,
@@ -103,17 +154,17 @@ export class ForceProductsToRandomDomainsService {
               domainsData,
               priorityCopiesData,
             });
-            
+
             if (result.isValid) {
               const updatedDomain = result.broadcastDomain;
-            
+
               const domainIndex = sheet.domains.findIndex(
                 (d) => d.domain === domain.domain
               );
               if (domainIndex !== -1) {
                 sheet.domains[domainIndex] = updatedDomain;
               }
-            
+
               sentCount++;
               addedCopyThisRound = true;
               copyIndex = (copyIndex + 1) % convertibleCopiesForProduct.length;
@@ -121,13 +172,11 @@ export class ForceProductsToRandomDomainsService {
             } else {
               copyIndex = (copyIndex + 1) % convertibleCopiesForProduct.length;
             }
-            
-          
+
             if (sentCount >= limit) break;
           }
-          
+
           if (!addedCopyThisRound) break;
-          
         }
       }
     }

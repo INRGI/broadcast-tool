@@ -42,7 +42,7 @@ export class MakeBroadcastService {
     private readonly getDomainsRevenueService: GetDomainsRevenueService,
     private readonly addCustomLinkIndicatorService: AddCustomLinkIndicatorService,
     private readonly forceProductsToRandomDomainsService: ForceProductsToRandomDomainsService,
-    private readonly forcePartnersToRandomDomainsService: ForcePartnersToRandomDomainsService,
+    private readonly forcePartnersToRandomDomainsService: ForcePartnersToRandomDomainsService
   ) {}
   public async execute(
     payload: MakeBroadcaastPayload
@@ -96,6 +96,7 @@ export class MakeBroadcastService {
       daysBeforeInterval:
         adminConfig.analyticSelectionRules.testCopiesDaysInterval,
       maxSendsToBeTestCopy: adminConfig.testingRules.maxSendsToBeTestCopy,
+      newTestCopiesGroupNames: adminConfig.testingRules.newTestCopiesGroupNames,
     });
 
     const priorityCopiesData =
@@ -182,7 +183,7 @@ export class MakeBroadcastService {
         convertibleCopies,
       });
 
-      const broadcastWithForcedPartners =
+    const broadcastWithForcedPartners =
       await this.forcePartnersToRandomDomainsService.execute({
         broadcastRules: broadcastRule,
         copiesToForce: broadcastRule.productRules.partnerMinLimitPerDay,

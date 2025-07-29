@@ -1,6 +1,8 @@
 import styled from "@emotion/styled";
 import { CopyTabLimit } from "../../../types/broadcast-tool/copy-tab-limit.interface";
 import React, { useEffect, useState } from "react";
+import { BsFire } from "react-icons/bs";
+import { IoIosSunny } from "react-icons/io";
 
 const SectionWrapper = styled.div`
   width: 100%;
@@ -25,13 +27,18 @@ const StyledInput = styled.input`
   background-color: #3a3a3a;
   color: white;
   font-size: 14px;
+  max-width: 50px;
 `;
 
 const Label = styled.label`
   color: white;
   font-size: 14px;
+  width: 100%;
   margin-bottom: 4px;
-  display: block;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const Title = styled.p`
@@ -42,9 +49,29 @@ const Title = styled.p`
   text-align: center;
 `;
 
+const Indicator = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ccc;
+  background-color: #2e2e2e;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+`;
+
+const ClearDiv = styled.div`
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
 interface CopyTabLimitInputProps {
   title: string;
   items: CopyTabLimit[];
+  statuses: { sheetName: string; live: number; warmup: number }[];
   availableSheetNames: string[];
   onChange: (items: CopyTabLimit[]) => void;
 }
@@ -54,6 +81,7 @@ const CopyTabLimitInput: React.FC<CopyTabLimitInputProps> = ({
   items = [],
   availableSheetNames,
   onChange,
+  statuses,
 }) => {
   const [localLimits, setLocalLimits] = useState<CopyTabLimit[]>([]);
 
@@ -85,7 +113,21 @@ const CopyTabLimitInput: React.FC<CopyTabLimitInputProps> = ({
       <Title>{title}</Title>
       {localLimits.map((item, index) => (
         <FieldRow key={item.sheetName}>
-          <Label>{item.sheetName}</Label>
+          <Label>
+            {item.sheetName}
+            <ClearDiv>
+              <Indicator>
+                <IoIosSunny />
+                {statuses.find((s) => s.sheetName === item.sheetName)?.live ||
+                  0}
+              </Indicator>
+              <Indicator>
+                <BsFire />
+                {statuses.find((s) => s.sheetName === item.sheetName)?.warmup ||
+                  0}
+              </Indicator>
+            </ClearDiv>
+          </Label>
           <StyledInput
             value={item.limit}
             onChange={(e) => handleLimitChange(index, e.target.value)}
