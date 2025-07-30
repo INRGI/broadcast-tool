@@ -24,6 +24,7 @@ export class UpdateBroadcastRulesService {
       payload._id,
       {
         name: payload.name,
+        useOnlyTeamAnalytics: payload.useOnlyTeamAnalytics,
         broadcastSpreadsheetId: payload.broadcastSpreadsheetId,
         usageRules: payload.usageRules,
         productRules: payload.productRules,

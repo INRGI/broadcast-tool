@@ -25,7 +25,6 @@ export const RightContainer = styled.div`
 
 export const InputGroup = styled.div<{ disabled?: boolean }>`
   display: flex;
-  max-width: 400px;
   align-items: center;
   gap: 10px;
   background-color: #3c3c3c;

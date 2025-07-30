@@ -7,6 +7,14 @@ export const RootContainer = styled.div`
   height: calc(100vh);
 `;
 
+export const LoadingContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: calc(100vh);
+  justify-content: center;
+  align-items: center;
+`;
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;

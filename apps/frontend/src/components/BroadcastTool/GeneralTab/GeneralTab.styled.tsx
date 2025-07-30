@@ -26,3 +26,9 @@ export const SaveButton = styled.button`
     box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.6);
   }
 `;
+
+export const WhiteText = styled.p`
+  padding: 0;
+  margin: 0;
+  color: white
+`;

@@ -12,6 +12,9 @@ export class BroadcastRules extends Document {
   name: string;
 
   @Prop({ required: true })
+  useOnlyTeamAnalytics: boolean;
+
+  @Prop({ required: true })
   broadcastSpreadsheetId: string;
 
   @Prop({ type: Object, required: true })

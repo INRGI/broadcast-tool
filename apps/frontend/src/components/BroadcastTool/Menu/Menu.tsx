@@ -7,6 +7,7 @@ import {
   Container,
   DeleteButton,
   HeaderContainer,
+  LoadingContainer,
   RootContainer,
   ServicesBlockHeader,
 } from "./Menu.styled";
@@ -28,6 +29,7 @@ import { getBroadcastsList } from "../../../api/broadcast.api";
 import ConfirmationModal from "../ConfirmationModal";
 import { getCachedData, setCachedData } from "../../../helpers/getCachedData";
 import CatLoader from "../../Common/Loader/CatLoader";
+import WalkingCat from "../../Common/WalkingCat";
 
 const Menu: React.FC = () => {
   const [broadcastEntities, setBroadcastEntities] = useState<
@@ -140,24 +142,23 @@ const Menu: React.FC = () => {
   useEffect(() => {
     const savedSearch = localStorage.getItem("broadcast_search_text");
     const savedEntityId = localStorage.getItem("broadcast_active_entity_id");
-  
+
     if (savedSearch) setSearchText(savedSearch);
     if (savedEntityId && broadcastEntities.length) {
       const found = broadcastEntities.find((e) => e._id === savedEntityId);
       if (found) setActiveEntity(found);
     }
   }, [broadcastEntities]);
-  
+
   useEffect(() => {
     localStorage.setItem("broadcast_search_text", searchText);
   }, [searchText]);
-  
 
   useEffect(() => {
     if (activeEntity?._id) {
       localStorage.setItem("broadcast_active_entity_id", activeEntity._id);
     }
-  }, [activeEntity]);  
+  }, [activeEntity]);
 
   const handleDeleteEntity = async (id: string) => {
     try {
@@ -197,7 +198,11 @@ const Menu: React.FC = () => {
       : [];
 
   if (isLoading) {
-    return <CatLoader />;
+    return (
+      <LoadingContainer>
+        <CatLoader />
+      </LoadingContainer>
+    );
   }
 
   return (
@@ -297,6 +302,7 @@ const Menu: React.FC = () => {
           broadcastsSheets={broadcastsSheets}
         />
       )}
+      <WalkingCat />
     </RootContainer>
   );
 };

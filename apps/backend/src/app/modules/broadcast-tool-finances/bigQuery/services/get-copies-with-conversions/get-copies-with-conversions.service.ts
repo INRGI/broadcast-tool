@@ -20,8 +20,8 @@ export class GetCopiesWithConversionsService {
   public async execute(
     payload: GetCopiesWithConversionsPayload
   ): Promise<GetCopiesWithConversionsResponseDto> {
-    const { daysBefore } = payload;
-    const cacheKey = `copiesForConversions:${daysBefore}`;
+    const { daysBefore, team } = payload;
+    const cacheKey = `copiesForConversions:${daysBefore}:${team}`;
 
     const cached =
       await this.cacheManager.get<GetCopiesWithConversionsResponseDto>(
@@ -34,12 +34,14 @@ export class GetCopiesWithConversionsService {
         query: `
            SELECT MAX(Date) as Date, 
            Copy, 
+           ${team ? "Team," : ""}
            SUM(UC) as UC,
            SUM(Conversion) as Conversion
            FROM \`delta-daylight-316213.developers.base\`
            WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY) 
+           ${team ? `AND Team = '${team}'` : ""}
            AND Conversion > 0
-           GROUP BY Copy
+           GROUP BY Copy${team ? ", Team" : ""}
            ORDER BY Conversion DESC
        `,
       });

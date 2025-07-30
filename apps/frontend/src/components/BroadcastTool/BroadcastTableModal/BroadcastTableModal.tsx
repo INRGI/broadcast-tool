@@ -63,9 +63,10 @@ const BroadcastTableModal: React.FC<BroadcastTableModalProps> = ({
     new Set(domains.flatMap((d) => d.broadcastCopies.map((c) => c.date)))
   ).sort((a, b) => {
     const parseDate = (d: string) => {
-      const [m, day] = d.trim().split(/[\/.]/).map(Number);
-      return m * 100 + day;
+      const [year, month, day] = d.trim().split(/[-/.]/).map(Number);
+      return year * 10000 + month * 100 + day;
     };
+    console.log(parseDate(a), parseDate(b));
     return parseDate(a) - parseDate(b);
   });
 

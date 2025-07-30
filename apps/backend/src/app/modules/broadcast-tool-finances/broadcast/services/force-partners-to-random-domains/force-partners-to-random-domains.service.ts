@@ -59,6 +59,9 @@ export class ForcePartnersToRandomDomainsService {
           const thirtyDaysConversions =
             await this.getConvertableCopiesService.execute({
               daysBeforeInterval: 30,
+              broadcastName: broadcastRules.useOnlyTeamAnalytics
+                ? broadcastRules.name
+                : undefined,
             });
           convertibleCopiesForPartner = [
             ...convertibleCopiesForPartner,
@@ -84,7 +87,7 @@ export class ForcePartnersToRandomDomainsService {
             convertibleCopiesForPartner.length < limit * 2
           ) {
             const thirtyDaysClicks =
-            await this.getClickableCopiesWithSendsService.execute({
+              await this.getClickableCopiesWithSendsService.execute({
                 daysBeforeInterval: 30,
               });
             convertibleCopiesForPartner = [

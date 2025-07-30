@@ -50,7 +50,7 @@ const BroadcastTool: React.FC = () => {
           <Menu />
         )}
       </Container>
-      <WalkingCat />
+      
     </GoogleOAuthProvider>
   );
 };

@@ -40,6 +40,8 @@ import RedoBroadcastModal from "../RedoBroadcastModal";
 import AnalyticsLaunchModal from "../AnalyticsLaunchModal";
 import { getBroadcastSendsById } from "../../../api/broadcast.api";
 import CatLoader from "../../Common/Loader/CatLoader";
+import { Checkbox } from "@mui/material";
+import { common } from "@mui/material/colors";
 
 interface RulesContainerProps {
   onEntityUpdate: () => void;
@@ -207,6 +209,22 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
                   placeholder="Select Broadcast Sheet"
                 />
               </InputGroup>
+
+              <InputGroup>
+                <Checkbox
+                  checked={broadcastRules.useOnlyTeamAnalytics}
+                  onChange={(e) =>
+                    handleChange("useOnlyTeamAnalytics", e.target.checked)
+                  }
+                  sx={{
+                    color: common.white,
+                    '&.Mui-checked': {
+                      color: common.white,
+                    },
+                  }}
+                />
+                Use only team analytics
+              </InputGroup>
             </RuleContainer>
           )}
 
@@ -305,7 +323,8 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
         <AnalyticsLaunchModal
           isOpen={isAnalyticsLaunchModalOpen}
           onSubmit={(from, to) => {
-            handleGetBroadcastSendsById(from, to)}}
+            handleGetBroadcastSendsById(from, to);
+          }}
           onClose={() => setIsAnalyticsLaunchModalOpen(false)}
         />
       )}

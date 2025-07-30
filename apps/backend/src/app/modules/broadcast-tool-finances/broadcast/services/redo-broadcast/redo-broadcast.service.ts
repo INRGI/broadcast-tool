@@ -66,6 +66,9 @@ export class RedoBroadcastService {
     const convertibleCopies = await this.getConvertableCopiesService.execute({
       daysBeforeInterval:
         adminConfig.analyticSelectionRules.convertibleCopiesDaysInterval,
+      broadcastName: broadcastRule.useOnlyTeamAnalytics
+        ? broadcastRule.name
+        : undefined,
     });
 
     const priorityCopiesData =

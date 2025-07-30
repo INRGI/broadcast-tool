@@ -80,11 +80,17 @@ export class MakeBroadcastService {
     const clickableCopies = await this.getClickableCopiesService.execute({
       daysBeforeInterval:
         adminConfig.analyticSelectionRules.clickableCopiesDaysInterval,
+      broadcastName: broadcastRule.useOnlyTeamAnalytics
+        ? broadcastRule.name
+        : undefined,
     });
 
     const convertibleCopies = await this.getConvertableCopiesService.execute({
       daysBeforeInterval:
         adminConfig.analyticSelectionRules.convertibleCopiesDaysInterval,
+      broadcastName: broadcastRule.useOnlyTeamAnalytics
+        ? broadcastRule.name
+        : undefined,
     });
 
     const warmupCopies = await this.getWarmupCopiesService.execute({

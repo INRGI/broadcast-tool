@@ -8,6 +8,7 @@ import {
 export interface BroadcastRulesResponse {
   _id: string;
   name: string;
+  useOnlyTeamAnalytics: boolean;
   broadcastSpreadsheetId: string;
   usageRules: UsageRules
   productRules: ProductRules;

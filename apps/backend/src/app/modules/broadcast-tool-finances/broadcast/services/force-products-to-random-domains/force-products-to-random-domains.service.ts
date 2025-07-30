@@ -51,6 +51,9 @@ export class ForceProductsToRandomDomainsService {
           const thirtyDaysConversions =
             await this.getConvertableCopiesService.execute({
               daysBeforeInterval: 30,
+              broadcastName: broadcastRules.useOnlyTeamAnalytics
+                ? broadcastRules.name
+                : undefined,
             });
           convertibleCopiesForProduct = [
             ...convertibleCopiesForProduct,

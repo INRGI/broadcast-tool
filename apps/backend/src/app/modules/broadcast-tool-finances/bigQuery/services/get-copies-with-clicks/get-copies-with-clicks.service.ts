@@ -20,8 +20,8 @@ export class GetCopiesWithClicksService {
   public async execute(
     payload: GetCopiesWithClicksPayload
   ): Promise<GetCopiesWithClicksResponseDto> {
-    const { daysBefore } = payload;
-    const cacheKey = `copiesForClicks:${daysBefore}`;
+    const { daysBefore, team } = payload;
+    const cacheKey = `copiesForClicks:${daysBefore}:${team}`;
 
     const cached = await this.cacheManager.get<GetCopiesWithClicksResponseDto>(
       cacheKey
@@ -33,12 +33,14 @@ export class GetCopiesWithClicksService {
         query: `
         SELECT MAX(Date) as Date, 
         Copy, 
+        ${team ? "Team," : ""}
         SUM(UC) as UC, 
         SUM(TC) as TC
         FROM \`delta-daylight-316213.developers.base\`
         WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY) 
+        ${team ? `AND Team = '${team}'` : ""}
         AND UC > 0
-        GROUP BY Copy
+        GROUP BY Copy${team ? ", Team" : ""}
         ORDER BY UC DESC
     `,
       });

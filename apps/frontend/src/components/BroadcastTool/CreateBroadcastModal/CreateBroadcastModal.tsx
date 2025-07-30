@@ -39,6 +39,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
     useState<CreateBroadcastRulesRequest>({
       name: "",
       broadcastSpreadsheetId: "",
+      useOnlyTeamAnalytics: false,
       usageRules: {
         productMinDelayPerDays: 3,
         copyMinDelayPerDays: 10,
@@ -128,6 +129,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
         return (
           <GeneralTab
             name={broadcastRules.name}
+            useOnlyTeamAnalytics={broadcastRules.useOnlyTeamAnalytics}
             broadcastsList={broadcastsSheets}
             broadcastSpreadsheetId={broadcastRules.broadcastSpreadsheetId}
             onChange={(updated) =>

@@ -9,7 +9,6 @@ import {
 } from "./AdminRules.styled";
 import { AdminBroadcastConfigEntity } from "../../../types/broadcast-tool";
 import { FiMinus, FiPlus } from "react-icons/fi";
-import Loader from "../../Common/Loader";
 import AnalyticSelectionRulesTab from "../AnalyticSelectionRulesTab";
 import {
   getAdminBroadcastConfigByNiche,
@@ -28,6 +27,7 @@ import {
 } from "../../../api/monday";
 import { getCachedData, setCachedData } from "../../../helpers/getCachedData";
 import { getDomainStatuses, getProductStatuses } from "../../../api/monday.api";
+import CatLoader from "../../Common/Loader/CatLoader";
 
 const AdminRules: React.FC = () => {
   const [openSection, setOpenSection] = useState<string | null>(null);
@@ -145,7 +145,7 @@ const AdminRules: React.FC = () => {
   const fetchProductStatuses = async () => {
     const cached = getCachedData<GetProductStatusesResponse>(
       "product-statuses",
-      30 * 60 * 1000
+      15 * 60 * 1000
     );
     if (cached) {
       setProductMondayStatuses(cached);
@@ -198,7 +198,7 @@ const AdminRules: React.FC = () => {
         </Button>
       </ButtonsHeaderContainer>
       <ListScrollContainer>
-        {isLoading && <Loader />}
+        {isLoading && <CatLoader />}
 
         {!isLoading &&
           adminBroadcastConfig &&

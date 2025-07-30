@@ -5,6 +5,7 @@ import { UsageRules } from "./usage-rules.interface";
 export interface BroadcastRulesEntity {
   _id: string;
   name: string;
+  useOnlyTeamAnalytics: boolean;
   broadcastSpreadsheetId: string;
   usageRules: UsageRules; 
   productRules: ProductRules;

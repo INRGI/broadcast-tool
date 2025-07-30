@@ -6,6 +6,7 @@ import {
 
 export interface UpdateBroadcastRulesRequestDto {
   name: string;
+  useOnlyTeamAnalytics: boolean;
   broadcastSpreadsheetId: string;
   usageRules: UsageRules;
   productRules: ProductRules;

@@ -72,6 +72,13 @@ const Title = styled.p`
   padding-bottom: 20px;
 `;
 
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+`;
+
 interface SimpleLimitItem {
   key: string;
   value: string | number;
@@ -126,8 +133,8 @@ const PartnerMaxCopyLimit: React.FC<ArrayInputProps> = ({
       <Title>{title}</Title>
       {items.map((item, index) => (
         <FieldRow key={index}>
-          <div style={{ flex: 1 }}>
-          <Label>Partner</Label>
+          <InputContainer>
+            <Label>Partner</Label>
             <Dropdown
               options={uniquePartners}
               selected={item.key}
@@ -136,8 +143,8 @@ const PartnerMaxCopyLimit: React.FC<ArrayInputProps> = ({
               }}
               placeholder="Select Partner"
             />
-          </div>
-          <div style={{ flex: 1 }}>
+          </InputContainer>
+          <InputContainer>
             <Label>{valueLabel}</Label>
             <StyledInput
               placeholder={valuePlaceholder}
@@ -146,7 +153,7 @@ const PartnerMaxCopyLimit: React.FC<ArrayInputProps> = ({
               inputMode="numeric"
               pattern="[0-9]*"
             />
-          </div>
+          </InputContainer>
           <RemoveButton onClick={() => handleRemove(index)}>✕</RemoveButton>
         </FieldRow>
       ))}

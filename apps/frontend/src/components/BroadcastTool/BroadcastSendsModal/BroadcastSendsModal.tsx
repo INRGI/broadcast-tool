@@ -124,6 +124,7 @@ const BroadcastSendsModal: React.FC<BroadcastSendsModalProps> = ({
       { sends: number; products: Record<string, number> }
     >();
     broadcastsSends.broadcasts[0].result.forEach((day) => {
+      if (day.date !== selectedDate) return;
       day.partners.forEach((p) => {
         const existing = map.get(p.partner) || { sends: 0, products: {} };
         existing.sends += p.sends;
@@ -135,7 +136,7 @@ const BroadcastSendsModal: React.FC<BroadcastSendsModalProps> = ({
       });
     });
     return Array.from(map.entries()).map(([name, stat]) => ({ name, ...stat }));
-  }, [broadcastsSends]);
+  }, [broadcastsSends, selectedDate]);
 
   const partnerColors = useMemo(() => {
     const partners = new Set(chartData.map((e) => e.partner));
