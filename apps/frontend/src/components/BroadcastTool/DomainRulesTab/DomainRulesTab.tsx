@@ -1,4 +1,7 @@
-import { GetDomainStatusesResponse, GetProductStatusesResponse } from "../../../api/monday";
+import {
+  GetDomainStatusesResponse,
+  GetProductStatusesResponse,
+} from "../../../api/monday";
 import { DomainRules } from "../../../types/broadcast-tool";
 import MultiSelectDropdown from "../../Common/MultiSelectDropdown";
 import DomainSendingEditor from "../DomainSendingEditor";
@@ -10,6 +13,7 @@ import {
 
 interface DomainRulesTabProps {
   domainRules: DomainRules;
+  isPreview?: boolean;
   onChange: (updated: DomainRules) => void;
   domainMondayStatuses: GetDomainStatusesResponse;
   productMondayStatuses: GetProductStatusesResponse;
@@ -18,41 +22,42 @@ interface DomainRulesTabProps {
 const DomainRulesTab: React.FC<DomainRulesTabProps> = ({
   domainRules,
   onChange,
+  isPreview,
   domainMondayStatuses,
-  productMondayStatuses
+  productMondayStatuses,
 }) => {
   return (
     <RuleContainer>
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <InputContainer>
           <MultiSelectDropdown
             options={domainMondayStatuses.uniqueDomainStatuses}
             selected={domainRules.allowedMondayStatuses}
             onChange={(newValues) =>
-                onChange({
-                  ...domainRules,
-                  allowedMondayStatuses: newValues,
-                })
-              }
+              onChange({
+                ...domainRules,
+                allowedMondayStatuses: newValues,
+              })
+            }
             placeholder="Allowed Monday Statuses"
           />
         </InputContainer>
       </InputGroup>
 
-      <InputGroup>
-          <DomainSendingEditor
-            items={domainRules.domainSending}
-            onChange={(newItems) =>
-              onChange({
-                ...domainRules,
-                domainSending: newItems,
-              })
-            }
-            title="Domain Sending Rules"
-            parentCompanies={domainMondayStatuses.uniqueParentCompanies}
-            mondayStatuses={productMondayStatuses.domainSendings}
-          />
-        </InputGroup>
+      <InputGroup disabled={isPreview}>
+        <DomainSendingEditor
+          items={domainRules.domainSending}
+          onChange={(newItems) =>
+            onChange({
+              ...domainRules,
+              domainSending: newItems,
+            })
+          }
+          title="Domain Sending Rules"
+          parentCompanies={domainMondayStatuses.uniqueParentCompanies}
+          mondayStatuses={productMondayStatuses.domainSendings}
+        />
+      </InputGroup>
     </RuleContainer>
   );
 };

@@ -11,17 +11,19 @@ import PartnerAllowedDaysEditor from "../PartnerAllowedDaysEditor";
 interface PartnerRulesTabProps {
   partnerRules: PartnerRules;
   partners: string[];
+  isPreview?: boolean;
   onChange: (updated: PartnerRules) => void;
 }
 
 const PartnerRulesTab: React.FC<PartnerRulesTabProps> = ({
   partnerRules,
   partners,
+  isPreview,
   onChange,
 }) => {
   return (
     <RuleContainer>
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <InputContainer>
           <MultiSelectDropdown
             options={partners}
@@ -37,7 +39,7 @@ const PartnerRulesTab: React.FC<PartnerRulesTabProps> = ({
         </InputContainer>
       </InputGroup>
 
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <InputContainer>
           <FloatingLabelNumberInput
             placeholder="Similar Partner Domain Limit"
@@ -52,7 +54,7 @@ const PartnerRulesTab: React.FC<PartnerRulesTabProps> = ({
         </InputContainer>
       </InputGroup>
 
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <PartnerAllowedDaysEditor
           items={partnerRules.partnerAllowedSendingDays}
           onChange={(updated) =>

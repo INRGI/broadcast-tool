@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { VerifyCopyWithoutQueueService } from "../../../copy-verify/services/verify-copy-without-queue/verify-copy-without-queue.service";
-import { GetAllDomainsResponseDto } from "@epc-services/interface-adapters";
+import {
+  CopyType,
+  GetAllDomainsResponseDto,
+} from "@epc-services/interface-adapters";
 import { getDateRange } from "../../utils/getDateRange";
 import { cleanProductName } from "../../../rules/utils/cleanProductName";
 import { ForcePartnersToRandomDomainsPayload } from "./force-partners-to-random-domains.payload";
@@ -128,7 +131,12 @@ export class ForcePartnersToRandomDomainsService {
 
             if (
               !strategy?.copiesTypes ||
-              strategy.copiesTypes.length < MIN_COPIES_DOMAIN_SEND
+              strategy.copiesTypes.length < MIN_COPIES_DOMAIN_SEND ||
+              !domain.broadcastCopies.some(
+                (d) =>
+                  d.date === date &&
+                  d.copies.some((c) => c.copyType.includes(CopyType.Conversion))
+              )
             ) {
               continue;
             }

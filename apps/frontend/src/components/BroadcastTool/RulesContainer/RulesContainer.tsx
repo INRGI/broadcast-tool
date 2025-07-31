@@ -42,6 +42,8 @@ import { getBroadcastSendsById } from "../../../api/broadcast.api";
 import CatLoader from "../../Common/Loader/CatLoader";
 import { Checkbox } from "@mui/material";
 import { common } from "@mui/material/colors";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
+import AdminPreviewRulesModal from "../AdminPreviewRulesModal";
 
 interface RulesContainerProps {
   onEntityUpdate: () => void;
@@ -71,6 +73,7 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
     useState<GetAllDomainsResponse | null>(null);
   const [isAnalyticsLaunchModalOpen, setIsAnalyticsLaunchModalOpen] =
     useState(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [broadcastsSends, setBroadcastsSends] =
     useState<GetBroadcastsSendsResponseDto | null>(null);
 
@@ -161,6 +164,10 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
           <VscGraph />
         </Button>
 
+        <Button onClick={() => setIsAdminModalOpen(true)}>
+          <MdOutlineAdminPanelSettings />
+        </Button>
+
         <Button onClick={() => setIsUpdateModalOpen(true)}>
           <LiaSaveSolid />
         </Button>
@@ -218,7 +225,7 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
                   }
                   sx={{
                     color: common.white,
-                    '&.Mui-checked': {
+                    "&.Mui-checked": {
                       color: common.white,
                     },
                   }}
@@ -326,6 +333,12 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
             handleGetBroadcastSendsById(from, to);
           }}
           onClose={() => setIsAnalyticsLaunchModalOpen(false)}
+        />
+      )}
+      {isAdminModalOpen && (
+        <AdminPreviewRulesModal
+          isOpen={isAdminModalOpen}
+          onClose={() => setIsAdminModalOpen(false)}
         />
       )}
     </Container>

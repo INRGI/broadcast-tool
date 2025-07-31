@@ -35,7 +35,7 @@ export const InputGroup = styled.div<{ disabled?: boolean }>`
   ${(props) =>
     props.disabled &&
     `
-      opacity: 0.5;
+      opacity: 0.8;
       pointer-events: none;
       background-color: #666;
     `}

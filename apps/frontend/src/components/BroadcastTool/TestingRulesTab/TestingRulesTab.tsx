@@ -9,31 +9,33 @@ import StringArrayEditor from "../StringArrayEditor";
 
 interface TestingRulesTabProps {
   testingRules: TestingRules;
+  isPreview?: boolean;
   onChange: (updated: TestingRules) => void;
 }
 
 const TestingRulesTab: React.FC<TestingRulesTabProps> = ({
-    testingRules,
+  testingRules,
+  isPreview,
   onChange,
 }) => {
   return (
     <RuleContainer>
-      <InputGroup>
-          <StringArrayEditor
-            items={testingRules.newTestCopiesGroupNames}
-            onChange={(newList) =>
-              onChange({
-                ...testingRules,
-                newTestCopiesGroupNames: newList,
-              })
-            }
-            title="New Test Copies Group Names"
-            keyLabel="Group Name"
-            keyPlaceholder="Enter group name"
-          />
-        </InputGroup>
+      <InputGroup disabled={isPreview}>
+        <StringArrayEditor
+          items={testingRules.newTestCopiesGroupNames}
+          onChange={(newList) =>
+            onChange({
+              ...testingRules,
+              newTestCopiesGroupNames: newList,
+            })
+          }
+          title="New Test Copies Group Names"
+          keyLabel="Group Name"
+          keyPlaceholder="Enter group name"
+        />
+      </InputGroup>
 
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <InputContainer>
           <FloatingLabelNumberInput
             placeholder="Max Sends To Be Test Copy"
@@ -48,7 +50,7 @@ const TestingRulesTab: React.FC<TestingRulesTabProps> = ({
         </InputContainer>
       </InputGroup>
 
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <InputContainer>
           <FloatingLabelNumberInput
             placeholder="Similar Test Copy Limit Per Day"

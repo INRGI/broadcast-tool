@@ -29,7 +29,11 @@ import { getCachedData, setCachedData } from "../../../helpers/getCachedData";
 import { getDomainStatuses, getProductStatuses } from "../../../api/monday.api";
 import CatLoader from "../../Common/Loader/CatLoader";
 
-const AdminRules: React.FC = () => {
+interface AdminRulesProps {
+  isPreview?: boolean;
+}
+
+const AdminRules: React.FC<AdminRulesProps> = ({ isPreview }) => {
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [adminBroadcastConfig, setAdminBroadcastConfig] =
     useState<AdminBroadcastConfigEntity>();
@@ -192,11 +196,13 @@ const AdminRules: React.FC = () => {
 
   return (
     <>
-      <ButtonsHeaderContainer>
-        <Button onClick={() => setIsUpdateModalOpen(true)}>
-          <LiaSaveSolid />
-        </Button>
-      </ButtonsHeaderContainer>
+      {!isPreview && (
+        <ButtonsHeaderContainer>
+          <Button onClick={() => setIsUpdateModalOpen(true)}>
+            <LiaSaveSolid />
+          </Button>
+        </ButtonsHeaderContainer>
+      )}
       <ListScrollContainer>
         {isLoading && <CatLoader />}
 
@@ -209,6 +215,7 @@ const AdminRules: React.FC = () => {
               analyticSelectionRules={
                 adminBroadcastConfig.analyticSelectionRules
               }
+              isPreview={isPreview}
               onChange={(updated) =>
                 handleChange("analyticSelectionRules", updated)
               }
@@ -221,6 +228,7 @@ const AdminRules: React.FC = () => {
             "Testing Rules",
             "testingRules",
             <TestingRulesTab
+              isPreview={isPreview}
               testingRules={adminBroadcastConfig.testingRules}
               onChange={(updated) => handleChange("testingRules", updated)}
             />
@@ -232,6 +240,7 @@ const AdminRules: React.FC = () => {
             "Domain Rules",
             "domainRules",
             <DomainRulesTab
+              isPreview={isPreview}
               domainRules={adminBroadcastConfig.domainRules}
               onChange={(updated) => handleChange("domainRules", updated)}
               domainMondayStatuses={domainMondayStatuses}
@@ -244,6 +253,7 @@ const AdminRules: React.FC = () => {
             "Partner Rules",
             "partnerRules",
             <PartnerRulesTab
+              isPreview={isPreview}
               partners={productMondayStatuses.partners}
               partnerRules={adminBroadcastConfig.partnerRules}
               onChange={(updated) => handleChange("partnerRules", updated)}

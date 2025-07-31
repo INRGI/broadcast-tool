@@ -23,13 +23,17 @@ import { FaFireAlt, FaMousePointer, FaRegQuestionCircle } from "react-icons/fa";
 import { FaDollarSign } from "react-icons/fa6";
 import { GrTest } from "react-icons/gr";
 import { Box } from "@mui/material";
-import { DomainStatusResponseDto, GetBroadcastDomainsListResponseDto } from "../../../api/broadcast";
+import {
+  DomainStatusResponseDto,
+  GetBroadcastDomainsListResponseDto,
+} from "../../../api/broadcast";
 import { IoIosSunny } from "react-icons/io";
 import { BsFire } from "react-icons/bs";
 import { AiOutlinePauseCircle } from "react-icons/ai";
-import { GiHastyGrave } from "react-icons/gi";
+import { GiHastyGrave, GiPerspectiveDiceSixFacesRandom } from "react-icons/gi";
+import CopyAssignmentStrategyModal from "../CopyAssignmentStrategyModal";
 
-interface DomainStrategy {
+export interface DomainStrategy {
   domain: string;
   copiesTypes: ("click" | "conversion" | "test" | "warmup")[];
 }
@@ -68,9 +72,14 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isConfirmationOpen, setConfirmationOpen] = useState(false);
   const [isTabConfirmationOpen, setTabConfirmationOpen] = useState(false);
+  const [
+    isCopyAssignmentStrategyModalOpen,
+    setIsCopyAssignmentStrategyModalOpen,
+  ] = useState(false);
   const [sheetForResetTypes, setSheetForResetTypes] = useState<string>();
   const [sheetDomainStatuses, setSheetDomainStatuses] =
     useState<GetBroadcastDomainsListResponseDto>();
+  const [currentSheet, setCurrentSheet] = useState<string>();
 
   const [bulkType, setBulkType] =
     useState<DomainStrategy["copiesTypes"][number]>("click");
@@ -266,6 +275,23 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
     setSheetForResetTypes("");
   };
 
+  const handleAddTypeForSheet = (
+    type: DomainStrategy["copiesTypes"][number],
+    sheet: string
+  ) => {
+    const updated = { ...strategiesBySheet };
+    updated[sheet] = updated[sheet].map((domain) => ({
+      ...domain,
+      copiesTypes: [...domain.copiesTypes, type],
+    }));
+
+    setStrategiesBySheet(updated);
+    const allUpdated = Object.values(updated).flat();
+    onChange({ domainStrategies: allUpdated });
+
+    toastSuccess("Added successfully");
+  };
+
   const handleRemoveType = (
     sheet: string,
     domainIndex: number,
@@ -311,20 +337,40 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
       ?.find((d) => d.sheetName === sheetName)
       ?.domains.find((d) => d.domainName === domain)?.status;
 
-      if (result?.toLocaleLowerCase() === "live") {
-        return <StatusIndicator><IoIosSunny /></StatusIndicator>;
-      }
-      if (result?.toLocaleLowerCase() === "warm up") {
-        return <StatusIndicator><BsFire /></StatusIndicator>;
-      }
-      if (result?.toLocaleLowerCase() === "hold") {
-        return <StatusIndicator><AiOutlinePauseCircle /></StatusIndicator>;
-      }
-      if (result?.toLocaleLowerCase() === "killing") {
-        return <StatusIndicator><GiHastyGrave /></StatusIndicator>;
-      }
+    if (result?.toLocaleLowerCase() === "live") {
+      return (
+        <StatusIndicator>
+          <IoIosSunny />
+        </StatusIndicator>
+      );
+    }
+    if (result?.toLocaleLowerCase() === "warm up") {
+      return (
+        <StatusIndicator>
+          <BsFire />
+        </StatusIndicator>
+      );
+    }
+    if (result?.toLocaleLowerCase() === "hold") {
+      return (
+        <StatusIndicator>
+          <AiOutlinePauseCircle />
+        </StatusIndicator>
+      );
+    }
+    if (result?.toLocaleLowerCase() === "killing") {
+      return (
+        <StatusIndicator>
+          <GiHastyGrave />
+        </StatusIndicator>
+      );
+    }
 
-      return <StatusIndicator><FaRegQuestionCircle /></StatusIndicator>;
+    return (
+      <StatusIndicator>
+        <FaRegQuestionCircle />
+      </StatusIndicator>
+    );
   };
   return (
     <Wrapper>
@@ -367,7 +413,19 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
               active={!!openSheets[sheetName]}
               onClick={() => toggleSheet(sheetName)}
             >
-              {sheetName}{" "}
+              <ClearDiv>
+                {/* <Indicator
+                  key={sheetName}
+                  title={`Click to randomly add ${sheetName} types`}
+                  onClick={() => {
+                    setCurrentSheet(sheetName);
+                    setIsCopyAssignmentStrategyModalOpen(true);
+                  }}
+                >
+                  <GiPerspectiveDiceSixFacesRandom />
+                </Indicator> */}
+                {sheetName}{" "}
+              </ClearDiv>
               <ResetButton
                 onClick={() => {
                   setSheetForResetTypes(sheetName);
@@ -377,6 +435,37 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
                 Reset {sheetName}
               </ResetButton>
             </TabHeader>
+
+            {openSheets[sheetName] && (
+              <div
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "center",
+                }}
+              >
+                <SmallSelect
+                  value={bulkType}
+                  onChange={(e) =>
+                    setBulkType(
+                      e.target.value as DomainStrategy["copiesTypes"][number]
+                    )
+                  }
+                  style={{ maxWidth: 180 }}
+                >
+                  {["click", "conversion", "test", "warmup"].map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </SmallSelect>
+                <AddTypeButton
+                  onClick={() => handleAddTypeForSheet(bulkType, sheetName)}
+                >
+                  + Add {bulkType} to {sheetName}
+                </AddTypeButton>
+              </div>
+            )}
 
             {openSheets[sheetName] &&
               strategies.map((strategy, index) => {
@@ -524,6 +613,20 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
           onConfirm={() => handleRemoveAllForSheet(sheetForResetTypes)}
         />
       )}
+      {isCopyAssignmentStrategyModalOpen &&
+        currentSheet &&
+        sheetDomainStatuses && (
+          <CopyAssignmentStrategyModal
+            sheetDomainStatuses={sheetDomainStatuses}
+            currentSheet={currentSheet}
+            isOpen={isCopyAssignmentStrategyModalOpen}
+            onClose={() => {
+              setIsCopyAssignmentStrategyModalOpen(false);
+            }}
+            setStrategiesBySheet={setStrategiesBySheet}
+            strategiesBySheet={strategiesBySheet}
+          />
+        )}
     </Wrapper>
   );
 };

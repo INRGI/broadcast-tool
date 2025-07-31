@@ -8,16 +8,18 @@ import {
 
 interface AnalyticSelectionRulesTabProps {
   analyticSelectionRules: AnalyticSelectionRules;
+  isPreview?: boolean;
   onChange: (updated: AnalyticSelectionRules) => void;
 }
 
 const AnalyticSelectionRulesTab: React.FC<AnalyticSelectionRulesTabProps> = ({
   analyticSelectionRules,
   onChange,
+  isPreview,
 }) => {
   return (
     <RuleContainer>
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <InputContainer>
           <FloatingLabelNumberInput
             placeholder="Days Interval For Clickable Copies"
@@ -31,7 +33,7 @@ const AnalyticSelectionRulesTab: React.FC<AnalyticSelectionRulesTabProps> = ({
           />
         </InputContainer>
       </InputGroup>
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <InputContainer>
           <FloatingLabelNumberInput
             placeholder="Days Interval For Convertible Copies"
@@ -46,7 +48,7 @@ const AnalyticSelectionRulesTab: React.FC<AnalyticSelectionRulesTabProps> = ({
         </InputContainer>
       </InputGroup>
 
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <InputContainer>
           <FloatingLabelNumberInput
             placeholder="Days Interval For Warm Up Copies"
@@ -61,7 +63,7 @@ const AnalyticSelectionRulesTab: React.FC<AnalyticSelectionRulesTabProps> = ({
         </InputContainer>
       </InputGroup>
 
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <InputContainer>
           <FloatingLabelNumberInput
             placeholder="Days Interval For Test Copies"
@@ -76,7 +78,7 @@ const AnalyticSelectionRulesTab: React.FC<AnalyticSelectionRulesTabProps> = ({
         </InputContainer>
       </InputGroup>
 
-      <InputGroup>
+      <InputGroup disabled={isPreview}>
         <InputContainer>
           <FloatingLabelNumberInput
             placeholder="Days Interval For Domain Revenue"

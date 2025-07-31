@@ -66,7 +66,6 @@ const BroadcastTableModal: React.FC<BroadcastTableModalProps> = ({
       const [year, month, day] = d.trim().split(/[-/.]/).map(Number);
       return year * 10000 + month * 100 + day;
     };
-    console.log(parseDate(a), parseDate(b));
     return parseDate(a) - parseDate(b);
   });
 
@@ -106,6 +105,39 @@ const BroadcastTableModal: React.FC<BroadcastTableModalProps> = ({
       toastError("Failed to approve broadcast");
       setIsLoading(false);
     }
+  };
+
+  const handleChangeIsModdified = (
+    sheet: string,
+    domain: string,
+    date: string
+  ) => {
+    setBroadcastData({
+      ...broadcastData,
+      sheets: broadcastData.sheets.map((s) => {
+        if (s.sheetName === sheet)
+          return {
+            ...s,
+            domains: s.domains.map((d) => {
+              if (d.domain === domain)
+                return {
+                  ...d,
+                  broadcastCopies: d.broadcastCopies.map((c) => {
+                    if (c.date === date && d.domain === domain) {
+                      return {
+                        ...c,
+                        isModdified: !c.isModdified,
+                      };
+                    }
+                    return c;
+                  }),
+                };
+              return d;
+            }),
+          };
+        return s;
+      }),
+    });
   };
 
   return (
@@ -164,6 +196,14 @@ const BroadcastTableModal: React.FC<BroadcastTableModalProps> = ({
                         <Td
                           key={domain.domain + date}
                           isHighlighted={entry?.isModdified}
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            handleChangeIsModdified(
+                              activeSheet.sheetName,
+                              domain.domain,
+                              date
+                            );
+                          }}
                           onDoubleClick={() => {
                             if (entry)
                               setEditModal({
