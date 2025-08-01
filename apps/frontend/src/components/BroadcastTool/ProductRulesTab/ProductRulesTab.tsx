@@ -70,6 +70,7 @@ const ProductRulesTab: React.FC<ProductRulesTabProps> = ({
             keyLabel="Product Name"
             valueLabel="Limit"
             title="Products Sending Limit Per Day Tab"
+            isBulkAdder={true}
             onChange={(newItems) =>
               onChange({
                 ...productRules,
@@ -88,6 +89,7 @@ const ProductRulesTab: React.FC<ProductRulesTabProps> = ({
               key: item.copyName,
               value: item.limit.toString(),
             }))}
+            isBulkAdder={true}
             keyLabel="Copy Name"
             valueLabel="Limit"
             title="Copies Sending Limit Per Day Tab"
@@ -110,6 +112,7 @@ const ProductRulesTab: React.FC<ProductRulesTabProps> = ({
               value: item.limit.toString(),
             }))}
             keyLabel="Copy Name"
+            isBulkAdder={true}
             valueLabel="Limit"
             title="Copies Min Limit Per Day"
             onChange={(newItems) =>
@@ -126,6 +129,7 @@ const ProductRulesTab: React.FC<ProductRulesTabProps> = ({
 
         <InputGroup>
           <ArrayInput
+            isBulkAdder={true}
             items={productRules.productMinLimitPerDay.map((item) => ({
               key: item.productName,
               value: item.limit.toString(),

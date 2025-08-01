@@ -41,7 +41,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
       <InputGroup>
         <InputContainer>
           <FloatingLabelInput
-            placeholder="Broadcast Name"
+            placeholder="BroadCat Name"
             value={name}
             onChange={(e) => onChange({ name: e.target.value })}
           />

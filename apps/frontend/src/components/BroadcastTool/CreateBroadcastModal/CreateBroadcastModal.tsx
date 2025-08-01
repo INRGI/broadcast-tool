@@ -158,7 +158,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
     <AdminModal isOpen={isOpen} onClose={onClose}>
       <CreateContainer>
         <BlockHeader>
-          <h2>Create Broadcast</h2>
+          <h2>Create BroadCat</h2>
         </BlockHeader>
         <TabsContainer>
           <TabButton

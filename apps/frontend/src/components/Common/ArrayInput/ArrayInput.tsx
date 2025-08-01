@@ -1,82 +1,25 @@
-import styled from "@emotion/styled";
-import React from "react";
-
-const SectionWrapper = styled.div`
-  width: calc(100%);
-  padding: 10px;
-  background-color: #2b2b2b;
-  border: 1px solid #4f4f4f;
-  border-radius: 8px;
-`;
-
-const FieldRow = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-  align-items: center;
-`;
-
-const StyledInput = styled.input`
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #4f4f4f;
-  background-color: #3a3a3a;
-  color: white;
-  flex: 1;
-  font-size: 14px;
-`;
-
-const AddButton = styled.button`
-  background-color: #6a5acd;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #5941a9;
-  }
-`;
-
-const RemoveButton = styled.button`
-  background-color: #d9534f;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 10px;
-  cursor: pointer;
-  font-size: 14px;
-  margin: 0;
-
-  &:hover {
-    background-color: #c9302c;
-  }
-`;
-
-const Label = styled.label`
-  color: white;
-  font-size: 14px;
-  margin-bottom: 4px;
-  display: block;
-`;
-
-const Title = styled.p`
-  color: white;
-  font-size: 16px;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  padding-bottom: 20px;
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
-`;
+import React, { useEffect, useState } from "react";
+import AdminModal from "../AdminModal";
+import {
+  AddButton,
+  Button,
+  FieldRow,
+  HeaderContainer,
+  InputContainer,
+  Label,
+  ModalBody,
+  RemoveButton,
+  SectionWrapper,
+  StyledInput,
+  Title,
+  Textarea,
+  ModalContentWrapper,
+  ModalLeft,
+  ModalRight,
+  PreviewItem,
+  SubmitButton,
+} from "./ArrayInput.styled";
+import { FaPlus } from "react-icons/fa";
 
 interface SimpleLimitItem {
   key: string;
@@ -91,6 +34,7 @@ interface ArrayInputProps {
   valueLabel: string;
   keyPlaceholder?: string;
   valuePlaceholder?: string;
+  isBulkAdder?: boolean;
 }
 
 const ArrayInput: React.FC<ArrayInputProps> = ({
@@ -101,7 +45,13 @@ const ArrayInput: React.FC<ArrayInputProps> = ({
   keyPlaceholder = "",
   valuePlaceholder = "",
   title,
+  isBulkAdder = false,
 }) => {
+  const [bulkText, setBulkText] = useState("");
+  const [bulkValue, setBulkValue] = useState("0");
+  const [bulkPreview, setBulkPreview] = useState<SimpleLimitItem[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleAdd = () => {
     onChange([...items, { key: "", value: "" }]);
   };
@@ -129,9 +79,52 @@ const ArrayInput: React.FC<ArrayInputProps> = ({
     onChange(newItems);
   };
 
+  const handleBulkTextChange = (text: string) => {
+    setBulkText(text);
+  };
+
+  const handleBulkSubmit = () => {
+    if (!bulkValue || bulkPreview.length === 0) return;
+    const newItems = [...items, ...bulkPreview];
+    onChange(newItems);
+    setBulkText("");
+    setBulkValue("");
+    setBulkPreview([]);
+    setIsModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setBulkText("");
+    setBulkValue("");
+    setBulkPreview([]);
+  };
+
+  useEffect(() => {
+    const keys = bulkText
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+    setBulkPreview(
+      keys.map((key) => ({
+        key,
+        value: bulkValue === "" ? "" : Number(bulkValue),
+      }))
+    );
+  }, [bulkValue, bulkText]);
+
   return (
     <SectionWrapper>
-      <Title>{title}</Title>
+      {isBulkAdder && (
+        <HeaderContainer>
+          <Title>{title}</Title>
+
+          <Button onClick={() => setIsModalOpen(true)}>
+            <FaPlus />
+          </Button>
+        </HeaderContainer>
+      )}
+      {!isBulkAdder && <Title>{title}</Title>}
       {items.map((item, index) => (
         <FieldRow key={index}>
           <InputContainer>
@@ -155,7 +148,52 @@ const ArrayInput: React.FC<ArrayInputProps> = ({
           <RemoveButton onClick={() => handleRemove(index)}>✕</RemoveButton>
         </FieldRow>
       ))}
+
       <AddButton onClick={handleAdd}>+ Add</AddButton>
+
+      {isModalOpen && (
+        <AdminModal isOpen={isModalOpen} onClose={handleCloseModal}>
+          <ModalBody>
+            <ModalContentWrapper>
+              <ModalLeft>
+                <Label>{keyLabel} (one per line):</Label>
+                <Textarea
+                  rows={10}
+                  value={bulkText}
+                  onChange={(e) => handleBulkTextChange(e.target.value)}
+                  placeholder="Enter one key per line"
+                />
+                <InputContainer>
+                  <Label>{valueLabel}</Label>
+                  <StyledInput
+                    placeholder={valuePlaceholder}
+                    value={bulkValue}
+                    onChange={(e) => setBulkValue(e.target.value)}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                  />
+                </InputContainer>
+                <SubmitButton
+                  onClick={handleBulkSubmit}
+                  disabled={!bulkPreview.length || !/^[0-9]+$/.test(bulkValue)}
+                >
+                  Submit
+                </SubmitButton>
+              </ModalLeft>
+
+              <ModalRight>
+                <Label>Preview:</Label>
+
+                {bulkPreview.map((item, i) => (
+                  <PreviewItem key={i}>
+                    <strong>{item.key}</strong>: {item.value}
+                  </PreviewItem>
+                ))}
+              </ModalRight>
+            </ModalContentWrapper>
+          </ModalBody>
+        </AdminModal>
+      )}
     </SectionWrapper>
   );
 };
