@@ -9,7 +9,7 @@ import {
 } from "../DomainRulesTab/DomainRulesTab.styled";
 import { getBroadcastDomainsList } from "../../../api/broadcast.api";
 import { toastError } from "../../../helpers/toastify";
-import Loader from "../../Common/Loader";
+import CatLoader from "../../Common/Loader/CatLoader";
 
 interface UsageRulesTabProps {
   usageRules: UsageRules;
@@ -41,7 +41,9 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
         try {
           const cached = JSON.parse(cacheRaw);
           if (now - cached.timestamp < 30 * 60 * 1000) {
-            data = cached.data;
+            if (cached.data?.sheets.length === 0) {
+              data = cached.data;
+            }
           }
         } catch {
           localStorage.removeItem(cacheKey);
@@ -85,7 +87,7 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
 
   return (
     <RuleContainer>
-      {isLoading && <Loader />}
+      {isLoading && <CatLoader />}
       {!isLoading && (
         <>
           <InputGroup>

@@ -8,7 +8,6 @@ import {
   TabsContainer,
 } from "./CreateBroadcastModal.styled";
 import { CreateBroadcastRulesRequest } from "../../../api/broadcast-rules";
-import Loader from "../../Common/Loader";
 import { toastError, toastSuccess } from "../../../helpers/toastify";
 import {
   GetProductStatusesResponse,
@@ -20,6 +19,7 @@ import { BroadcastListItemResponse } from "../../../api/broadcast/response/broad
 import GeneralTab from "../GeneralTab";
 import { createBroadcastRules } from "../../../api/broadcast-rules.api";
 import ConfirmationModal from "../ConfirmationModal";
+import CatLoader from "../../Common/Loader/CatLoader";
 
 interface CreateModalProps {
   isOpen: boolean;
@@ -149,7 +149,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
   if (isLoading) {
     return (
       <AdminModal isOpen={isOpen} onClose={onClose}>
-        <Loader />
+        <CatLoader />
       </AdminModal>
     );
   }

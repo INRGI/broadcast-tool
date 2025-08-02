@@ -26,10 +26,10 @@ import {
 } from "react-icons/io";
 import { toastError, toastSuccess } from "../../../helpers/toastify";
 import { approveBroadcast } from "../../../api/broadcast.api";
-import Loader from "../../Common/Loader";
 import ConfirmationModal from "../ConfirmationModal";
 import { BroadcastSendingDay } from "../../../types/broadcast-tool";
 import EditCopyCellModal from "../EditCopyCellModal";
+import CatLoader from "../../Common/Loader/CatLoader";
 
 interface BroadcastTableModalProps {
   isOpen: boolean;
@@ -144,7 +144,7 @@ const BroadcastTableModal: React.FC<BroadcastTableModalProps> = ({
     <AdminModal isOpen={isOpen} onClose={onClose}>
       {isLoading && (
         <ModalBody>
-          <Loader />
+          <CatLoader />
         </ModalBody>
       )}
       {!isLoading && (

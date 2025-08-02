@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { getBroadcastDomainsList } from "../../../api/broadcast.api";
 import { CopyAssignmentStrategyRules } from "../../../types/broadcast-tool";
-import Loader from "../../Common/Loader";
 import {
   AddTypeButton,
   ClearDiv,
@@ -32,6 +31,7 @@ import { BsFire } from "react-icons/bs";
 import { AiOutlinePauseCircle } from "react-icons/ai";
 import { GiHastyGrave, GiPerspectiveDiceSixFacesRandom } from "react-icons/gi";
 import CopyAssignmentStrategyModal from "../CopyAssignmentStrategyModal";
+import CatLoader from "../../Common/Loader/CatLoader";
 
 export interface DomainStrategy {
   domain: string;
@@ -99,7 +99,10 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
         try {
           const cached = JSON.parse(cacheRaw);
           if (now - cached.timestamp < 30 * 60 * 1000) {
-            data = cached.data;
+            
+            if (cached.data?.sheets.length === 0) {
+              data = cached.data;
+            }
           }
         } catch {
           localStorage.removeItem(cacheKey);
@@ -374,7 +377,7 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
   };
   return (
     <Wrapper>
-      {isLoading && <Loader />}
+      {isLoading && <CatLoader />}
       {!isLoading && (
         <div
           style={{

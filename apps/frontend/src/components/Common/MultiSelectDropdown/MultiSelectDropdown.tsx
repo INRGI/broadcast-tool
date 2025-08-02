@@ -50,7 +50,7 @@ const FloatingLabel = styled.span<{ active: boolean }>`
   border-radius: 4px;
 `;
 
-const DropdownList = styled.ul`
+const DropdownList = styled.ul<{ openUpward?: boolean }>`
   position: absolute;
   width: 100%;
   background-color: #2b2b2b;
@@ -62,6 +62,12 @@ const DropdownList = styled.ul`
   overflow-y: auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 9999;
+
+  ${({ openUpward }) =>
+    openUpward &&
+    `
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+  `}
 `;
 
 const DropdownItem = styled.li<{ selected: boolean }>`
@@ -112,6 +118,7 @@ const MultiSelectDropdown = ({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [openUpward, setOpenUpward] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownListRef = useRef<HTMLUListElement | null>(null);
   const dropdownPortalRef = useRef<HTMLUListElement | null>(null);
@@ -153,7 +160,35 @@ const MultiSelectDropdown = ({
     dropdownListRef.current = node;
     dropdownPortalRef.current = node;
   };
-  
+
+  const calculatePosition = () => {
+    if (!dropdownRef.current || !dropdownListRef.current) return;
+
+    const buttonRect = dropdownRef.current.getBoundingClientRect();
+    const dropdownHeight = 200;
+    const windowHeight = window.innerHeight;
+    const spaceBelow = windowHeight - buttonRect.bottom;
+    const spaceAbove = buttonRect.top;
+
+    const shouldOpenUpward =
+      spaceBelow < dropdownHeight && spaceAbove > spaceBelow;
+    setOpenUpward(shouldOpenUpward);
+
+    const dropdown = dropdownListRef.current;
+    dropdown.style.position = "absolute";
+    dropdown.style.left = `${buttonRect.left + window.scrollX}px`;
+    dropdown.style.width = `${buttonRect.width}px`;
+
+    if (shouldOpenUpward) {
+      dropdown.style.top = `${
+        buttonRect.top + window.scrollY - dropdownHeight
+      }px`;
+      dropdown.style.bottom = "auto";
+    } else {
+      dropdown.style.top = `${buttonRect.bottom + window.scrollY}px`;
+      dropdown.style.bottom = "auto";
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -170,12 +205,20 @@ const MultiSelectDropdown = ({
   }, [isOpen]);
 
   useEffect(() => {
-    if (!dropdownRef.current || !dropdownListRef.current || !isOpen) return;
-    const buttonRect = dropdownRef.current.getBoundingClientRect();
-    dropdownListRef.current.style.position = "absolute";
-    dropdownListRef.current.style.top = `${buttonRect.bottom + window.scrollY}px`;
-    dropdownListRef.current.style.left = `${buttonRect.left + window.scrollX}px`;
-    dropdownListRef.current.style.width = `${buttonRect.width}px`;
+    if (isOpen) {
+      setTimeout(calculatePosition, 0);
+
+      const handleResize = () => calculatePosition();
+      const handleScroll = () => calculatePosition();
+
+      window.addEventListener("resize", handleResize);
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("resize", handleResize);
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
   }, [isOpen]);
 
   return (
@@ -191,9 +234,10 @@ const MultiSelectDropdown = ({
           {hasValue ? selected.join(", ") : ""}
         </DropdownButton>
       </DropdownContainer>
-      {isOpen && filteredOptions &&
+      {isOpen &&
+        filteredOptions &&
         createPortal(
-          <DropdownList ref={setDropdownRefs}>
+          <DropdownList ref={setDropdownRefs} openUpward={openUpward}>
             <SearchInput
               placeholder="Search"
               value={searchTerm}
@@ -213,7 +257,9 @@ const MultiSelectDropdown = ({
         )}
       <SelectedTags>
         {selected.map((s) => (
-          <Tag key={s} onClick={() => handleSelect(s)}>{s}</Tag>
+          <Tag key={s} onClick={() => handleSelect(s)}>
+            {s}
+          </Tag>
         ))}
       </SelectedTags>
     </DropdownWrapper>

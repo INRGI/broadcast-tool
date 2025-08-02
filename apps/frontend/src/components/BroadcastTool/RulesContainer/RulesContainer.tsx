@@ -44,6 +44,7 @@ import { Checkbox } from "@mui/material";
 import { common } from "@mui/material/colors";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import AdminPreviewRulesModal from "../AdminPreviewRulesModal";
+import { RxInfoCircled } from "react-icons/rx";
 
 interface RulesContainerProps {
   onEntityUpdate: () => void;
@@ -160,6 +161,14 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
   return (
     <Container>
       <ButtonsHeaderContainer>
+        <Button
+          onClick={() => {
+            window.open("https://wiki.epcnetwork.dev/uk/BroadCats", "_blank");
+          }}
+        >
+          <RxInfoCircled />
+        </Button>
+
         <Button onClick={() => setIsAnalyticsLaunchModalOpen(true)}>
           <VscGraph />
         </Button>

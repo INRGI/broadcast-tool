@@ -232,7 +232,7 @@ const Menu: React.FC = () => {
         <SearchInput
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          placeholder="Search broadcast by name"
+          placeholder="Search broadcats by name"
         />
 
         <BroadcastRulesContainer>
