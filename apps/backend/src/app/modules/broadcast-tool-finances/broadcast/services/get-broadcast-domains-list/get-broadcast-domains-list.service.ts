@@ -95,7 +95,6 @@ export class GetBroadcastDomainsListService {
         sheets: response,
       };
     } catch (error) {
-      console.error(error);
       return { sheets: [] };
     }
   }
