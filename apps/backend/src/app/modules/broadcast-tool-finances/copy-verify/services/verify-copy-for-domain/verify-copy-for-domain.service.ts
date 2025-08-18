@@ -152,6 +152,7 @@ export class VerifyCopyForDomainService {
     const isCopyPriority = await this.checkIfProductPriorityService.execute({
       product: this.cleanProductName(copyName),
       priorityCopiesData,
+      ignoringRules: adminBroadcastConfig.ignoringRules,
     });
 
     let existingDate = broadcastDomain.broadcastCopies.find(

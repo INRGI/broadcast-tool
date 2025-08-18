@@ -10,13 +10,17 @@ export class CheckIfProductPriorityService {
   public async execute(
     payload: CheckIfProductPriorityPayload
   ): Promise<boolean> {
-    const { product, priorityCopiesData } = payload;
+    const { product, priorityCopiesData, ignoringRules } = payload;
 
     const currentHash = this.hashArray(priorityCopiesData);
 
     if (this.cachedHash !== currentHash) {
       this.cachedSet = new Set(priorityCopiesData);
       this.cachedHash = currentHash;
+    }
+    
+    if (ignoringRules.productIndicators.includes(product)) {
+      return false;
     }
 
     return this.cachedSet.has(product);

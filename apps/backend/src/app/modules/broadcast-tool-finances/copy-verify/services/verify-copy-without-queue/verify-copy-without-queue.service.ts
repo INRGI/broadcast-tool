@@ -185,6 +185,7 @@ export class VerifyCopyWithoutQueueService {
     const isCopyPriority = await this.checkIfProductPriorityService.execute({
       product: cleanProductName(copyName),
       priorityCopiesData,
+      ignoringRules: adminBroadcastConfig.ignoringRules,
     });
 
     let existingDate = broadcastDomain.broadcastCopies.find(

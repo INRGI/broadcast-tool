@@ -222,6 +222,7 @@ export class MakeBroadcastService {
       await this.addPriorityCopyIndicatorService.execute({
         broadcast: broadcastWithPossibleCopies,
         dateRange,
+        ignoringRules: adminConfig.ignoringRules,
       });
 
     const broadcastWithCustomLinkIndicator =
@@ -229,6 +230,7 @@ export class MakeBroadcastService {
         broadcast: broadcastWithPriorityIndicator,
         dateRange,
         productsData,
+        ignoringRules: adminConfig.ignoringRules,
       });
 
     for (const sheet of broadcastWithCustomLinkIndicator.sheets) {

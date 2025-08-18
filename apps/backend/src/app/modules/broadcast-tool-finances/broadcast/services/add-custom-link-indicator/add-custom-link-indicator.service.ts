@@ -8,19 +8,22 @@ export class AddCustomLinkIndicatorService {
   public async execute(
     payload: AddCustomLinkIndicatorPayload
   ): Promise<GetAllDomainsResponseDto> {
-    const { broadcast, dateRange, productsData } = payload;
+    const { broadcast, dateRange, productsData, ignoringRules } = payload;
 
     const handleCheckIfProductHaveCustomLink = (productName: string) => {
+      if (ignoringRules.productIndicators.includes(productName)) return false;
+      
       const productData = productsData.find(
         (product) =>
           product.productName.startsWith(`${productName} -`) ||
           product.productName.startsWith(`*${productName} -`)
       );
-      const checkResult =  productData?.partner.startsWith(`L `) || productData?.partner.startsWith(`*V L `);
+      const checkResult =
+        productData?.partner.startsWith(`L `) ||
+        productData?.partner.startsWith(`*V L `);
 
       return checkResult;
     };
-    
 
     const modifiedBroadcast = broadcast.sheets.map((sheet) => {
       return {
@@ -35,21 +38,29 @@ export class AddCustomLinkIndicatorService {
               ) {
                 return broadcastCopies;
               }
-              if(!broadcastCopies.isModdified) return broadcastCopies;
+              if (!broadcastCopies.isModdified) return broadcastCopies;
               return {
                 ...broadcastCopies,
                 copies: broadcastCopies.copies.map((c) => {
-                  if(c.name.includes("(L)")) return c;
+                  if (c.name.includes("(L)")) return c;
                   return {
                     ...c,
-                    name: handleCheckIfProductHaveCustomLink(cleanProductName(c.name)) ? `${c.name}(L)` : c.name,
+                    name: handleCheckIfProductHaveCustomLink(
+                      cleanProductName(c.name)
+                    )
+                      ? `${c.name}(L)`
+                      : c.name,
                   };
                 }),
                 possibleReplacementCopies:
                   broadcastCopies.possibleReplacementCopies.map((c) => {
                     return {
                       ...c,
-                      name: handleCheckIfProductHaveCustomLink(cleanProductName(c.name)) ? `${c.name}(L)` : c.name,
+                      name: handleCheckIfProductHaveCustomLink(
+                        cleanProductName(c.name)
+                      )
+                        ? `${c.name}(L)`
+                        : c.name,
                     };
                   }),
               };

@@ -95,6 +95,7 @@ export class GetPossibleReplacementCopiesService {
                   await this.checkIfProductPriorityService.execute({
                     product: cleanProductName(name),
                     priorityCopiesData,
+                    ignoringRules: adminBroadcastConfig.ignoringRules,
                   });
 
                 possible.push({

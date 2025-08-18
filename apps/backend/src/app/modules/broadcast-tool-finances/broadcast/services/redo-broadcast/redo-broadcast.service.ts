@@ -133,6 +133,7 @@ export class RedoBroadcastService {
               const isCopyPriority = await this.checkIfProductPriorityService.execute({
                 product: cleanProductName(copy.name),
                 priorityCopiesData,
+                ignoringRules: adminConfig.ignoringRules,
               });
               if (copyIndex !== -1) {
                 newCopies[copyIndex] = {
@@ -183,6 +184,7 @@ export class RedoBroadcastService {
       await this.addPriorityCopyIndicatorService.execute({
         broadcast: broadcastWithPossibleCopies,
         dateRange,
+        ignoringRules: adminConfig.ignoringRules,
       });
 
     const broadcastWithCustomLinkIndicator =
@@ -190,6 +192,7 @@ export class RedoBroadcastService {
         broadcast: broadcastWithPriorityIndicator,
         dateRange,
         productsData,
+        ignoringRules: adminConfig.ignoringRules,
       });
 
     return broadcastWithCustomLinkIndicator;
