@@ -28,6 +28,7 @@ export class GetAllDataService {
         Date, Company, Domain, Type, Copy, Offer, Month,
         ISP, UC, TC, Conversion
     FROM \`delta-daylight-316213.developers.base\`
+    WHERE Copy IS NOT NULL
     ORDER BY Date DESC
     `;
 }

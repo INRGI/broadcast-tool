@@ -26,6 +26,7 @@ export class UpdateAdminBroadcastConfigService {
         partnerRules: payload.partnerRules,
         domainRules: payload.domainRules,
         analyticSelectionRules: payload.analyticSelectionRules,
+        ignoringRules: payload.ignoringRules,
       });
 
     return updatedAdminBroadcastConfig;

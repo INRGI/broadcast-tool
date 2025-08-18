@@ -16,3 +16,4 @@ export * from "./partner-allowed-sending-days.interface";
 export * from "./partner-sending-limit-per-day.interface";
 export * from "./product-min-limit-per-day.interface";
 export * from "./partner-min-limit-per-day.interface";
+export * from "./ignoring-rules.interface";

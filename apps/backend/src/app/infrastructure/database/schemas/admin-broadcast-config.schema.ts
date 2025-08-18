@@ -1,6 +1,7 @@
 import {
   AnalyticSelectionRules,
   DomainRules,
+  IgnoringRules,
   PartnerRules,
   TestingRules,
 } from "@epc-services/interface-adapters";
@@ -23,6 +24,9 @@ export class AdminBroadcastConfig extends Document {
 
   @Prop({ type: Object, required: true })
   domainRules: DomainRules;
+
+  @Prop({ type: Object, required: true })
+  ignoringRules: IgnoringRules;
 }
 
 export const AdminBroadcastConfigSchema =

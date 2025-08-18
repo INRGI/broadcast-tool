@@ -28,6 +28,7 @@ import {
 import { getCachedData, setCachedData } from "../../../helpers/getCachedData";
 import { getDomainStatuses, getProductStatuses } from "../../../api/monday.api";
 import CatLoader from "../../Common/Loader/CatLoader";
+import IgnoringRulesTab from "../../IgnoringRulesTab";
 
 interface AdminRulesProps {
   isPreview?: boolean;
@@ -257,6 +258,17 @@ const AdminRules: React.FC<AdminRulesProps> = ({ isPreview }) => {
               partners={productMondayStatuses.partners}
               partnerRules={adminBroadcastConfig.partnerRules}
               onChange={(updated) => handleChange("partnerRules", updated)}
+            />
+          )}
+        {!isLoading &&
+          adminBroadcastConfig &&
+          renderSection(
+            "Ignoring Rules",
+            "ignoringRules",
+            <IgnoringRulesTab
+              isPreview={isPreview}
+              ignoringRules={adminBroadcastConfig.ignoringRules}
+              onChange={(updated) => handleChange("ignoringRules", updated)}
             />
           )}
       </ListScrollContainer>

@@ -1,6 +1,7 @@
 import {
   AnalyticSelectionRules,
   DomainRules,
+  IgnoringRules,
   PartnerRules,
   TestingRules,
 } from "../../../types/broadcast-tool";
@@ -12,4 +13,5 @@ export interface AdminBroadcastConfigResponseDto {
   domainRules: DomainRules;
   partnerRules: PartnerRules;
   analyticSelectionRules: AnalyticSelectionRules;
+  ignoringRules: IgnoringRules;
 }

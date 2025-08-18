@@ -37,7 +37,7 @@ export class GetCopiesWithClicksService {
         SUM(UC) as UC, 
         SUM(TC) as TC
         FROM \`delta-daylight-316213.developers.base\`
-        WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY) 
+        WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY) and Copy IS NOT NULL 
         ${team ? `AND Team = '${team}'` : ""}
         AND UC > 0
         GROUP BY Copy${team ? ", Team" : ""}

@@ -37,7 +37,7 @@ export class GetClickCopiesWithSendsService {
           SUM(UC) as UC,
           SUM(Sends) as Sends,
           FROM \`delta-daylight-316213.developers.sends\`
-          WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY) 
+          WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY) and Copy IS NOT NULL
           AND UC > 0
           GROUP BY Copy
           ORDER BY Sends DESC

@@ -3,6 +3,7 @@ import { AnalyticSelectionRulesRequestDto } from "../request/analytic-selection-
 import { TestingRulesRequestDto } from "../request/testing-rules.request.dto";
 import { PartnerRulesRequestDto } from "../request/partner-rules.request.dto";
 import { DomainRulesRequestDto } from "../request/domain-rules.request.dto";
+import { IgnoringRulesRequestDto } from "../request/ignoring-rules.request.dto";
 
 export class AdminBroadcastConfigResponseDto {
   @IsString()
@@ -16,4 +17,6 @@ export class AdminBroadcastConfigResponseDto {
   public domainRules: DomainRulesRequestDto;
 
   public analyticSelectionRules: AnalyticSelectionRulesRequestDto;
+
+  public ignoringRules: IgnoringRulesRequestDto;
 }

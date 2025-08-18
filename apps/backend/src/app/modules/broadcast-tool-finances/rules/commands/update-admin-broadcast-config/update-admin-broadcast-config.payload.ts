@@ -1,6 +1,7 @@
 import {
   AnalyticSelectionRules,
   DomainRules,
+  IgnoringRules,
   PartnerRules,
   TestingRules,
 } from "@epc-services/interface-adapters";
@@ -12,4 +13,5 @@ export interface UpdateAdminBroadcastConfigPayload {
   readonly testingRules: TestingRules;
   readonly partnerRules: PartnerRules;
   readonly analyticSelectionRules: AnalyticSelectionRules;
+  readonly ignoringRules: IgnoringRules;
 }

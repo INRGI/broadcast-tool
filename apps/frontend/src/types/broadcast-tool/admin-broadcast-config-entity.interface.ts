@@ -1,5 +1,6 @@
 import { AnalyticSelectionRules } from "./analytic-selection-rules.interface";
 import { DomainRules } from "./domain-rules.interface";
+import { IgnoringRules } from "./ignoring-rules.interface";
 import { PartnerRules } from "./partner-rules.interface";
 import { TestingRules } from "./testing-rules.interface";
 
@@ -10,4 +11,5 @@ export interface AdminBroadcastConfigEntity {
   domainRules: DomainRules;
   partnerRules: PartnerRules;
   analyticSelectionRules: AnalyticSelectionRules;
+  ignoringRules: IgnoringRules;
 }

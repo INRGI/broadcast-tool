@@ -23,7 +23,7 @@ export class GetCopyClicksService {
               SELECT
                   Date, Copy, UC, TC
               FROM \`delta-daylight-316213.developers.base\`
-              WHERE Copy like '${copyName}%'
+              WHERE Copy like '${copyName}%' and Copy IS NOT NULL
               ORDER BY Date DESC
           `,
       });

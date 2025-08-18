@@ -24,7 +24,7 @@ export class GetAllDataByIntervalService {
         Date, Company, Domain, Type, Copy, Offer, Month,
         ISP, UC, TC, Conversion
         FROM \`delta-daylight-316213.developers.base\`
-        WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY)
+        WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY) and Copy IS NOT NULL
         ORDER BY Date DESC
     `,
       });

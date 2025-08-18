@@ -36,7 +36,7 @@ export class GetCopiesForTestService {
         Copy, 
         SUM(Sends) as Sends,
         FROM \`delta-daylight-316213.developers.sends\`
-        WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY) 
+        WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY) and Copy IS NOT NULL
         GROUP BY Copy
         ORDER BY Sends DESC
     `,

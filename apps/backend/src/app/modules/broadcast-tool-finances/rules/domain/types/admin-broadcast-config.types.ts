@@ -1,6 +1,7 @@
 import {
   AnalyticSelectionRules,
   DomainRules,
+  IgnoringRules,
   PartnerRules,
   TestingRules,
 } from "@epc-services/interface-adapters";
@@ -11,6 +12,7 @@ export interface CreateAdminBroadcastConfigProps {
   domainRules: DomainRules;
   testingRules: TestingRules;
   analyticSelectionRules: AnalyticSelectionRules;
+  ignoringRules: IgnoringRules;
 }
 
 export type AdminBroadcastConfigProps = CreateAdminBroadcastConfigProps;
@@ -21,4 +23,5 @@ export interface UpdateAdminBroadcastConfigProps {
   readonly partnerRules: PartnerRules;
   readonly domainRules: DomainRules;
   readonly analyticSelectionRules: AnalyticSelectionRules;
+  readonly ignoringRules: IgnoringRules;
 }
