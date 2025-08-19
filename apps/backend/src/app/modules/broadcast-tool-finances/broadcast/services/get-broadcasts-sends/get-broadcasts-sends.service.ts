@@ -8,6 +8,7 @@ import { GetAllProductsDataService } from "../../../monday/services/get-all-prod
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
 import { getDateRange } from "../../utils/getDateRange";
+import { GetAdminBroadcastConfigByNicheQueryService } from "../../../rules/queries/get-admin-broadcast-config-by-niche/get-admin-broadcast-config-by-niche.query-service";
 
 @Injectable()
 export class GetBroadcastsSendsService {
@@ -16,6 +17,7 @@ export class GetBroadcastsSendsService {
     private readonly getBroadcastService: GetAllDomainsService,
     private readonly getBroadcastsListService: GetBroadcastsListService,
     private readonly getAllMondayProductsDataService: GetAllProductsDataService,
+    private readonly getAdminBroadcastConfigByNicheQueryService: GetAdminBroadcastConfigByNicheQueryService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache
   ) {}
@@ -31,17 +33,17 @@ export class GetBroadcastsSendsService {
     );
     if (cached) return cached;
 
-    const IGNORED_BROADCASTS = [
-      "Broadcast Intern team",
-      "Broadcast OptimizedWarsaw Team",
-    ];
-
     const result = [];
     const broadcastsList = await this.getBroadcastsListService.execute();
     const productsData = await this.getAllMondayProductsDataService.execute();
 
+    const adminConfig =
+      await this.getAdminBroadcastConfigByNicheQueryService.execute({
+        niche: "finance",
+      });
+
     for (const sheet of broadcastsList.sheets) {
-      if (IGNORED_BROADCASTS.includes(sheet.sheetName)) {
+      if (adminConfig.ignoringRules.broadcasts.includes(sheet.sheetName)) {
         continue;
       }
       const broadcast = await this.getBroadcastService.execute({
@@ -51,6 +53,7 @@ export class GetBroadcastsSendsService {
           copyMinDelayPerDays: 3,
           copyTabLimit: [],
         },
+        ignoringRules: adminConfig.ignoringRules,
       });
 
       const dateRange = getDateRange(fromDate, toDate);

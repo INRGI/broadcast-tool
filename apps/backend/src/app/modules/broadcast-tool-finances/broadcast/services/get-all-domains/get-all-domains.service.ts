@@ -26,12 +26,12 @@ export class GetAllDomainsService {
     return month * 100 + day;
   }
 
-  private readonly IGNORED_TABS = new Set(["Blacklist", "Rules", "exOrange", "Rating", "COUNTER", "BC_Report", "Pivot Table 2"]);
-
   public async execute(
     payload: GetAllDomainsPayload
   ): Promise<GetAllDomainsResponseDto> {
-    const { broadcastId, usageRules } = payload;
+    const { broadcastId, usageRules, ignoringRules } = payload;
+
+    const IGNORED_TABS = ignoringRules.broadcastsTabs;
 
     const maxSelectedDays =
       usageRules.copyMinDelayPerDays > usageRules.productMinDelayPerDays
@@ -52,7 +52,7 @@ export class GetAllDomainsService {
 
       for (const sheet of sheets) {
         const tabName = sheet.properties?.title || "";
-        if (this.IGNORED_TABS.has(tabName)) continue;
+        if (IGNORED_TABS.includes(tabName)) continue;
 
         const rows = sheet.data?.[0]?.rowData || [];
         if (!rows.length) continue;
@@ -110,14 +110,22 @@ export class GetAllDomainsService {
             const copies = words.map((word) => {
               const start = rawText.indexOf(word, currentIndex);
               if (start === -1) {
-                return { name: word, isPriority: false, copyType: CopyType.Unknown };
+                return {
+                  name: word,
+                  isPriority: false,
+                  copyType: CopyType.Unknown,
+                };
               }
               currentIndex = start + word.length;
 
               const isBold = boldRanges.some(
                 ([from, to]) => start >= from && start < to
               );
-              return { name: word, isPriority: isBold, copyType: CopyType.Unknown };
+              return {
+                name: word,
+                isPriority: isBold,
+                copyType: CopyType.Unknown,
+              };
             });
 
             broadcastCopies.push({

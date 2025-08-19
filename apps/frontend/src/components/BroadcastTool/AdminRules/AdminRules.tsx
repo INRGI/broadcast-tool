@@ -28,7 +28,7 @@ import {
 import { getCachedData, setCachedData } from "../../../helpers/getCachedData";
 import { getDomainStatuses, getProductStatuses } from "../../../api/monday.api";
 import CatLoader from "../../Common/Loader/CatLoader";
-import IgnoringRulesTab from "../../IgnoringRulesTab";
+import IgnoringRulesTab from "../IgnoringRulesTab";
 
 interface AdminRulesProps {
   isPreview?: boolean;

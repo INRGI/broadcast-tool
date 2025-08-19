@@ -62,6 +62,7 @@ export class MakeBroadcastService {
     const broadcast = await this.getBroadcastService.execute({
       broadcastId: broadcastRule.broadcastSpreadsheetId,
       usageRules: broadcastRule.usageRules,
+      ignoringRules: adminConfig.ignoringRules,
     });
 
     const originalDomainOrderBySheet = new Map<string, string[]>();

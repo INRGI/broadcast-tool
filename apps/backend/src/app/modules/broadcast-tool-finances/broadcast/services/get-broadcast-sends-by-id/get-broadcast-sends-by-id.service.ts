@@ -8,6 +8,7 @@ import { Cache } from "cache-manager";
 import { GetBroadcastSendsByIdPayload } from "./get-broadcast-sends-by-id.payload";
 import { GetBroadcastRulesByIdQueryService } from "../../../rules/queries/get-broadcast-rules-by-id/get-broadcast-rules-by-id.query-service";
 import { getDateRange } from "../../utils/getDateRange";
+import { GetAdminBroadcastConfigByNicheQueryService } from "../../../rules/queries/get-admin-broadcast-config-by-niche/get-admin-broadcast-config-by-niche.query-service";
 
 @Injectable()
 export class GetBroadcastsSendsByIdService {
@@ -16,6 +17,7 @@ export class GetBroadcastsSendsByIdService {
     private readonly getBroadcastService: GetAllDomainsService,
     private readonly getAllMondayProductsDataService: GetAllProductsDataService,
     private readonly getBroadcastRulesByIdQueryService: GetBroadcastRulesByIdQueryService,
+    private readonly getAdminBroadcastConfigByNicheQueryService: GetAdminBroadcastConfigByNicheQueryService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache
   ) {}
@@ -39,6 +41,11 @@ export class GetBroadcastsSendsByIdService {
 
     const productsData = await this.getAllMondayProductsDataService.execute();
 
+    const adminConfig =
+      await this.getAdminBroadcastConfigByNicheQueryService.execute({
+        niche: "finance",
+      });
+
     const broadcast = await this.getBroadcastService.execute({
       broadcastId: broadcastRule.broadcastSpreadsheetId,
       usageRules: {
@@ -46,6 +53,7 @@ export class GetBroadcastsSendsByIdService {
         copyMinDelayPerDays: 3,
         copyTabLimit: [],
       },
+      ignoringRules: adminConfig.ignoringRules,
     });
 
     const dateRange = getDateRange(fromDate, toDate);

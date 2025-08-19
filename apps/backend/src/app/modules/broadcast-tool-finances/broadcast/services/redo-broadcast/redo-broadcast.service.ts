@@ -57,6 +57,7 @@ export class RedoBroadcastService {
     const broadcast = await this.getBroadcastService.execute({
       broadcastId: broadcastRule.broadcastSpreadsheetId,
       usageRules: broadcastRule.usageRules,
+      ignoringRules: adminConfig.ignoringRules,
     });
 
     const productsData = await this.getAllMondayProductsDataService.execute();
