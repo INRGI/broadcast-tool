@@ -132,6 +132,12 @@ export class MakeBroadcastService {
 
     for (const date of dateRange) {
       for (const sheet of broadcast.sheets) {
+        const tabCopyLimit = broadcastRule.usageRules.copyTabLimit?.find(
+          (tab) => tab.sheetName === sheet.sheetName
+        );
+    
+        if (!tabCopyLimit?.limit || tabCopyLimit.limit === 0) continue;
+
         sheet.domains.sort((a, b) => {
           const priorityA =
             domainPriorityMap.get(normalizeDomain(a.domain)) ?? 0;

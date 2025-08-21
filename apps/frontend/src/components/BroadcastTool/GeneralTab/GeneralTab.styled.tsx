@@ -27,8 +27,14 @@ export const SaveButton = styled.button`
   }
 `;
 
-export const WhiteText = styled.p`
+export const WhiteText = styled.div`
   padding: 0;
   margin: 0;
-  color: white
+  color: white;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: auto;
 `;

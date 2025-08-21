@@ -5,6 +5,7 @@ export const ModalWrapper = styled.div`
   background-color: #1f1f1f;
   color: white;
   border-radius: 8px;
+  width: calc(60vw);
 `;
 
 export const Section = styled.div`

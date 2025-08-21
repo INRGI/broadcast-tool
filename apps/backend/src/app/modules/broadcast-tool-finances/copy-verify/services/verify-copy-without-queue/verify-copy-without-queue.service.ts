@@ -45,7 +45,7 @@ export class VerifyCopyWithoutQueueService {
       (tab) => tab.sheetName === sheetName
     );
 
-    if (tabCopyLimit.limit === 0) return { isValid: false, broadcastDomain };
+    if (!tabCopyLimit?.limit || tabCopyLimit.limit === 0) return { isValid: false, broadcastDomain };
 
     const checkCopyLastSendResult = await this.checkCopyLastSendService.execute(
       {

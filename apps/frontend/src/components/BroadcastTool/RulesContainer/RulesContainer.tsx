@@ -45,6 +45,7 @@ import { common } from "@mui/material/colors";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import AdminPreviewRulesModal from "../AdminPreviewRulesModal";
 import { RxInfoCircled } from "react-icons/rx";
+import { WhiteText } from "../GeneralTab/GeneralTab.styled";
 
 interface RulesContainerProps {
   onEntityUpdate: () => void;
@@ -239,7 +240,7 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
                     },
                   }}
                 />
-                Use only team analytics
+               <WhiteText>Use only team analytics</WhiteText>
               </InputGroup>
             </RuleContainer>
           )}

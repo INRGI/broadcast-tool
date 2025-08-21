@@ -23,7 +23,7 @@ export class CheckIfCopyCanBeSendService {
     );
 
     if (tabCopyLimit) {
-      if(tabCopyLimit.limit === 0) return false;
+      if(!tabCopyLimit?.limit || tabCopyLimit.limit === 0) return false;
       const tabCopyCount = this.countCopiesOnDate(
         broadcast,
         sheetName,

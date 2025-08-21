@@ -88,6 +88,12 @@ export class RedoBroadcastService {
 
     for (const date of dateRange) {
       for (const sheet of broadcast.sheets) {
+        const tabCopyLimit = broadcastRule.usageRules.copyTabLimit?.find(
+          (tab) => tab.sheetName === sheet.sheetName
+        );
+    
+        if (!tabCopyLimit?.limit || tabCopyLimit.limit === 0) continue;
+        
         for (let i = 0; i < sheet.domains.length; i++) {
           const domain = sheet.domains[i];
           const broadcastForDate = domain.broadcastCopies.find(

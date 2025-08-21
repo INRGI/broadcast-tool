@@ -41,6 +41,14 @@ const Label = styled.label`
   justify-content: space-between;
 `;
 
+const EmptyDiv = styled.div`
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
 const Title = styled.p`
   color: white;
   font-size: 16px;
@@ -84,13 +92,18 @@ const CopyTabLimitInput: React.FC<CopyTabLimitInputProps> = ({
   statuses,
 }) => {
   const [localLimits, setLocalLimits] = useState<CopyTabLimit[]>([]);
+  const [notExisting, setNotExisting] = useState<string[]>([]);
 
   useEffect(() => {
     const merged = availableSheetNames.map((sheetName) => {
       const existing = items.find((i) => i.sheetName === sheetName);
+
+      if (!existing) {
+        setNotExisting((prev) => [...prev, sheetName]);
+      }
       return {
         sheetName,
-        limit: existing?.limit ?? 1,
+        limit: existing?.limit ?? 0,
       };
     });
     setLocalLimits(merged);
@@ -114,7 +127,12 @@ const CopyTabLimitInput: React.FC<CopyTabLimitInputProps> = ({
       {localLimits.map((item, index) => (
         <FieldRow key={item.sheetName}>
           <Label>
-            {item.sheetName}
+            <EmptyDiv>
+              {item.sheetName}{" "}
+              {notExisting.includes(item.sheetName) && (
+                <span style={{ color: "red" }}> (Not exists in database)</span>
+              )}
+            </EmptyDiv>
             <ClearDiv>
               <Indicator>
                 <IoIosSunny />
