@@ -8,6 +8,7 @@ import { GetBroadcastDomainsListResponseDto } from "./broadcast/response/get-bro
 import { GetBroadcastsSendsResponseDto } from "./broadcast/response/get-broadcasts-sends.response.dto";
 import { GetBroadcastsSendsRequestDto } from "./broadcast/request/get-broadcasts-sends.request.dto";
 import { GetBroadcastsSendsByIdRequestDto } from "./broadcast/request/get-broadcasts-sends-by-id.request.dto";
+import { MakeBroadcastResponseDto } from "./broadcast/response/make.broadcast.response.dto";
 
 const broadcastToolApiUrl = "/api/finances/broadcast-tool/broadcast";
 
@@ -38,7 +39,7 @@ export const getBroadcastDomainsList = async (
 
 export const makeBroadcast = async (
   body: MakeBroadcastRequest
-): Promise<GetAllDomainsResponse> => {
+): Promise<MakeBroadcastResponseDto> => {
   try {
     const response = await axios.post(
       `${broadcastToolApiUrl}/make-broadcast`,
@@ -46,13 +47,13 @@ export const makeBroadcast = async (
     );
     return response.data;
   } catch (error) {
-    return { sheets: [] };
+    return { sheets: [], calculatedChanges: { result: [], name: "" } };
   }
 };
 
 export const redoBroadcast = async (
   body: MakeBroadcastRequest
-): Promise<GetAllDomainsResponse> => {
+): Promise<MakeBroadcastResponseDto> => {
   try {
     const response = await axios.post(
       `${broadcastToolApiUrl}/redo-broadcast`,
@@ -60,7 +61,7 @@ export const redoBroadcast = async (
     );
     return response.data;
   } catch (error) {
-    return { sheets: [] };
+    return { sheets: [], calculatedChanges: { result: [], name: "" } };
   }
 };
 

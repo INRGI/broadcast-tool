@@ -11,7 +11,12 @@ export class GetTestableCopiesService {
   ) {}
 
   public async execute(payload: GetTestableCopiesPayload): Promise<string[]> {
-    const { daysBeforeInterval, maxSendsToBeTestCopy, newTestCopiesGroupNames } = payload;
+    const {
+      daysBeforeInterval,
+      maxSendsToBeTestCopy,
+      newTestCopiesGroupNames,
+      useNewestTestCopies,
+    } = payload;
 
     const testableCopies = await this.getCopiesForTestService.execute({
       daysBefore: daysBeforeInterval,
@@ -31,6 +36,39 @@ export class GetTestableCopiesService {
     const sortedNewTestCopies = formattedNewTestCopies.sort((a, b) => {
       return b.createDate.localeCompare(a.createDate);
     });
+
+    if (useNewestTestCopies) {
+      const filteredTestableCopies = testableCopies.data.filter((copy) => {
+        return (
+          copy.Copy &&
+          !copy.Copy.includes("_SA") &&
+          !isNaN(Number(this.extractLift(copy.Copy))) &&
+          this.extractLift(copy.Copy) !== "00" &&
+          copy.Sends < maxSendsToBeTestCopy
+        );
+      });
+    
+      const result = sortedNewTestCopies.filter((copy) => {
+        const testableCopy = testableCopies.data.find(
+          (testCopy) => testCopy.Copy === copy.copyName
+        );
+        
+        if (!testableCopy) {
+          return (
+            copy.copyName &&
+            !copy.copyName.includes("_SA") &&
+            !isNaN(Number(this.extractLift(copy.copyName))) &&
+            this.extractLift(copy.copyName) !== "00"
+          );
+        }
+        
+        return filteredTestableCopies.some(
+          (filteredCopy) => filteredCopy.Copy === copy.copyName
+        );
+      });
+      
+      return result.map((copy) => copy.copyName);
+    }
 
     const filteredTestableCopies = testableCopies.data.filter((copy) => {
       return (

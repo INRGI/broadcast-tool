@@ -13,6 +13,7 @@ export interface ProductRules {
   partnersSendingLimitPerDay: PartnerSendingLimitPerDay[];
   productsSendingLimitPerDay: ProductSendingLimitPerDay[];
   copySendingLimitPerDay: CopySendingLimitPerDay[];
+  ignoreSectorRulesForMinLimits: boolean;
   copyMinLimitPerDay: CopyMinLimitPerDay[];
   productMinLimitPerDay: ProductMinLimitPerDay[];
   partnerMinLimitPerDay: PartnerMinLimitPerDay[];

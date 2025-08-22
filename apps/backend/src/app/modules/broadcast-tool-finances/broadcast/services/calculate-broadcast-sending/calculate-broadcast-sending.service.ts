@@ -13,7 +13,13 @@ export class CalculateBroadcastSendingService {
   public async execute(
     payload: CalculateBroadcastSendingPayload
   ): Promise<CalculatedBroadcastSends> {
-    const { dateRange, broadcast, productsData, broadcastName } = payload;
+    const {
+      dateRange,
+      broadcast,
+      productsData,
+      broadcastName,
+      calculateOnlyModdified,
+    } = payload;
     const result: DayBroadcastSends[] = [];
 
     for (const date of dateRange) {
@@ -23,6 +29,8 @@ export class CalculateBroadcastSendingService {
         for (const domain of sheet?.domains ?? []) {
           const day = domain.broadcastCopies.find((d) => d.date === date);
           if (!day) continue;
+
+          if (calculateOnlyModdified && !day.isModdified) continue;
 
           for (const copy of day.copies) {
             const productName = cleanProductName(copy.name);

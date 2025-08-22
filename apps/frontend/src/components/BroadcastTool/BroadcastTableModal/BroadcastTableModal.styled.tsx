@@ -108,6 +108,12 @@ export const TableWrapper = styled.div`
   position: relative;
 `;
 
+export const AnalyticWrapper = styled.div`
+  max-width: 100%;
+  max-height: calc(100%);
+  overflow-y: auto;
+`;
+
 export const Table = styled.table`
   border-collapse: collapse;
   background-color: #1e1e1e;

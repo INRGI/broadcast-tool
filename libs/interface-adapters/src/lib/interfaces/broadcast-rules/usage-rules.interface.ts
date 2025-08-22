@@ -4,4 +4,5 @@ export interface UsageRules {
   productMinDelayPerDays: number;
   copyMinDelayPerDays: number;
   copyTabLimit: CopyTabLimit[];
+  useNewestTestCopies: boolean;
 }

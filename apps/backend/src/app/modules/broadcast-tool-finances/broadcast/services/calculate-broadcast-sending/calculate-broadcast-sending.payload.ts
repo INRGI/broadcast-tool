@@ -8,4 +8,5 @@ export interface CalculateBroadcastSendingPayload {
   broadcastName: string;
   broadcast: GetAllDomainsResponseDto;
   productsData: GetProductDataResponse[];
+  calculateOnlyModdified?: boolean;
 }

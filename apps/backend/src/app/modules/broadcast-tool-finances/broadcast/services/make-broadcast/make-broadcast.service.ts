@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { MakeBroadcaastPayload } from "./make-broadcast.payload";
-import { GetAllDomainsResponseDto } from "@epc-services/interface-adapters";
+import { MakeBroadcastResponseDto } from "@epc-services/interface-adapters";
 import { GetBroadcastRulesByIdQueryService } from "../../../rules/queries/get-broadcast-rules-by-id/get-broadcast-rules-by-id.query-service";
 import { GetAllDomainsService } from "../get-all-domains/get-all-domains.service";
 import { GetClickableCopiesService } from "../get-clickable-copies/get-clickable-copies.service";
@@ -21,6 +21,7 @@ import { getDateRange } from "../../utils/getDateRange";
 import { normalizeDomain } from "../../../rules/utils/normalizeDomain";
 import { ForceProductsToRandomDomainsService } from "../force-products-to-random-domains/force-products-to-random-domains.service";
 import { ForcePartnersToRandomDomainsService } from "../force-partners-to-random-domains/force-partners-to-random-domains.service";
+import { CalculateBroadcastSendingService } from "../calculate-broadcast-sending/calculate-broadcast-sending.service";
 
 @Injectable()
 export class MakeBroadcastService {
@@ -42,11 +43,12 @@ export class MakeBroadcastService {
     private readonly getDomainsRevenueService: GetDomainsRevenueService,
     private readonly addCustomLinkIndicatorService: AddCustomLinkIndicatorService,
     private readonly forceProductsToRandomDomainsService: ForceProductsToRandomDomainsService,
-    private readonly forcePartnersToRandomDomainsService: ForcePartnersToRandomDomainsService
+    private readonly forcePartnersToRandomDomainsService: ForcePartnersToRandomDomainsService,
+    private readonly calculateBroadcastSendingService: CalculateBroadcastSendingService
   ) {}
   public async execute(
     payload: MakeBroadcaastPayload
-  ): Promise<GetAllDomainsResponseDto> {
+  ): Promise<MakeBroadcastResponseDto> {
     const { broadcastRuleId, fromDate, toDate } = payload;
     const dateRange = getDateRange(fromDate, toDate);
 
@@ -104,6 +106,7 @@ export class MakeBroadcastService {
         adminConfig.analyticSelectionRules.testCopiesDaysInterval,
       maxSendsToBeTestCopy: adminConfig.testingRules.maxSendsToBeTestCopy,
       newTestCopiesGroupNames: adminConfig.testingRules.newTestCopiesGroupNames,
+      useNewestTestCopies: broadcastRule.usageRules.useNewestTestCopies,
     });
 
     const priorityCopiesData =
@@ -135,7 +138,7 @@ export class MakeBroadcastService {
         const tabCopyLimit = broadcastRule.usageRules.copyTabLimit?.find(
           (tab) => tab.sheetName === sheet.sheetName
         );
-    
+
         if (!tabCopyLimit?.limit || tabCopyLimit.limit === 0) continue;
 
         sheet.domains.sort((a, b) => {
@@ -250,6 +253,18 @@ export class MakeBroadcastService {
       );
     }
 
-    return broadcastWithCustomLinkIndicator;
+    const calculatedChanges =
+      await this.calculateBroadcastSendingService.execute({
+        broadcast: broadcastWithCustomLinkIndicator,
+        dateRange,
+        broadcastName: broadcastRule.name,
+        productsData,
+        calculateOnlyModdified: true,
+      });
+
+    return {
+      sheets: broadcastWithCustomLinkIndicator.sheets,
+      calculatedChanges,
+    };
   }
 }

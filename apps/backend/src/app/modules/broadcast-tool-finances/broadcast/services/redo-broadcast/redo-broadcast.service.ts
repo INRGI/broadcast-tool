@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import {
   CopyType,
-  GetAllDomainsResponseDto,
+  MakeBroadcastResponseDto,
 } from "@epc-services/interface-adapters";
 import { RedoBroadcastPayload } from "./redo-broadcast.payload";
 import { getDateRange } from "../../utils/getDateRange";
@@ -20,6 +20,7 @@ import { AddCustomLinkIndicatorService } from "../add-custom-link-indicator/add-
 import { AddPriorityCopyIndicatorService } from "../add-priority-copy-indicator/add-priority-copy-indicator.service";
 import { CheckIfProductPriorityService } from "../../../rules/services/check-if-product-priority/check-if-product-priority.service";
 import { cleanProductName } from "../../../rules/utils/cleanProductName";
+import { CalculateBroadcastSendingService } from "../calculate-broadcast-sending/calculate-broadcast-sending.service";
 
 @Injectable()
 export class RedoBroadcastService {
@@ -37,10 +38,11 @@ export class RedoBroadcastService {
     private readonly addCustomLinkIndicatorService: AddCustomLinkIndicatorService,
     private readonly addPriorityCopyIndicatorService: AddPriorityCopyIndicatorService,
     private readonly checkIfProductPriorityService: CheckIfProductPriorityService,
+    private readonly calculateBroadcastSendingService: CalculateBroadcastSendingService
   ) {}
   public async execute(
     payload: RedoBroadcastPayload
-  ): Promise<GetAllDomainsResponseDto> {
+  ): Promise<MakeBroadcastResponseDto> {
     const { broadcastRuleId, fromDate, toDate } = payload;
 
     const dateRange = getDateRange(fromDate, toDate);
@@ -202,6 +204,18 @@ export class RedoBroadcastService {
         ignoringRules: adminConfig.ignoringRules,
       });
 
-    return broadcastWithCustomLinkIndicator;
+      const calculatedChanges =
+      await this.calculateBroadcastSendingService.execute({
+        broadcast: broadcastWithCustomLinkIndicator,
+        dateRange,
+        broadcastName: broadcastRule.name,
+        productsData,
+        calculateOnlyModdified: true,
+      });
+
+    return {
+      sheets: broadcastWithCustomLinkIndicator.sheets,
+      calculatedChanges,
+    };
   }
 }

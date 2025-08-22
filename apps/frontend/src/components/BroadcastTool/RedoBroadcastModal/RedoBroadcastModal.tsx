@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { redoBroadcast } from "../../../api/broadcast.api";
 import { BroadcastRulesEntity } from "../../../types/broadcast-tool";
 import { toastError, toastSuccess } from "../../../helpers/toastify";
-import { GetAllDomainsResponse } from "../../../api/broadcast";
+import { GetAllDomainsResponse, MakeBroadcastResponseDto } from "../../../api/broadcast";
 import CatLoader from "../../Common/Loader/CatLoader";
 
 const ModalBody = styled.div`
@@ -112,7 +112,7 @@ interface LaunchBroadcastModalProps {
   isOpen: boolean;
   onClose: () => void;
   broadcastEntity: BroadcastRulesEntity;
-  onSuccess: (result: GetAllDomainsResponse) => void;
+  onSuccess: (result: MakeBroadcastResponseDto) => void;
 }
 
 const RedoBroadcastModal: React.FC<LaunchBroadcastModalProps> = ({

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AdminModal from "../../Common/AdminModal";
 import {
+  AnalyticWrapper,
   ApproveButton,
   BackButton,
   ControlsRight,
@@ -18,7 +19,7 @@ import {
 } from "./BroadcastTableModal.styled";
 import {
   ApproveBroadcastSheetRequest,
-  GetAllDomainsResponse,
+  MakeBroadcastResponseDto,
 } from "../../../api/broadcast";
 import {
   IoIosArrowRoundBack,
@@ -30,11 +31,12 @@ import ConfirmationModal from "../ConfirmationModal";
 import { BroadcastSendingDay } from "../../../types/broadcast-tool";
 import EditCopyCellModal from "../EditCopyCellModal";
 import CatLoader from "../../Common/Loader/CatLoader";
+import BroadcastSendsAnalytics from "../BroadcastSendsAnalytics";
 
 interface BroadcastTableModalProps {
   isOpen: boolean;
   onClose: () => void;
-  broadcast: GetAllDomainsResponse;
+  broadcast: MakeBroadcastResponseDto;
   spreadSheetId: string;
 }
 
@@ -56,8 +58,8 @@ const BroadcastTableModal: React.FC<BroadcastTableModalProps> = ({
     entry: BroadcastSendingDay;
   } | null>(null);
 
-  const activeSheet = broadcastData.sheets[activeTabIndex];
-  const domains = activeSheet.domains;
+  const activeSheet = broadcastData.sheets[activeTabIndex - 1];
+  const domains = activeSheet?.domains || [];
 
   const allDates = Array.from(
     new Set(domains.flatMap((d) => d.broadcastCopies.map((c) => c.date)))
@@ -151,11 +153,18 @@ const BroadcastTableModal: React.FC<BroadcastTableModalProps> = ({
         <ModalBody>
           <TabControls>
             <TabHeader>
+              <TabButton
+                key={broadcastData.calculatedChanges.name}
+                active={activeTabIndex === 0}
+                onClick={() => setActiveTabIndex(0)}
+              >
+                Stats
+              </TabButton>
               {broadcastData.sheets.map((sheet, index) => (
                 <TabButton
                   key={sheet.sheetName}
-                  active={index === activeTabIndex}
-                  onClick={() => setActiveTabIndex(index)}
+                  active={index === activeTabIndex - 1}
+                  onClick={() => setActiveTabIndex(index + 1)}
                 >
                   {sheet.sheetName}
                 </TabButton>
@@ -170,64 +179,74 @@ const BroadcastTableModal: React.FC<BroadcastTableModalProps> = ({
               </BackButton>
             </ControlsRight>
           </TabControls>
-
-          <TableWrapper key={activeSheet.sheetName}>
-            <Table>
-              <thead>
-                <tr>
-                  <Th rotated>Domain</Th>
-                  {domains.map((domain) => (
-                    <Th key={domain.domain} rotated>
-                      {domain.domain}
-                    </Th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {allDates.map((date) => (
-                  <tr key={date}>
-                    <DomainTd>{formatDateToMMDD(date)}</DomainTd>
-                    {domains.map((domain) => {
-                      const entry = domain.broadcastCopies.find(
-                        (c) => c.date === date
-                      );
-
-                      return (
-                        <Td
-                          key={domain.domain + date}
-                          isHighlighted={entry?.isModdified}
-                          onContextMenu={(e) => {
-                            e.preventDefault();
-                            handleChangeIsModdified(
-                              activeSheet.sheetName,
-                              domain.domain,
-                              date
-                            );
-                          }}
-                          onDoubleClick={() => {
-                            if (entry)
-                              setEditModal({
-                                domain: domain.domain,
-                                date,
-                                entry,
-                              });
-                          }}
-                        >
-                          <CopyBlock>
-                            {entry?.copies.map((copy, idx) => (
-                              <CopySpan key={idx} bold={copy.isPriority}>
-                                {copy.name}
-                              </CopySpan>
-                            ))}
-                          </CopyBlock>
-                        </Td>
-                      );
-                    })}
+          {activeTabIndex === 0 && (
+            <AnalyticWrapper>
+            <BroadcastSendsAnalytics
+              data={{
+                broadcasts: [broadcastData.calculatedChanges],
+              }}
+            />
+            </AnalyticWrapper>
+          )}
+          {activeTabIndex !== 0 && (
+            <TableWrapper key={activeSheet.sheetName}>
+              <Table>
+                <thead>
+                  <tr>
+                    <Th rotated>Domain</Th>
+                    {domains.map((domain) => (
+                      <Th key={domain.domain} rotated>
+                        {domain.domain}
+                      </Th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          </TableWrapper>
+                </thead>
+                <tbody>
+                  {allDates.map((date) => (
+                    <tr key={date}>
+                      <DomainTd>{formatDateToMMDD(date)}</DomainTd>
+                      {domains.map((domain) => {
+                        const entry = domain.broadcastCopies.find(
+                          (c) => c.date === date
+                        );
+
+                        return (
+                          <Td
+                            key={domain.domain + date}
+                            isHighlighted={entry?.isModdified}
+                            onContextMenu={(e) => {
+                              e.preventDefault();
+                              handleChangeIsModdified(
+                                activeSheet.sheetName,
+                                domain.domain,
+                                date
+                              );
+                            }}
+                            onDoubleClick={() => {
+                              if (entry)
+                                setEditModal({
+                                  domain: domain.domain,
+                                  date,
+                                  entry,
+                                });
+                            }}
+                          >
+                            <CopyBlock>
+                              {entry?.copies.map((copy, idx) => (
+                                <CopySpan key={idx} bold={copy.isPriority}>
+                                  {copy.name}
+                                </CopySpan>
+                              ))}
+                            </CopyBlock>
+                          </Td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </TableWrapper>
+          )}
         </ModalBody>
       )}
       {isConfirmationModalOpen && (

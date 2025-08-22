@@ -27,6 +27,7 @@
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-fastify": "^10.4.15",
+    "@nestjs/schedule": "^6.0.0",
     "@nestjs/serve-static": "^4.0.2",
     "@react-oauth/google": "^0.12.2",
     "adm-zip": "^0.5.16",

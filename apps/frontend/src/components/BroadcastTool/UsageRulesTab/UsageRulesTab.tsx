@@ -10,6 +10,9 @@ import {
 import { getBroadcastDomainsList } from "../../../api/broadcast.api";
 import { toastError } from "../../../helpers/toastify";
 import CatLoader from "../../Common/Loader/CatLoader";
+import { Checkbox } from "@mui/material";
+import { common } from "@mui/material/colors";
+import { WhiteText } from "../GeneralTab/GeneralTab.styled";
 
 interface UsageRulesTabProps {
   usageRules: UsageRules;
@@ -24,7 +27,8 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [sheetNames, setSheetNames] = useState<string[]>([]);
-  const [sheetDomainStatuses, setSheetDomainStatuses] = useState<{sheetName: string, live: number, warmup: number}[]>();
+  const [sheetDomainStatuses, setSheetDomainStatuses] =
+    useState<{ sheetName: string; live: number; warmup: number }[]>();
 
   useEffect(() => {
     if (!spreadsheetId) return;
@@ -70,12 +74,19 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
       );
 
       const sheetDomainStatuses = data.sheets.map(
-        (sheet: { sheetName: string; domains: {domainName: string, status: string}[] }) => {
-          const live = sheet.domains.filter(domain => domain.status.toLocaleLowerCase() === "live").length;
-          const warmup = sheet.domains.filter(domain => domain.status.toLocaleLowerCase() === "warm up").length;
-          return {sheetName: sheet.sheetName, live, warmup};
+        (sheet: {
+          sheetName: string;
+          domains: { domainName: string; status: string }[];
+        }) => {
+          const live = sheet.domains.filter(
+            (domain) => domain.status.toLocaleLowerCase() === "live"
+          ).length;
+          const warmup = sheet.domains.filter(
+            (domain) => domain.status.toLocaleLowerCase() === "warm up"
+          ).length;
+          return { sheetName: sheet.sheetName, live, warmup };
         }
-      )
+      );
       setSheetNames(sheets);
       setSheetDomainStatuses(sheetDomainStatuses);
 
@@ -90,6 +101,25 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
       {isLoading && <CatLoader />}
       {!isLoading && (
         <>
+          <InputGroup>
+            <Checkbox
+              checked={usageRules.useNewestTestCopies}
+              onChange={(e) =>
+                onChange({
+                  ...usageRules,
+                  useNewestTestCopies: e.target.checked,
+                })
+              }
+              sx={{
+                color: common.white,
+                "&.Mui-checked": {
+                  color: common.white,
+                },
+              }}
+            />
+            <WhiteText>Use Newest Test Copies</WhiteText>
+          </InputGroup>
+
           <InputGroup>
             <InputContainer>
               <FloatingLabelNumberInput

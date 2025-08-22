@@ -1,4 +1,4 @@
-import { IsArray, IsNumber } from "class-validator";
+import { IsArray, IsBoolean, IsNumber } from "class-validator";
 import { ProductAllowedSendingDaysRequestDto } from "./product-allowed-sending-days.request.dto";
 import { ProductSendingLimitPerDayRequestDto } from "./product-sending-limit-per-day.request.dto";
 import { CopySendingLimitPerDayRequestDto } from "./copy-sending-limit-per-day.request.dto";
@@ -25,6 +25,9 @@ export class ProductRulesRequestDto {
 
   @IsArray()
   public copySendingLimitPerDay: CopySendingLimitPerDayRequestDto[];
+
+  @IsBoolean()
+  public ignoreSectorRulesForMinLimits: boolean
 
   @IsArray()
   public copyMinLimitPerDay: CopyMinLimitPerDayRequestDto[];

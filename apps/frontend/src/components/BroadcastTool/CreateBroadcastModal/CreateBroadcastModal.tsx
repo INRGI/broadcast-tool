@@ -44,6 +44,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
         productMinDelayPerDays: 3,
         copyMinDelayPerDays: 10,
         copyTabLimit: [],
+        useNewestTestCopies: false,
       },
       productRules: {
         blacklistedCopies: [],

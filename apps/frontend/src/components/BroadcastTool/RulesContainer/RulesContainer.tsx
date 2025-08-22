@@ -30,8 +30,8 @@ import Dropdown from "../../Common/Dropdown/Dropdown";
 import ConfirmationModal from "../ConfirmationModal";
 import LaunchBroadcastModal from "../LaunchBroadcastModal";
 import {
-  GetAllDomainsResponse,
   GetBroadcastsSendsResponseDto,
+  MakeBroadcastResponseDto,
 } from "../../../api/broadcast";
 import BroadcastTableModal from "../BroadcastTableModal";
 import BroadcastSendsModal from "../BroadcastSendsModal";
@@ -72,7 +72,7 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
     useState(false);
 
   const [broadcastResult, setBroadcastResult] =
-    useState<GetAllDomainsResponse | null>(null);
+    useState<MakeBroadcastResponseDto | null>(null);
   const [isAnalyticsLaunchModalOpen, setIsAnalyticsLaunchModalOpen] =
     useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);

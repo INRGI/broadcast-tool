@@ -52,6 +52,7 @@ export class GetBroadcastsSendsService {
           productMinDelayPerDays: 3,
           copyMinDelayPerDays: 3,
           copyTabLimit: [],
+          useNewestTestCopies: false,
         },
         ignoringRules: adminConfig.ignoringRules,
       });

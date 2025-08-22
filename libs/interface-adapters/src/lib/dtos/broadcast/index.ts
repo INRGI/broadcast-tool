@@ -23,6 +23,7 @@ export * from "./response/partner-sends.response.dto";
 export * from "./response/product-sends.response.dto";
 export * from ".//response/day-broadcast-sends.response.dto";
 export * from "./response/get-broadcasts-sends.response.dto";
+export * from "./response/make-broadcast.response.dto";
 
 export * from "./request/get-all-domains.request.dto";
 export * from "./request/update-cell-by-date-and-domain.request.dto";

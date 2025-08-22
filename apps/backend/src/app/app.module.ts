@@ -4,6 +4,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { BroadcastToolFinancesModule } from './modules/broadcast-tool-finances/broadcast-tool-finances.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [    
@@ -13,6 +14,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     BroadcastToolFinancesModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
