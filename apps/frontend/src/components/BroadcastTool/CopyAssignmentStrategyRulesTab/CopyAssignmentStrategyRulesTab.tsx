@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { getBroadcastDomainsList } from "../../../api/broadcast.api";
-import { CopyAssignmentStrategyRules } from "../../../types/broadcast-tool";
+import {
+  CopyAssignmentStrategyRules,
+  DomainTabPriorities,
+} from "../../../types/broadcast-tool";
 import {
   AddTypeButton,
   ClearDiv,
@@ -29,9 +32,11 @@ import {
 import { IoIosSunny } from "react-icons/io";
 import { BsFire } from "react-icons/bs";
 import { AiOutlinePauseCircle } from "react-icons/ai";
-import { GiHastyGrave, GiPerspectiveDiceSixFacesRandom } from "react-icons/gi";
+import { GiHastyGrave } from "react-icons/gi";
 import CopyAssignmentStrategyModal from "../CopyAssignmentStrategyModal";
 import CatLoader from "../../Common/Loader/CatLoader";
+import DomainPrioritiesEditorModal from "../DomainPrioritiesEditorModal";
+import { PiRanking } from "react-icons/pi";
 
 export interface DomainStrategy {
   domain: string;
@@ -80,9 +85,15 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
   const [sheetDomainStatuses, setSheetDomainStatuses] =
     useState<GetBroadcastDomainsListResponseDto>();
   const [currentSheet, setCurrentSheet] = useState<string>();
+  const [currentStrategy, setCurrentStrategy] = useState<DomainStrategy[]>([]);
 
   const [bulkType, setBulkType] =
     useState<DomainStrategy["copiesTypes"][number]>("click");
+
+  const [
+    isDomainPrioritiesEditorModalOpen,
+    setIsDomainPrioritiesEditorModalIsOpen,
+  ] = useState(false);
 
   useEffect(() => {
     if (!spreadsheetId) return;
@@ -99,7 +110,6 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
         try {
           const cached = JSON.parse(cacheRaw);
           if (now - cached.timestamp < 30 * 60 * 1000) {
-            
             if (cached.data?.sheets.length === 0) {
               data = cached.data;
             }
@@ -133,7 +143,10 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
 
       setStrategiesBySheet(grouped);
       const updated = Object.values(grouped).flat();
-      onChange({ domainStrategies: updated });
+      onChange({
+        domainStrategies: updated,
+        domainPriorities: copyAssignmentStrategyRules.domainPriorities,
+      });
       setIsLoading(false);
     };
 
@@ -164,6 +177,15 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
     return grouped;
   }
 
+  const handleDomainPrioritiesChange = (
+    updatedPriorities: DomainTabPriorities[]
+  ) => {
+    onChange({
+      domainStrategies: copyAssignmentStrategyRules.domainStrategies,
+      domainPriorities: updatedPriorities,
+    });
+  };
+
   const toggleSheet = (sheetName: string) => {
     setOpenSheets((prev) => ({
       ...prev,
@@ -188,7 +210,10 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
     setStrategiesBySheet(updated);
 
     const allUpdated = Object.values(updated).flat();
-    onChange({ domainStrategies: allUpdated });
+    onChange({
+      domainStrategies: allUpdated,
+      domainPriorities: copyAssignmentStrategyRules.domainPriorities,
+    });
   };
 
   const handleReset = (sheet: string, index: number) => {
@@ -218,7 +243,10 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
 
     setStrategiesBySheet(updated);
     const allUpdated = Object.values(updated).flat();
-    onChange({ domainStrategies: allUpdated });
+    onChange({
+      domainStrategies: allUpdated,
+      domainPriorities: copyAssignmentStrategyRules.domainPriorities,
+    });
     toastSuccess("Added successfully");
   };
 
@@ -262,7 +290,10 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
 
     setStrategiesBySheet(updated);
     const allUpdated = Object.values(updated).flat();
-    onChange({ domainStrategies: allUpdated });
+    onChange({
+      domainStrategies: allUpdated,
+      domainPriorities: copyAssignmentStrategyRules.domainPriorities,
+    });
   };
 
   const handleRemoveAllForSheet = (sheet: string) => {
@@ -274,7 +305,10 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
 
     setStrategiesBySheet(updated);
     const allUpdated = Object.values(updated).flat();
-    onChange({ domainStrategies: allUpdated });
+    onChange({
+      domainStrategies: allUpdated,
+      domainPriorities: copyAssignmentStrategyRules.domainPriorities,
+    });
     setSheetForResetTypes("");
   };
 
@@ -290,7 +324,10 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
 
     setStrategiesBySheet(updated);
     const allUpdated = Object.values(updated).flat();
-    onChange({ domainStrategies: allUpdated });
+    onChange({
+      domainStrategies: allUpdated,
+      domainPriorities: copyAssignmentStrategyRules.domainPriorities,
+    });
 
     toastSuccess("Added successfully");
   };
@@ -417,16 +454,17 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
               onClick={() => toggleSheet(sheetName)}
             >
               <ClearDiv>
-                {/* <Indicator
+                <Indicator
                   key={sheetName}
-                  title={`Click to randomly add ${sheetName} types`}
+                  title={`${sheetName} Priority Editor`}
                   onClick={() => {
                     setCurrentSheet(sheetName);
-                    setIsCopyAssignmentStrategyModalOpen(true);
+                    setIsDomainPrioritiesEditorModalIsOpen(true);
+                    setCurrentStrategy(strategies);
                   }}
                 >
-                  <GiPerspectiveDiceSixFacesRandom />
-                </Indicator> */}
+                  <PiRanking />
+                </Indicator>
                 {sheetName}{" "}
               </ClearDiv>
               <ResetButton
@@ -445,6 +483,7 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
                   display: "flex",
                   gap: 10,
                   alignItems: "center",
+                  marginBottom: 12,
                 }}
               >
                 <SmallSelect
@@ -630,6 +669,17 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
             strategiesBySheet={strategiesBySheet}
           />
         )}
+
+      {isDomainPrioritiesEditorModalOpen && currentSheet && currentStrategy && (
+        <DomainPrioritiesEditorModal
+          isOpen={isDomainPrioritiesEditorModalOpen}
+          onClose={() => setIsDomainPrioritiesEditorModalIsOpen(false)}
+          sheetName={currentSheet}
+          domainPriorities={copyAssignmentStrategyRules.domainPriorities}
+          availableDomains={currentStrategy.map((s) => s.domain)}
+          onChange={handleDomainPrioritiesChange}
+        />
+      )}
     </Wrapper>
   );
 };

@@ -61,6 +61,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
       },
       copyAssignmentStrategyRules: {
         domainStrategies: [],
+        domainPriorities: [],
       },
     });
   const [isLoading, setIsLoading] = useState(false);

@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { MakeBroadcaastPayload } from "./make-broadcast.payload";
-import { MakeBroadcastResponseDto } from "@epc-services/interface-adapters";
+import {
+  DomainTabPriorities,
+  MakeBroadcastResponseDto,
+} from "@epc-services/interface-adapters";
 import { GetBroadcastRulesByIdQueryService } from "../../../rules/queries/get-broadcast-rules-by-id/get-broadcast-rules-by-id.query-service";
 import { GetAllDomainsService } from "../get-all-domains/get-all-domains.service";
 import { GetClickableCopiesService } from "../get-clickable-copies/get-clickable-copies.service";
@@ -22,6 +25,7 @@ import { normalizeDomain } from "../../../rules/utils/normalizeDomain";
 import { ForceProductsToRandomDomainsService } from "../force-products-to-random-domains/force-products-to-random-domains.service";
 import { ForcePartnersToRandomDomainsService } from "../force-partners-to-random-domains/force-partners-to-random-domains.service";
 import { CalculateBroadcastSendingService } from "../calculate-broadcast-sending/calculate-broadcast-sending.service";
+import { CreateBroadcastRulesProps } from "../../../rules/domain/types/broadcast-rules.types";
 
 @Injectable()
 export class MakeBroadcastService {
@@ -141,13 +145,81 @@ export class MakeBroadcastService {
 
         if (!tabCopyLimit?.limit || tabCopyLimit.limit === 0) continue;
 
-        sheet.domains.sort((a, b) => {
-          const priorityA =
-            domainPriorityMap.get(normalizeDomain(a.domain)) ?? 0;
-          const priorityB =
-            domainPriorityMap.get(normalizeDomain(b.domain)) ?? 0;
-          return priorityB - priorityA;
-        });
+        // sheet.domains.sort((a, b) => {
+        //   const priorityA =
+        //     domainPriorityMap.get(normalizeDomain(a.domain)) ?? 0;
+        //   const priorityB =
+        //     domainPriorityMap.get(normalizeDomain(b.domain)) ?? 0;
+        //   return priorityB - priorityA;
+        // });
+
+        const domainPriorityConfig = this.getDomainPriorityConfig(
+          sheet.sheetName,
+          broadcastRule
+        );
+
+        let sortedDomains: typeof sheet.domains;
+
+        if (
+          domainPriorityConfig &&
+          domainPriorityConfig.randomDomainQuantity > 0
+        ) {
+          const allDomainsSorted = [...sheet.domains].sort((a, b) => {
+            const priorityA =
+              domainPriorityMap.get(normalizeDomain(a.domain)) ?? 0;
+            const priorityB =
+              domainPriorityMap.get(normalizeDomain(b.domain)) ?? 0;
+            return priorityB - priorityA;
+          });
+
+          const selectedDomainsSet = new Set(
+            domainPriorityConfig.selectedDomains.map((domain) =>
+              normalizeDomain(domain)
+            )
+          );
+
+          const guaranteedDomains = allDomainsSorted.filter((domain) =>
+            selectedDomainsSet.has(normalizeDomain(domain.domain))
+          );
+
+          const otherDomains = allDomainsSorted.filter(
+            (domain) => !selectedDomainsSet.has(normalizeDomain(domain.domain))
+          );
+
+          const randomDomainsNeeded = Math.max(
+            0,
+            domainPriorityConfig.randomDomainQuantity - guaranteedDomains.length
+          );
+
+          const randomDomains =
+            randomDomainsNeeded > 0
+              ? this.shuffleArray(otherDomains).slice(0, randomDomainsNeeded)
+              : [];
+         
+          const topDomains = [...guaranteedDomains, ...randomDomains];
+
+          const shuffledTopDomains = this.shuffleArray(topDomains);
+
+          const topDomainsSet = new Set(
+            shuffledTopDomains.map((d) => d.domain)
+          );
+          const remainingDomains = allDomainsSorted.filter(
+            (domain) => !topDomainsSet.has(domain.domain)
+          );
+
+          sortedDomains = [...shuffledTopDomains, ...remainingDomains];
+        } else {
+          sortedDomains = [...sheet.domains].sort((a, b) => {
+            const priorityA =
+              domainPriorityMap.get(normalizeDomain(a.domain)) ?? 0;
+            const priorityB =
+              domainPriorityMap.get(normalizeDomain(b.domain)) ?? 0;
+            return priorityB - priorityA;
+          });
+        }
+
+        sheet.domains = sortedDomains;
+
         for (let i = 0; i < sheet.domains.length; i++) {
           const updatedDomain = await this.broadcastAssignerService.execute({
             domain: sheet.domains[i],
@@ -266,5 +338,23 @@ export class MakeBroadcastService {
       sheets: broadcastWithCustomLinkIndicator.sheets,
       calculatedChanges,
     };
+  }
+
+  private shuffleArray<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  private getDomainPriorityConfig(
+    sheetName: string,
+    broadcastRule: CreateBroadcastRulesProps
+  ): DomainTabPriorities | undefined {
+    return broadcastRule.copyAssignmentStrategyRules?.domainPriorities?.find(
+      (priority: DomainTabPriorities) => priority.tabName === sheetName
+    );
   }
 }

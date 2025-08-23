@@ -269,7 +269,7 @@ const BroadcastTableModal: React.FC<BroadcastTableModalProps> = ({
           onClose={() => setEditModal(null)}
           onUpdate={(updatedEntry) => {
             const newData = { ...broadcastData };
-            const sheet = newData.sheets[activeTabIndex];
+            const sheet = newData.sheets[activeTabIndex - 1];
             const domainItem = sheet.domains.find(
               (d) => d.domain === editModal.domain
             );
