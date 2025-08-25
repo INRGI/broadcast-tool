@@ -68,6 +68,23 @@ export class MondayApiService implements MondayApiServicePort {
     return await data.data.boards[0].items_page.items;
   }
 
+  private async queryItemsEqual(
+    boardId: number,
+    searchName: string
+  ): Promise<MondayApiProductBoardData[]> {
+    const { data }: { data: MondayApiGetProductDataResponse } =
+      await firstValueFrom(
+        this.httpService.post(
+          `${MONDAY_API_BASE_URL}`,
+          MondayApiUtils.queryDataEqual(boardId, searchName),
+          {
+            headers: MondayApiUtils.auth(this.options.accessToken),
+          }
+        )
+      );
+    return await data.data.boards[0].items_page.items;
+  }
+
   private async queryItemsEndsWith(
     boardId: number,
     searchName: string
@@ -179,7 +196,7 @@ export class MondayApiService implements MondayApiServicePort {
     domainName: string,
     boardId: number
   ): Promise<MondayApiDomainBoardData[]> {
-    return await this.queryItems(boardId, domainName);
+    return await this.queryItemsEqual(boardId, domainName);
   }
 
   public async getItemsByQuery(

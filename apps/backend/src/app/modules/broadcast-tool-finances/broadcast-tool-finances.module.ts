@@ -9,6 +9,7 @@ import { MondayModule } from "./monday/monday.module";
 import { RulesModule } from "./rules/rules.module";
 import { BroadcastModule } from "./broadcast/broadcast.module";
 import { AuthModule } from "./auth/auth.module";
+import { QmToolModule } from "./qm-tool/qm-tool.module";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from "./auth/auth.module";
     RulesModule,
     BroadcastModule,
     AuthModule,
+    QmToolModule,
   ],
   providers: [...appProviders],
   controllers: [...httpControllers],

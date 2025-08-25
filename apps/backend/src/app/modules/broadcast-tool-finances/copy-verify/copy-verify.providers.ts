@@ -5,6 +5,7 @@ import { VerifyCopyWithoutQueueService } from "./services/verify-copy-without-qu
 import { VerifyTestCopyForDomainService } from "./services/verify-test-copy-for-domain/verify-test-copy-for-domain.service";
 import { VerifyConvCopyForDomainService } from "./services/verify-conv-copy-for-domain/verify-conv-copy-for-domain.service";
 import { ReverifyCopyService } from "./services/reverify-copy/reverify-copy.service";
+import { QmToolVerifyService } from "./services/qm-tool-verify/qm-tool-verify.service";
 
 export const messageControllers = [];
 
@@ -17,4 +18,5 @@ export const serviceProviders: Provider[] = [
   VerifyTestCopyForDomainService,
   VerifyConvCopyForDomainService,
   ReverifyCopyService,
+  QmToolVerifyService,
 ];

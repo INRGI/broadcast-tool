@@ -6,6 +6,8 @@ import { GetProductStatusesService } from './services/get-product-statuses/get-p
 import { GetDomainStatusesService } from './services/get-domain-statuses/get-domain-statuses.service';
 import { MondayConfigService } from '@epc-services/core';
 import { GetNewTestCopiesService } from './services/get-new-test-copies/get-new-test-copies.service';
+import { GetDomainDataService } from './services/get-domain-data/get-domain-data.service';
+import { GetProductDataService } from './services/get-product-data/get-product-data.service';
 
 export const messageControllers = [MondayController];
 
@@ -18,4 +20,6 @@ export const serviceProviders: Provider[] = [
   GetDomainStatusesService,
   MondayConfigService,
   GetNewTestCopiesService,
+  GetDomainDataService,
+  GetProductDataService,
 ];
