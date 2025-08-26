@@ -11,4 +11,5 @@ export interface BigQueryRow {
   Conversion: number;
   Sends?: number;
   Team?: string;
+  Conv_value?: number;
 }

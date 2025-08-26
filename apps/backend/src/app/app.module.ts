@@ -5,6 +5,7 @@ import { join } from 'path';
 import { BroadcastToolFinancesModule } from './modules/broadcast-tool-finances/broadcast-tool-finances.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TaskModule } from './infrastructure/tasks/task.module';
 
 @Module({
   imports: [    
@@ -15,6 +16,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       isGlobal: true,
     }),
     ScheduleModule.forRoot(),
+    TaskModule,
     BroadcastToolFinancesModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

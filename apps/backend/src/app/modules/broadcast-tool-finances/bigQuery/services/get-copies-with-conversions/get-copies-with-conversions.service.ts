@@ -36,16 +36,17 @@ export class GetCopiesWithConversionsService {
            Copy, 
            ${team ? "Team," : ""}
            SUM(UC) as UC,
-           SUM(Conversion) as Conversion
+           SUM(Conversion) as Conversion,
+           AVG(Conv_value) as Conv_value
            FROM \`delta-daylight-316213.developers.base\`
            WHERE Date >= DATE_SUB(CURRENT_DATE(), INTERVAL ${daysBefore} DAY) and Copy IS NOT NULL 
            ${team ? `AND Team = '${team}'` : ""}
            AND Conversion > 0
            GROUP BY Copy${team ? ", Team" : ""}
-           ORDER BY Conversion DESC
+           ORDER BY Conv_value DESC
        `,
       });
-      const result = { data };
+      const result = { data } as GetCopiesWithConversionsResponseDto;
 
       await this.cacheManager.set(cacheKey, result);
       return result;

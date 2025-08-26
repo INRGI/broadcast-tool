@@ -6,4 +6,6 @@ export class CopyConversionsResponseDto {
   public UC: number;
 
   public Conversion: number;
+
+  public Conv_value: number;
 }

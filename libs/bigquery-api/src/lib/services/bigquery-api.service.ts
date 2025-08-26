@@ -52,7 +52,7 @@ export class BigQueryApiService implements BigQueryApiServicePort {
         const key = fields[i].name as keyof BigQueryRow;
         const value = field.v;
 
-        if (key === 'UC' || key === 'TC' || key === 'Conversion' || key === 'Sends') {
+        if (key === 'UC' || key === 'TC' || key === 'Conversion' || key === 'Sends' || key === 'Conv_value') {
           obj[key] = Number(value);
         } else {
           obj[key] = value;
