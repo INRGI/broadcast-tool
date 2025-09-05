@@ -15,6 +15,8 @@ export class QmToolVerifyService {
       productsData,
       domain,
       sendingDate,
+      isSpaceAd,
+      broadcast,
     } = payload;
 
     const errors: string[] = [];
@@ -49,9 +51,6 @@ export class QmToolVerifyService {
       isValid = false;
       errors.push("Invalid domain. Domain not found");
     }
-    console.log(
-        sendingDate
-    )
     const sendingDayRule =
       adminBroadcastConfig.partnerRules.partnerAllowedSendingDays.find(
         (rule) => rule.partner === productData.partner
@@ -110,6 +109,38 @@ export class QmToolVerifyService {
       errors.push(
         `Domain ${domainData.parentCompany} is not allowed to send ${productData.domainSending}`
       );
+    }
+
+    if (broadcast && broadcast.broadcastCopies && !isSpaceAd) {
+      const targetProductName = cleanProductName(copyName);
+      
+      let hasProductOnDate = false;
+      
+      for (const broadcastCopy of broadcast.broadcastCopies) {
+        const broadcastDate = new Date(broadcastCopy.date);
+        const targetDate = new Date(sendingDate);
+        if (
+          broadcastDate.getFullYear() === targetDate.getFullYear() &&
+          broadcastDate.getMonth() === targetDate.getMonth() &&
+          broadcastDate.getDate() === targetDate.getDate()
+        ) {
+          const hasMatchingProduct = broadcastCopy.copies.some(
+            (c) => cleanProductName(c.name) === targetProductName
+          );
+          
+          if (hasMatchingProduct) {
+            hasProductOnDate = true;
+            break;
+          }
+        }
+      }
+      
+      if (!hasProductOnDate) {
+        isValid = false;
+        errors.push(
+          `Product ${targetProductName} is not scheduled for the date ${sendingDate}`
+        );
+      }
     }
 
     return {

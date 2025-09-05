@@ -6,4 +6,6 @@ export class GetDomainDataResponse {
   public parentCompany: string;
 
   public domainEsp: string;
+
+  public team?: string;
 }

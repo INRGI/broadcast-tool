@@ -7,9 +7,10 @@ import {
 import { CopyVerifyModule } from "../copy-verify/copy-verify.module";
 import { MondayModule } from "../monday/monday.module";
 import { RulesModule } from "../rules/rules.module";
+import { BroadcastModule } from "../broadcast/broadcast.module";
 
 @Module({
-  imports: [CopyVerifyModule, RulesModule, MondayModule],
+  imports: [CopyVerifyModule, RulesModule, MondayModule, BroadcastModule],
   controllers: [...messageControllers],
   providers: [...serviceProviders, ...applicationProviders],
   exports: [...applicationProviders, ...serviceProviders],

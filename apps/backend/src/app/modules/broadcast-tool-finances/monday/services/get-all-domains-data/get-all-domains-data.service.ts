@@ -85,6 +85,7 @@ export class GetAllDomainsDataService {
             domainStatus: status,
             parentCompany: get("Parent Company"),
             domainEsp: get("ESP"),
+            team: get("Team"),
           };
         })
       );
