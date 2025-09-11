@@ -43,8 +43,12 @@ export class QmToolVerifyService {
     const domainData = domainsData.find(
       (domainName) =>
         normalizeDomain(domain) === normalizeDomain(domainName.domainName) ||
-        domainName.domainName.trim().endsWith(`_${domain}`) ||
-        domainName.domainName.trim().endsWith(`-${domain}`)
+        normalizeDomain(domainName.domainName)
+          .trim()
+          .endsWith(`_${normalizeDomain(domain)}`) ||
+        normalizeDomain(domainName.domainName)
+          .trim()
+          .endsWith(`-${normalizeDomain(domain)}`)
     );
 
     if (!domainData || !domainData.domainStatus) {
