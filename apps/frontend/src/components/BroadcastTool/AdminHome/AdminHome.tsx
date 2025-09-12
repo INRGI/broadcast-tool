@@ -34,25 +34,34 @@ const AdminHome: React.FC = () => {
     checkIfCached();
   }, []);
 
-  const fetchBroadcastsSends = async (fromDate: Date, toDate: Date) => {
-    setIsModalOpen(false)
-    setIsLoading(true);
-    const cached = getCachedData<GetBroadcastsSendsResponseDto>(
-      CACHE_KEY,
-      TTL_MS
-    );
-    if (cached) {
-      setBroadcastsSends(cached);
-      setIsLoading(false);
-      return;
-    }
+  const formatDateToYYYYMMDD = (date: Date) => {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, "0");
+    const day = `${date.getDate()}`.padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
-    const formatDateToYYYYMMDD = (date: Date) => {
-      const year = date.getFullYear();
-      const month = `${date.getMonth() + 1}`.padStart(2, "0");
-      const day = `${date.getDate()}`.padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    };
+  const fetchBroadcastsSends = async (
+    fromDate: Date,
+    toDate: Date,
+    opts?: { ignoreCache?: boolean }
+  ) => {
+    const ignoreCache = !!opts?.ignoreCache;
+
+    setIsModalOpen(false);
+    setIsLoading(true);
+
+    if (!ignoreCache) {
+      const cached = getCachedData<GetBroadcastsSendsResponseDto>(
+        CACHE_KEY,
+        TTL_MS
+      );
+      if (cached) {
+        setBroadcastsSends(cached);
+        setIsLoading(false);
+        return;
+      }
+    }
 
     try {
       const response = await getBroadcastsSends({
@@ -73,12 +82,19 @@ const AdminHome: React.FC = () => {
     }
   };
 
+  const handleRequestChangeDates = () => {
+    setIsModalOpen(true);
+  };
+
   return (
     <div>
       {isLoading ? (
         <CatLoader />
       ) : broadcastsSends?.broadcasts?.length ? (
-        <BroadcastSendsAnalytics data={broadcastsSends} />
+        <BroadcastSendsAnalytics
+          data={broadcastsSends}
+          onRequestChangeDates={handleRequestChangeDates}
+        />
       ) : (
         <EmptyDataContainer>
           <p style={{ padding: 20, color: "#888" }}>
@@ -92,7 +108,9 @@ const AdminHome: React.FC = () => {
       {isModalOpen && (
         <AnalyticsLaunchModal
           isOpen={isModalOpen}
-          onSubmit={(from, to) => fetchBroadcastsSends(from, to)}
+          onSubmit={(from, to) =>
+            fetchBroadcastsSends(from, to, { ignoreCache: true })
+          }
           onClose={() => setIsModalOpen(false)}
         />
       )}
