@@ -19,7 +19,6 @@ import { LiaSaveSolid } from "react-icons/lia";
 import ConfirmationModal from "../ConfirmationModal";
 import { Button } from "../Menu/Menu.styled";
 import TestingRulesTab from "../TestingRulesTab";
-import DomainRulesTab from "../DomainRulesTab";
 import PartnerRulesTab from "../PartnerRulesTab";
 import {
   GetDomainStatusesResponse,
@@ -29,6 +28,7 @@ import { getCachedData, setCachedData } from "../../../helpers/getCachedData";
 import { getDomainStatuses, getProductStatuses } from "../../../api/monday.api";
 import CatLoader from "../../Common/Loader/CatLoader";
 import IgnoringRulesTab from "../IgnoringRulesTab";
+import AdminDomainRulesTab from "../DomainRulesTab/AdminRulesTab";
 
 interface AdminRulesProps {
   isPreview?: boolean;
@@ -240,7 +240,7 @@ const AdminRules: React.FC<AdminRulesProps> = ({ isPreview }) => {
           renderSection(
             "Domain Rules",
             "domainRules",
-            <DomainRulesTab
+            <AdminDomainRulesTab
               isPreview={isPreview}
               domainRules={adminBroadcastConfig.domainRules}
               onChange={(updated) => handleChange("domainRules", updated)}
