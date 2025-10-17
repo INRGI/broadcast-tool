@@ -39,6 +39,7 @@ export class CheckIfPartnerCanBeSendService {
     );
 
     if (sendingLimit) {
+      if (sendingLimit.limit === 0) return false;
       let sendingCount = 0;
 
       const sheet = broadcast.sheets.find(
