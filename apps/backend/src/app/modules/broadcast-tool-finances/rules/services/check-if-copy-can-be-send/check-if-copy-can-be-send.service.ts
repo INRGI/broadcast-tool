@@ -38,6 +38,7 @@ export class CheckIfCopyCanBeSendService {
     );
 
     if (sendingLimitRule) {
+      if (sendingLimitRule.limit === 0) return false;
       const totalCopyCount = this.countCopiesOnDate(
         broadcast,
         sheetName,
