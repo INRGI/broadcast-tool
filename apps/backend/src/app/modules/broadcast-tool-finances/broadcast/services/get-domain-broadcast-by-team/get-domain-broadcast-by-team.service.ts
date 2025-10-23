@@ -95,7 +95,7 @@ export class GetDomainBroadcastByTeamService {
       const esps = espRowValues.map((cell) => cell.formattedValue || "");
 
       const domainIndex = domains.findIndex(
-        (d) => d.toLowerCase() === domain.toLowerCase()
+        (d) => d.toLowerCase().trim() === domain.toLowerCase().trim()
       );
 
       if (domainIndex === -1) continue;
