@@ -29,7 +29,7 @@ export class GetAllDomainsService {
   public async execute(
     payload: GetAllDomainsPayload
   ): Promise<GetAllDomainsResponseDto> {
-    const { broadcastId, usageRules, ignoringRules } = payload;
+    const { broadcastId, usageRules, ignoringRules, filterFromISO } = payload;
 
     const IGNORED_TABS = ignoringRules.broadcastsTabs;
 
@@ -39,6 +39,13 @@ export class GetAllDomainsService {
         : usageRules.productMinDelayPerDays;
     const dateFromFilter = new Date();
     dateFromFilter.setDate(dateFromFilter.getDate() - maxSelectedDays);
+
+    const effectiveDateFrom = (() => {
+      if (filterFromISO) return new Date(filterFromISO);
+      const d = new Date();
+      d.setDate(d.getDate() - maxSelectedDays);
+      return d;
+    })();
 
     try {
       const broadcastTableId = broadcastId;
@@ -144,11 +151,7 @@ export class GetAllDomainsService {
           const filteredBroadcastCopies = sortedBroadcastCopies.filter(
             (copy) => {
               const copyDate = new Date(copy.date);
-              const dateFromFilter = new Date();
-              dateFromFilter.setDate(
-                dateFromFilter.getDate() - maxSelectedDays
-              );
-              return copyDate >= dateFromFilter;
+              return copyDate >= effectiveDateFrom;
             }
           );
 

@@ -4,4 +4,5 @@ export interface GetAllDomainsPayload {
   broadcastId: string;
   usageRules: UsageRules;
   ignoringRules: IgnoringRules;
+  filterFromISO?: string; 
 }

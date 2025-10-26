@@ -55,6 +55,7 @@ export class GetBroadcastsSendsService {
           useNewestTestCopies: false,
         },
         ignoringRules: adminConfig.ignoringRules,
+        filterFromISO: fromDate,
       });
 
       const dateRange = getDateRange(fromDate, toDate);
