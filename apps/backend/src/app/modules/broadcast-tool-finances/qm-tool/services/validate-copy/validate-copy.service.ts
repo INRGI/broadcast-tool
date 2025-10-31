@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { ValidateCopyPayload } from "./validate-copy.payload";
 import { QmToolVerifyService } from "../../../copy-verify/services/qm-tool-verify/qm-tool-verify.service";
 import { GetAdminBroadcastConfigByNicheQueryService } from "../../../rules/queries/get-admin-broadcast-config-by-niche/get-admin-broadcast-config-by-niche.query-service";
@@ -6,6 +6,9 @@ import { GetAllDomainsDataService } from "../../../monday/services/get-all-domai
 import { GetAllProductsDataService } from "../../../monday/services/get-all-products-data/get-all-products-data.service";
 import { normalizeDomain } from "../../../rules/utils/normalizeDomain";
 import { GetDomainBroadcastByTeamService } from "../../../broadcast/services/get-domain-broadcast-by-team/get-domain-broadcast-by-team.service";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Cache } from "cache-manager";
+import { BroadcastDomainRequestDto } from "@epc-services/interface-adapters";
 
 @Injectable()
 export class ValidateCopyService {
@@ -14,7 +17,9 @@ export class ValidateCopyService {
     private readonly getAdminBroadcastConfigByNicheQueryService: GetAdminBroadcastConfigByNicheQueryService,
     private readonly getAllMondayDomainsDataService: GetAllDomainsDataService,
     private readonly getAllMondayProductsDataService: GetAllProductsDataService,
-    private readonly getDomainBroadcastByTeamService: GetDomainBroadcastByTeamService
+    private readonly getDomainBroadcastByTeamService: GetDomainBroadcastByTeamService,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache
   ) {}
 
   public async execute(
@@ -54,11 +59,22 @@ export class ValidateCopyService {
       };
     }
 
-    const broadcast = await this.getDomainBroadcastByTeamService.execute({
-      team: domainData.team,
-      domain,
-    });
+    const team = domainData.team;
+    const normDomain = normalizeDomain(domain);
+    const cacheKey = `broadcast:${team}:${normDomain}`;
 
+    let broadcast = await this.cacheManager.get<BroadcastDomainRequestDto>(cacheKey);
+    if (!broadcast) {
+      broadcast = await this.getDomainBroadcastByTeamService.execute({ team, domain });
+      await this.cacheManager.set(cacheKey, broadcast, 600000);
+    }
+
+    if(!broadcast || !broadcast?.domain) {
+      return {
+        isValid: false,
+        errors: [`Failed to get broadcast data due to rate limit`],
+      };
+    }
     const productsData = await this.getAllMondayProductsDataService.execute();
 
     const result = await this.qmToolVerifyService.execute({
