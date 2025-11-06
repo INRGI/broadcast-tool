@@ -35,9 +35,10 @@ export class QmToolVerifyService {
     );
 
     const productData = matchingProducts.find((p) => p.productStatus);
-    if (!productData) {
+    if (!productData || !productData?.productStatus) {
       isValid = false;
-      errors.push("Invalid copy name. Product not found");
+      errors.push("Product not found in Monday");
+      return { isValid, errors };
     }
 
     const domainData = domainsData.find(
@@ -51,7 +52,7 @@ export class QmToolVerifyService {
           .endsWith(`-${normalizeDomain(domain)}`)
     );
 
-    if (!domainData || !domainData.domainStatus) {
+    if (!domainData || !domainData?.domainStatus) {
       isValid = false;
       errors.push("Invalid domain. Domain not found");
     }
