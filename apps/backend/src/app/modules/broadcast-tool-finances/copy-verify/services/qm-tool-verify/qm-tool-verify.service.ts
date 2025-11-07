@@ -37,7 +37,7 @@ export class QmToolVerifyService {
     const productData = matchingProducts.find((p) => p.productStatus);
     if (!productData || !productData?.productStatus) {
       isValid = false;
-      errors.push("Product not found in Monday");
+      errors.push("Product not found in Monday(check product status if its allowed)");
       return { isValid, errors };
     }
 
