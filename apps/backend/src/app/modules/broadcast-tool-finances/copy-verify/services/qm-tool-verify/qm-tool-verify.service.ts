@@ -112,7 +112,7 @@ export class QmToolVerifyService {
     if (!isAllowed) {
       isValid = false;
       errors.push(
-        `Domain ${domainData.parentCompany} is not allowed to send ${productData.domainSending}`
+        `Domain ${domainData.parentCompany} is not allowed to send ${productData.domainSending}(Contact Broadcats Admin for more info)`
       );
     }
 
