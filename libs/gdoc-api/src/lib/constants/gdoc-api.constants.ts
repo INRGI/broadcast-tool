@@ -1,1 +1,0 @@
-export const GDOC_API_BASE_URL = 'https://www.googleapis.com';
