@@ -35,7 +35,6 @@
     "fastify": "^4.29.0",
     "fastify-static": "^4.7.0",
     "googleapis": "^144.0.0",
-    "jszip": "^3.10.1",
     "jwt-decode": "^4.0.0",
     "mime-types": "^2.1.35",
     "mongoose": "^8.16.0",
