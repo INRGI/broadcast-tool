@@ -26,6 +26,7 @@ import { ForceProductsToRandomDomainsService } from "../force-products-to-random
 import { ForcePartnersToRandomDomainsService } from "../force-partners-to-random-domains/force-partners-to-random-domains.service";
 import { CalculateBroadcastSendingService } from "../calculate-broadcast-sending/calculate-broadcast-sending.service";
 import { CreateBroadcastRulesProps } from "../../../rules/domain/types/broadcast-rules.types";
+import { GetBlacklistedCopiesService } from "../../../bigQuery/services/get-blacklisted-copies/get-blacklisted-copies.service";
 
 @Injectable()
 export class MakeBroadcastService {
@@ -48,7 +49,8 @@ export class MakeBroadcastService {
     private readonly addCustomLinkIndicatorService: AddCustomLinkIndicatorService,
     private readonly forceProductsToRandomDomainsService: ForceProductsToRandomDomainsService,
     private readonly forcePartnersToRandomDomainsService: ForcePartnersToRandomDomainsService,
-    private readonly calculateBroadcastSendingService: CalculateBroadcastSendingService
+    private readonly calculateBroadcastSendingService: CalculateBroadcastSendingService,
+    private readonly getBlacklistedCopiesService: GetBlacklistedCopiesService
   ) {}
   public async execute(
     payload: MakeBroadcaastPayload
@@ -113,6 +115,11 @@ export class MakeBroadcastService {
       useNewestTestCopies: broadcastRule.usageRules.useNewestTestCopies,
     });
 
+    const blacklistedCopies = await this.getBlacklistedCopiesService.execute();
+    broadcastRule.productRules.blacklistedCopies = [
+      ...broadcastRule.productRules.blacklistedCopies,
+      ...blacklistedCopies,
+    ];
     const priorityCopiesData =
       await this.getAllPriorityProductsService.execute();
 
@@ -195,7 +202,7 @@ export class MakeBroadcastService {
             randomDomainsNeeded > 0
               ? this.shuffleArray(otherDomains).slice(0, randomDomainsNeeded)
               : [];
-         
+
           const topDomains = [...guaranteedDomains, ...randomDomains];
 
           const shuffledTopDomains = this.shuffleArray(topDomains);

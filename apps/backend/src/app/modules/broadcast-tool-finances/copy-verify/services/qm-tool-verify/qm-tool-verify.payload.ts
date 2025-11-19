@@ -10,4 +10,5 @@ export interface QmToolVerifyPayload {
   productsData: GetProductDataResponse[];
   adminBroadcastConfig: AdminBroadcastConfigProps;
   broadcast: BroadcastDomainRequestDto
+  blacklistedCopies: string[];
 }

@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { QmToolVerifyPayload } from "./qm-tool-verify.payload";
 import { cleanProductName } from "../../../rules/utils/cleanProductName";
 import { normalizeDomain } from "../../../rules/utils/normalizeDomain";
+import { cleanCopyName } from "../../../rules/utils/cleanCopyName";
 
 @Injectable()
 export class QmToolVerifyService {
@@ -17,6 +18,7 @@ export class QmToolVerifyService {
       sendingDate,
       isSpaceAd,
       broadcast,
+      blacklistedCopies,
     } = payload;
 
     const errors: string[] = [];
@@ -37,7 +39,9 @@ export class QmToolVerifyService {
     const productData = matchingProducts.find((p) => p.productStatus);
     if (!productData || !productData?.productStatus) {
       isValid = false;
-      errors.push("Product not found in Monday(check product status if its allowed)");
+      errors.push(
+        "Product not found in Monday(check product status if its allowed)"
+      );
       return { isValid, errors };
     }
 
@@ -55,6 +59,10 @@ export class QmToolVerifyService {
     if (!domainData || !domainData?.domainStatus) {
       isValid = false;
       errors.push("Invalid domain. Domain not found");
+    }
+    if (blacklistedCopies.includes(cleanCopyName(copyName))) {
+      isValid = false;
+      errors.push(`Copy ${copyName} is blacklisted for this broadcast`);
     }
     const sendingDayRule =
       adminBroadcastConfig.partnerRules.partnerAllowedSendingDays.find(
@@ -118,9 +126,9 @@ export class QmToolVerifyService {
 
     if (broadcast && broadcast.broadcastCopies && !isSpaceAd) {
       const targetProductName = cleanProductName(copyName);
-      
+
       let hasProductOnDate = false;
-      
+
       for (const broadcastCopy of broadcast.broadcastCopies) {
         const broadcastDate = new Date(broadcastCopy.date);
         const targetDate = new Date(sendingDate);
@@ -132,14 +140,14 @@ export class QmToolVerifyService {
           const hasMatchingProduct = broadcastCopy.copies.some(
             (c) => cleanProductName(c.name) === targetProductName
           );
-          
+
           if (hasMatchingProduct) {
             hasProductOnDate = true;
             break;
           }
         }
       }
-      
+
       if (!hasProductOnDate) {
         isValid = false;
         errors.push(

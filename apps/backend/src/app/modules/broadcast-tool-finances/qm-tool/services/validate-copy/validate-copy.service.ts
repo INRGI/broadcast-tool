@@ -9,6 +9,7 @@ import { GetDomainBroadcastByTeamService } from "../../../broadcast/services/get
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
 import { BroadcastDomainRequestDto } from "@epc-services/interface-adapters";
+import { GetBlacklistedCopiesService } from "../../../bigQuery/services/get-blacklisted-copies/get-blacklisted-copies.service";
 
 @Injectable()
 export class ValidateCopyService {
@@ -18,6 +19,7 @@ export class ValidateCopyService {
     private readonly getAllMondayDomainsDataService: GetAllDomainsDataService,
     private readonly getAllMondayProductsDataService: GetAllProductsDataService,
     private readonly getDomainBroadcastByTeamService: GetDomainBroadcastByTeamService,
+    private readonly getBlacklistedCopiesService: GetBlacklistedCopiesService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache
   ) {}
@@ -77,6 +79,8 @@ export class ValidateCopyService {
     }
     const productsData = await this.getAllMondayProductsDataService.execute();
 
+    const blacklistedCopies = await this.getBlacklistedCopiesService.execute();
+   
     const result = await this.qmToolVerifyService.execute({
       copyName,
       domain,
@@ -86,6 +90,7 @@ export class ValidateCopyService {
       sendingDate,
       isSpaceAd,
       broadcast,
+      blacklistedCopies
     });
     return result;
   }

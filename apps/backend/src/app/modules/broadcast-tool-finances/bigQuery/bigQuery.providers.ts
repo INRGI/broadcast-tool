@@ -9,6 +9,7 @@ import { GetDomainsRevenueService } from "./services/get-domains-revenue/get-dom
 import { GetCopiesWarmupService } from "./services/get-copies-warmup/get-copies-warmup.service";
 import { GetCopiesForTestService } from "./services/get-copies-for-test/get-copies-for-test.service";
 import { GetClickCopiesWithSendsService } from "./services/get-click-copies-with-sends/get-click-copies-with-sends.service";
+import { GetBlacklistedCopiesService } from "./services/get-blacklisted-copies/get-blacklisted-copies.service";
 
 export const messageControllers = [];
 
@@ -25,4 +26,5 @@ export const serviceProviders: Provider[] = [
   GetDomainsRevenueService,
   GetCopiesForTestService,
   GetClickCopiesWithSendsService,
+  GetBlacklistedCopiesService
 ];

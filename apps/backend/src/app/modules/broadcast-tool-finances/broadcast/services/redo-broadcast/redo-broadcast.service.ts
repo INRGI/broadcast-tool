@@ -21,6 +21,7 @@ import { AddPriorityCopyIndicatorService } from "../add-priority-copy-indicator/
 import { CheckIfProductPriorityService } from "../../../rules/services/check-if-product-priority/check-if-product-priority.service";
 import { cleanProductName } from "../../../rules/utils/cleanProductName";
 import { CalculateBroadcastSendingService } from "../calculate-broadcast-sending/calculate-broadcast-sending.service";
+import { GetBlacklistedCopiesService } from "../../../bigQuery/services/get-blacklisted-copies/get-blacklisted-copies.service";
 
 @Injectable()
 export class RedoBroadcastService {
@@ -38,7 +39,8 @@ export class RedoBroadcastService {
     private readonly addCustomLinkIndicatorService: AddCustomLinkIndicatorService,
     private readonly addPriorityCopyIndicatorService: AddPriorityCopyIndicatorService,
     private readonly checkIfProductPriorityService: CheckIfProductPriorityService,
-    private readonly calculateBroadcastSendingService: CalculateBroadcastSendingService
+    private readonly calculateBroadcastSendingService: CalculateBroadcastSendingService,
+    private readonly getBlacklistedCopiesService: GetBlacklistedCopiesService
   ) {}
   public async execute(
     payload: RedoBroadcastPayload
@@ -77,6 +79,12 @@ export class RedoBroadcastService {
     const priorityCopiesData =
       await this.getAllPriorityProductsService.execute();
 
+    const blacklistedCopies = await this.getBlacklistedCopiesService.execute();
+    broadcastRule.productRules.blacklistedCopies = [
+      ...broadcastRule.productRules.blacklistedCopies,
+      ...blacklistedCopies,
+    ];
+
     const unavailableCopies =
       await this.getUnavailableBroadcastCopiesService.execute({
         broadcast,
@@ -93,9 +101,9 @@ export class RedoBroadcastService {
         const tabCopyLimit = broadcastRule.usageRules.copyTabLimit?.find(
           (tab) => tab.sheetName === sheet.sheetName
         );
-    
+
         if (!tabCopyLimit?.limit || tabCopyLimit.limit === 0) continue;
-        
+
         for (let i = 0; i < sheet.domains.length; i++) {
           const domain = sheet.domains[i];
           const broadcastForDate = domain.broadcastCopies.find(
@@ -139,11 +147,12 @@ export class RedoBroadcastService {
               const copyIndex = newCopies.findIndex(
                 (c) => c.name === copy.name
               );
-              const isCopyPriority = await this.checkIfProductPriorityService.execute({
-                product: cleanProductName(copy.name),
-                priorityCopiesData,
-                ignoringRules: adminConfig.ignoringRules,
-              });
+              const isCopyPriority =
+                await this.checkIfProductPriorityService.execute({
+                  product: cleanProductName(copy.name),
+                  priorityCopiesData,
+                  ignoringRules: adminConfig.ignoringRules,
+                });
               if (copyIndex !== -1) {
                 newCopies[copyIndex] = {
                   ...newCopies[copyIndex],
@@ -204,7 +213,7 @@ export class RedoBroadcastService {
         ignoringRules: adminConfig.ignoringRules,
       });
 
-      const calculatedChanges =
+    const calculatedChanges =
       await this.calculateBroadcastSendingService.execute({
         broadcast: broadcastWithCustomLinkIndicator,
         dateRange,
