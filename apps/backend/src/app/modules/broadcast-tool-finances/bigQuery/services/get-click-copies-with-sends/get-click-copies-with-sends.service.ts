@@ -47,7 +47,7 @@ export class GetClickCopiesWithSendsService {
       const result = { data } as GetCopiesWithSendsResponseDto;
       await this.cacheManager.set(cacheKey, result);
       return result;
-    } catch (e) {
+    } catch {
       return { data: [] };
     }
   }

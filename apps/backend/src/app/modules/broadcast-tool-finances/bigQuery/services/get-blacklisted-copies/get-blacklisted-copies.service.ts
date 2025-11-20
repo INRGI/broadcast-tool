@@ -32,7 +32,7 @@ export class GetBlacklistedCopiesService {
 
       await this.cacheManager.set(cacheKey, result);
       return result;
-    } catch (e) {
+    } catch {
       return [];
     }
   }

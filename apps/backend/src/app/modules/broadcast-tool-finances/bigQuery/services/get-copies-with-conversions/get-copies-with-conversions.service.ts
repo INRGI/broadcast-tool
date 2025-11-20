@@ -50,7 +50,7 @@ export class GetCopiesWithConversionsService {
 
       await this.cacheManager.set(cacheKey, result);
       return result;
-    } catch (e) {
+    } catch {
       return { data: [] };
     }
   }

@@ -28,7 +28,7 @@ export class GetCopyClicksService {
           `,
       });
       return { data };
-    } catch (e) {
+    } catch {
       return { data: [] };
     }
   }

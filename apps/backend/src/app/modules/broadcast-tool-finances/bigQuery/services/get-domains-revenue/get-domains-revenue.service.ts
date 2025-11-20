@@ -31,7 +31,7 @@ export class GetDomainsRevenueService {
       });
 
       return { data };
-    } catch (e) {
+    } catch {
       return { data: [] };
     }
   }

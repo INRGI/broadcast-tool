@@ -29,7 +29,7 @@ export class GetAllDataByIntervalService {
     `,
       });
       return { data };
-    } catch (e) {
+    } catch {
       return { data: [] };
     }
   }

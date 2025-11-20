@@ -48,7 +48,7 @@ export class GetCopiesWithClicksService {
 
       await this.cacheManager.set(cacheKey, result);
       return result;
-    } catch (e) {
+    } catch {
       return { data: [] };
     }
   }
