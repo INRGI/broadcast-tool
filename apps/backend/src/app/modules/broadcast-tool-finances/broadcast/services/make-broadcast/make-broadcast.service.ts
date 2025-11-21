@@ -152,14 +152,6 @@ export class MakeBroadcastService {
 
         if (!tabCopyLimit?.limit || tabCopyLimit.limit === 0) continue;
 
-        // sheet.domains.sort((a, b) => {
-        //   const priorityA =
-        //     domainPriorityMap.get(normalizeDomain(a.domain)) ?? 0;
-        //   const priorityB =
-        //     domainPriorityMap.get(normalizeDomain(b.domain)) ?? 0;
-        //   return priorityB - priorityA;
-        // });
-
         const domainPriorityConfig = this.getDomainPriorityConfig(
           sheet.sheetName,
           broadcastRule
