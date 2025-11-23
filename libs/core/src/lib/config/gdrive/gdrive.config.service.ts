@@ -12,20 +12,4 @@ export class GdriveConfigService {
   get gdrivePrivateKey(): string {
     return this.configService.get<string>("gdrive.privateKey");
   }
-
-  get healthGdriveClientEmail(): string {
-    return this.configService.get<string>("gdrive.healthClientEmail");
-  }
-
-  get healthGdrivePrivateKey(): string {
-    return this.configService.get<string>("gdrive.healthPrivateKey");
-  }
-
-  get organicGdriveClientEmail(): string {
-    return this.configService.get<string>("gdrive.ogClientEmail");
-  }
-
-  get organicGdrivePrivateKey(): string {
-    return this.configService.get<string>("gdrive.ogPrivateKey");
-  }
 }
