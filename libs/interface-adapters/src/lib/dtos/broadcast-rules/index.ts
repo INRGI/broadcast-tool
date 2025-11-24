@@ -27,3 +27,4 @@ export * from "./request/product-min-limit-per-day.request.dto";
 export * from "./request/partner-min-limit-per-day.request.dto";
 export * from "./request/ignoring-rules.request.dto";
 export * from "./request/domain-tab-priorities.request.dto";
+export * from "./request/partner-tab-limit.requst.dto";

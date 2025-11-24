@@ -98,6 +98,7 @@ export class VerifyCopyForDomainService {
         productRules: broadcastRules.productRules,
         broadcast,
         sheetName,
+        usageRules: broadcastRules.usageRules,
       });
 
     if (!checkIfPartnerCanBeSendServiceResult) {

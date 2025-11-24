@@ -4,6 +4,7 @@ import {
   GetProductDataResponse,
   PartnerRules,
   ProductRules,
+  UsageRules,
 } from "@epc-services/interface-adapters";
 
 export interface CheckIfPartnerCanBeSendPayload {
@@ -14,5 +15,6 @@ export interface CheckIfPartnerCanBeSendPayload {
   sendingDate: string;
   partnerRules: PartnerRules;
   productRules: ProductRules;
+  usageRules: UsageRules;
   productsData: GetProductDataResponse[];
 }

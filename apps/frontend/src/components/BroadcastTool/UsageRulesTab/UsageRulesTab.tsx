@@ -13,17 +13,20 @@ import CatLoader from "../../Common/Loader/CatLoader";
 import { Checkbox } from "@mui/material";
 import { common } from "@mui/material/colors";
 import { WhiteText } from "../GeneralTab/GeneralTab.styled";
+import PartnerTabLimitInput from "../PartnerTabLimitInput/PartnerTabLimitInput";
 
 interface UsageRulesTabProps {
   usageRules: UsageRules;
   onChange: (updated: UsageRules) => void;
   spreadsheetId: string;
+  partners: string[];
 }
 
 const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
   usageRules,
   onChange,
   spreadsheetId,
+  partners,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [sheetNames, setSheetNames] = useState<string[]>([]);
@@ -158,6 +161,20 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
                 onChange({
                   ...usageRules,
                   copyTabLimit: items,
+                })
+              }
+            />
+          </InputGroup>
+          <InputGroup>
+            <PartnerTabLimitInput
+              title="Partner Max Copies Per Tab"
+              items={usageRules.partnerMaxTabLimit || []}
+              availableSheetNames={sheetNames}
+              uniquePartners={partners}
+              onChange={(items) =>
+                onChange({
+                  ...usageRules,
+                  partnerMaxTabLimit: items,
                 })
               }
             />

@@ -1,6 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { CheckIfPartnerCanBeSendPayload } from "./check-if-partner-can-be-send.payload";
 import { cleanProductName } from "../../utils/cleanProductName";
+import {
+  GetAllDomainsResponseDto,
+  GetProductDataResponse,
+} from "@epc-services/interface-adapters";
 
 @Injectable()
 export class CheckIfPartnerCanBeSendService {
@@ -16,6 +20,7 @@ export class CheckIfPartnerCanBeSendService {
       sheetName,
       productsData,
       sendingDate,
+      usageRules,
     } = payload;
 
     const productName = cleanProductName(copyName);
@@ -32,6 +37,25 @@ export class CheckIfPartnerCanBeSendService {
 
     if (partnerRules.blacklistedPartners.includes(productData.partner)) {
       return false;
+    }
+
+    const tabPartnerLimit = usageRules?.partnerMaxTabLimit?.find(
+      (tab) =>
+        tab.sheetName === sheetName && tab.partnerName === productData.partner
+    );
+
+    if (tabPartnerLimit) {
+      if (tabPartnerLimit?.limit === 0) return false;
+
+      const tabPartnerCount = this.countPartnerCopiesOnDate(
+        broadcast,
+        sheetName,
+        sendingDate,
+        productData.partner,
+        productsData
+      );
+
+      if (tabPartnerCount >= tabPartnerLimit.limit) return false;
     }
 
     const sendingLimit = productRules.partnersSendingLimitPerDay.find(
@@ -111,5 +135,42 @@ export class CheckIfPartnerCanBeSendService {
     }
 
     return true;
+  }
+
+  private countPartnerCopiesOnDate(
+    broadcast: GetAllDomainsResponseDto,
+    sheetName: string,
+    sendingDate: string,
+    partnerName: string,
+    productsData: GetProductDataResponse[]
+  ): number {
+    let count = 0;
+    const sheet = broadcast.sheets.find((s) => s.sheetName === sheetName);
+
+    if (!sheet || !sheet?.domains) return 0;
+
+    for (const domain of sheet.domains) {
+      const sendingDateObj = domain.broadcastCopies.find(
+        (date) => date.date === sendingDate
+      );
+
+      if (sendingDateObj) {
+        for (const copy of sendingDateObj.copies) {
+          const copyProductName = cleanProductName(copy.name);
+
+          const matchedProduct = productsData.find(
+            (p) =>
+              p.productName.startsWith(`${copyProductName} -`) ||
+              p.productName.startsWith(`*${copyProductName} -`)
+          );
+
+          if (matchedProduct?.partner === partnerName) {
+            count++;
+          }
+        }
+      }
+    }
+
+    return count;
   }
 }

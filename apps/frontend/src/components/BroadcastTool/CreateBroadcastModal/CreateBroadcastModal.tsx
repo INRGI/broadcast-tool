@@ -102,6 +102,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
         return (
           <UsageRulesTab
             usageRules={broadcastRules.usageRules}
+            partners={productMondayStatuses.partners}
             spreadsheetId={broadcastRules.broadcastSpreadsheetId}
             onChange={(updated) => handleChange("usageRules", updated)}
           />
