@@ -4,25 +4,18 @@ import Dropdown from "../../Common/Dropdown/Dropdown";
 import PartnerMaxCopyLimit from "../PartnerMaxCopyLimit";
 
 const Wrapper = styled.div`
-  width: 100%;
+  width: calc(100% - 20px);
   display: flex;
   flex-direction: column;
   gap: 15px;
 `;
 
 const SheetSelector = styled.div`
-  width: 100%;
+  width: calc(100%);
   padding: 10px;
   background-color: #2b2b2b;
   border: 1px solid #4f4f4f;
   border-radius: 8px;
-`;
-
-const Label = styled.label`
-  color: white;
-  font-size: 14px;
-  margin-bottom: 8px;
-  display: block;
 `;
 
 const Title = styled.p`
@@ -88,7 +81,6 @@ const PartnerTabLimitInput: React.FC<PartnerTabLimitInputProps> = ({
     <Wrapper>
       <SheetSelector>
         <Title>{title}</Title>
-        <Label>Select Sheet</Label>
         <Dropdown
           options={availableSheetNames}
           selected={selectedSheet}
@@ -101,7 +93,7 @@ const PartnerTabLimitInput: React.FC<PartnerTabLimitInputProps> = ({
         <PartnerMaxCopyLimit
           items={simplifiedItems}
           title={`Partner Limits for "${selectedSheet}"`}
-          valueLabel="Max Copies"
+          valueLabel="Limit"
           valuePlaceholder="Enter limit"
           uniquePartners={uniquePartners}
           onChange={handleChange}

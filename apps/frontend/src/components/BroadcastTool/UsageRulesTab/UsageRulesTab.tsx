@@ -5,6 +5,8 @@ import CopyTabLimitInput from "../CopyTabLimitInput";
 import {
   InputContainer,
   InputGroup,
+  LeftContainer,
+  RightContainer,
   RuleContainer,
 } from "../DomainRulesTab/DomainRulesTab.styled";
 import { getBroadcastDomainsList } from "../../../api/broadcast.api";
@@ -165,20 +167,40 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
               }
             />
           </InputGroup>
-          <InputGroup>
-            <PartnerTabLimitInput
-              title="Partner Max Copies Per Tab"
-              items={usageRules.partnerMaxTabLimit || []}
-              availableSheetNames={sheetNames}
-              uniquePartners={partners}
-              onChange={(items) =>
-                onChange({
-                  ...usageRules,
-                  partnerMaxTabLimit: items,
-                })
-              }
-            />
-          </InputGroup>
+          <RuleContainer style={{ flexDirection: "row" }}>
+            <LeftContainer>
+              <InputGroup>
+                <PartnerTabLimitInput
+                  title="Partner Max Copies Per Tab"
+                  items={usageRules.partnerMaxTabLimit || []}
+                  availableSheetNames={sheetNames}
+                  uniquePartners={partners}
+                  onChange={(items) =>
+                    onChange({
+                      ...usageRules,
+                      partnerMaxTabLimit: items,
+                    })
+                  }
+                />
+              </InputGroup>
+            </LeftContainer>
+            <RightContainer>
+              <InputGroup>
+                <PartnerTabLimitInput
+                  title="Partner Min Copies Per Tab"
+                  items={usageRules.partnerMinTabLimit || []}
+                  availableSheetNames={sheetNames}
+                  uniquePartners={partners}
+                  onChange={(items) =>
+                    onChange({
+                      ...usageRules,
+                      partnerMinTabLimit: items,
+                    })
+                  }
+                />
+              </InputGroup>
+            </RightContainer>
+          </RuleContainer>
         </>
       )}
     </RuleContainer>
