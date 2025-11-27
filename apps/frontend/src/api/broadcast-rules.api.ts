@@ -11,7 +11,7 @@ export const getPaginatedBroadcastRules =
     try {
       const response = await axios.get(`${broadcastRulesApiUrl}/paginated`);
       return response.data;
-    } catch (error) {
+    } catch {
       return { items: [] };
     }
   };
@@ -22,7 +22,7 @@ export const getBroadcastRulesById = async (
   try {
     const response = await axios.get(`${broadcastRulesApiUrl}/${id}`);
     return response.data;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -33,7 +33,7 @@ export const updateBroadcastRules = async (
   try {
     const response = await axios.put(`${broadcastRulesApiUrl}/update`, body);
     return response.data;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -43,7 +43,7 @@ export const deleteBroadcastRules = async (
 ): Promise<void | null> => {
   try {
     await axios.delete(`${broadcastRulesApiUrl}/${id}`);
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -54,7 +54,7 @@ export const createBroadcastRules = async (
   try {
     const response = await axios.post(`${broadcastRulesApiUrl}/create`, body);
     return response.data;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
