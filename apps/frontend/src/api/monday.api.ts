@@ -9,7 +9,7 @@ export const getProductStatuses =
     try {
       const response = await axios.get(`${mondayApiUrl}/product-statuses`);
       return response.data;
-    } catch (error) {
+    } catch  {
       return null;
     }
   };
@@ -19,7 +19,7 @@ export const getDomainStatuses =
     try {
       const response = await axios.get(`${mondayApiUrl}/domain-statuses`);
       return response.data;
-    } catch (error) {
+    } catch  {
       return null;
     }
   };

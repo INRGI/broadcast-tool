@@ -14,7 +14,7 @@ export const getAdminBroadcastConfigByNiche = async (
   try {
     const response = await axios.get(`${adminBroadcastConfigApiUrl}/${niche}`);
     return response.data;
-  } catch (error) {
+  } catch  {
     return null;
   }
 };
@@ -28,7 +28,7 @@ export const updateAdminBroadcastConfig = async (
       body
     );
     return response.data;
-  } catch (error) {
+  } catch  {
     return null;
   }
 };
@@ -42,7 +42,7 @@ export const createAdminBroadcastConfig = async (
       body
     );
     return response.data;
-  } catch (error) {
+  } catch  {
     return null;
   }
 };

@@ -19,7 +19,7 @@ export const googleAuth = async (
     });
 
     return response;
-  } catch (error) {
+  } catch  {
     return {
       email: "",
       name: "",
@@ -34,7 +34,7 @@ export const checkIfAdmin = async (id_token: string): Promise<{ token: string }>
       id_token,
     });
     return response.data;
-  } catch (error) {
+  } catch  {
     return { token: '' };
   }
 };

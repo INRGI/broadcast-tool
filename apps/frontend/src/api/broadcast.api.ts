@@ -19,7 +19,7 @@ export const getBroadcastsList =
         `${broadcastToolApiUrl}/broadcasts-list`
       );
       return response.data;
-    } catch (error) {
+    } catch  {
       return { sheets: [] };
     }
   };
@@ -32,7 +32,7 @@ export const getBroadcastDomainsList = async (
       `${broadcastToolApiUrl}/domains/${spreadsheetId}`
     );
     return response.data;
-  } catch (error) {
+  } catch  {
     return { sheets: [] };
   }
 };
@@ -46,7 +46,7 @@ export const makeBroadcast = async (
       body
     );
     return response.data;
-  } catch (error) {
+  } catch  {
     return { sheets: [], calculatedChanges: { result: [], name: "" } };
   }
 };
@@ -60,7 +60,7 @@ export const redoBroadcast = async (
       body
     );
     return response.data;
-  } catch (error) {
+  } catch  {
     return { sheets: [], calculatedChanges: { result: [], name: "" } };
   }
 };
@@ -74,7 +74,7 @@ export const approveBroadcast = async (
       body
     );
     return response.data;
-  } catch (error) {
+  } catch  {
     return [];
   }
 };
@@ -88,7 +88,7 @@ export const getBroadcastsSends = async (
       body
     );
     return response.data;
-  } catch (error) {
+  } catch  {
     return { broadcasts: [] };
   }
 };
@@ -102,7 +102,7 @@ export const getBroadcastSendsById = async (
       body
     );
     return response.data;
-  } catch (error) {
+  } catch  {
     return { broadcasts: [] };
   }
 };
