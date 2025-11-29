@@ -4,7 +4,7 @@ export const checkIfEntityModified = (entity: any, modifiedEntity: any): boolean
   try {
     assert.deepStrictEqual(entity, modifiedEntity);
     return false;
-  } catch (error) {
+  } catch {
     return true; 
   }
 };
