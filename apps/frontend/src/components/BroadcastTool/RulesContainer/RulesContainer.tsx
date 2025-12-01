@@ -103,7 +103,7 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
       await updateBroadcastRules(broadcastRules);
       toastSuccess("Broadcast rule updated successfully");
       setIsLoading(false);
-    } catch (error) {
+    } catch  {
       toastError("Failed to update broadcast rule");
       setIsLoading(false);
     } finally {
@@ -132,7 +132,7 @@ const RulesContainer: React.FC<RulesContainerProps> = ({
       setIsBroadcastSendsModalOpen(true);
       toastSuccess("Broadcast sends fetched successfully");
       setIsLoading(false);
-    } catch (error) {
+    } catch  {
       toastError("Failed to get broadcast sends");
       setIsLoading(false);
     }

@@ -155,7 +155,7 @@ const CopyAssignmentStrategyModal: React.FC<
         pushHistory(`Replaced ${count} conversions with test`, updated);
         toastSuccess(`Replaced ${count} conversion(s)`);
       } else toastError("No replacements made");
-    } catch (e) {
+    } catch {
       toastError("Error during processing");
     }
     setIsProcessing(false);

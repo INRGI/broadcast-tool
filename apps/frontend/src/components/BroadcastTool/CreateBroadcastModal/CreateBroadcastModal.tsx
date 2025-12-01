@@ -81,7 +81,7 @@ const CreateBroadcastModal: React.FC<CreateModalProps> = ({
       toastSuccess("Broadcast rule created successfully");
       setIsConfirmOpen(false);
       onClose();
-    } catch (error) {
+    } catch {
       toastError("Failed to create broadcast rule");
       setIsLoading(false);
     } finally {

@@ -92,7 +92,7 @@ export class GetBroadcastDomainsListService {
       return {
         sheets: response,
       };
-    } catch (error) {
+    } catch  {
       return { sheets: [] };
     }
   }

@@ -129,7 +129,7 @@ const CopyAssignmentStrategiesEditor: React.FC<Props> = ({
               data,
             })
           );
-        } catch (error) {
+        } catch {
           toastError("Failed to fetch domains");
           setIsLoading(false);
           return;

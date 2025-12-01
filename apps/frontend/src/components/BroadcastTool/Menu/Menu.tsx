@@ -80,7 +80,7 @@ const Menu: React.FC = () => {
     try {
       const response = await getPaginatedBroadcastRules();
       setBroadcastEntities(response.items);
-    } catch (error) {
+    } catch  {
       toastError("Failed to fetch broadcast rules");
       setBroadcastEntities([]);
     }
@@ -102,7 +102,7 @@ const Menu: React.FC = () => {
 
       setProductMondayStatuses(response);
       setCachedData("product-statuses", response, 15 * 60 * 1000);
-    } catch (error) {
+    } catch  {
       toastError("Failed to fetch product statuses");
       setProductMondayStatuses({
         productStatuses: [],
@@ -118,7 +118,7 @@ const Menu: React.FC = () => {
       const response = await getBroadcastsList();
       if (!response) throw new Error("Failed to fetch broadcasts sheets");
       setBroadcastsSheets(response.sheets);
-    } catch (error) {
+    } catch  {
       toastError("Failed to fetch broadcasts sheets");
       setBroadcastsSheets([]);
     }
@@ -167,7 +167,7 @@ const Menu: React.FC = () => {
       toastSuccess("Broadcast rule deleted successfully");
       fetchBroadcastRules();
       setIsLoading(false);
-    } catch (error) {
+    } catch  {
       toastError("Failed to delete broadcast rule");
       setIsLoading(false);
     }
@@ -183,7 +183,7 @@ const Menu: React.FC = () => {
       if (updated) {
         setActiveEntity({ ...updated });
       }
-    } catch (error) {
+    } catch  {
       toastError("Failed to fetch broadcast rules");
     } finally {
       setIsLoading(false);

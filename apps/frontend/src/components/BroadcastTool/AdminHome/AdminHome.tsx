@@ -74,7 +74,7 @@ const AdminHome: React.FC = () => {
       }
       setBroadcastsSends(response);
       setCachedData(CACHE_KEY, response, TTL_MS);
-    } catch (error) {
+    } catch {
       toastError("Failed to fetch broadcasts sends");
       setBroadcastsSends(null);
     } finally {

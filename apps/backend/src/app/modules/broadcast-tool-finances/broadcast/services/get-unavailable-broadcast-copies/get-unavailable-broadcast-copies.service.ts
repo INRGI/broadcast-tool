@@ -54,7 +54,7 @@ export class GetUnavailableBroadcastCopiesService {
       }
 
       return Array.from(unavailableCopies);
-    } catch (error) {
+    } catch {
       return [];
     }
   }

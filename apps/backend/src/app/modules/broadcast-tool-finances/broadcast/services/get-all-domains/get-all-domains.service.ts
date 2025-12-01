@@ -169,7 +169,7 @@ export class GetAllDomainsService {
       }
 
       return response;
-    } catch (error) {
+    } catch  {
       return { sheets: [] };
     }
   }

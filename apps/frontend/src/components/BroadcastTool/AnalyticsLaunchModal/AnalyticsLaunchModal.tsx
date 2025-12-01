@@ -124,7 +124,7 @@ const AnalyticsLaunchModal: React.FC<AnalyticsLaunchModalProps> = ({
       return toastError("'From' date must be before 'To' date");
     try {
       onSubmit(fromDate, toDate);
-    } catch (error) {
+    } catch  {
       return toastError("'From' date must be before 'To' date");
     }
   };

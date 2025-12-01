@@ -76,7 +76,7 @@ const AdminRules: React.FC<AdminRulesProps> = ({ isPreview }) => {
         return;
       }
       setAdminBroadcastConfig(response);
-    } catch (error) {
+    } catch  {
       toastError("Failed to fetch admin broadcast config");
       setAdminBroadcastConfig(undefined);
     }
@@ -98,7 +98,7 @@ const AdminRules: React.FC<AdminRulesProps> = ({ isPreview }) => {
 
       setDomainMondayStatuses(response);
       setCachedData("domain-statuses", response, 30 * 60 * 1000);
-    } catch (error) {
+    } catch  {
       toastError("Failed to fetch domain statuses");
       setDomainMondayStatuses({
         uniqueDomainStatuses: [],
@@ -139,7 +139,7 @@ const AdminRules: React.FC<AdminRulesProps> = ({ isPreview }) => {
       await updateAdminBroadcastConfig(adminBroadcastConfig);
       toastSuccess("Config updated successfully");
       setIsLoading(false);
-    } catch (error) {
+    } catch  {
       toastError("Failed to update Config");
       setIsLoading(false);
     } finally {
@@ -163,7 +163,7 @@ const AdminRules: React.FC<AdminRulesProps> = ({ isPreview }) => {
 
       setProductMondayStatuses(response);
       setCachedData("product-statuses", response, 15 * 60 * 1000);
-    } catch (error) {
+    } catch  {
       toastError("Failed to fetch product statuses");
       setProductMondayStatuses({
         productStatuses: [],

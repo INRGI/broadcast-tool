@@ -103,7 +103,7 @@ const BroadcastTableModal: React.FC<BroadcastTableModalProps> = ({
       toastSuccess("Broadcast approved successfully");
       setIsLoading(false);
       onClose();
-    } catch (error) {
+    } catch  {
       toastError("Failed to approve broadcast");
       setIsLoading(false);
     }

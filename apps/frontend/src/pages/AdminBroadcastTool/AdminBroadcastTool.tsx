@@ -40,7 +40,7 @@ const AdminBroadcastTool: React.FC = () => {
 
       localStorage.setItem(TOKEN_KEY, res.token);
       setIsUserAdmin(true);
-    } catch (err) {
+    } catch  {
       toastError("You are not authorized to access this panel");
     }
   };

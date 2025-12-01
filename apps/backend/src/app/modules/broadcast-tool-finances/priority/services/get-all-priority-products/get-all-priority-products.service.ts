@@ -91,7 +91,7 @@ export class GetAllPriorityProductsService {
 
       await this.cacheManager.set(cacheKey, uniqueProducts, 3600000);
       return uniqueProducts;
-    } catch (error) {
+    } catch {
       return [];
     }
   }

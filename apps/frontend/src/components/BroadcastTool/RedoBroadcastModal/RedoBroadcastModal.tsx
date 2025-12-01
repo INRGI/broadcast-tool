@@ -152,7 +152,7 @@ const RedoBroadcastModal: React.FC<LaunchBroadcastModalProps> = ({
       setIsLoading(false);
 
       onSuccess(result);
-    } catch (error) {
+    } catch  {
       toastError("Failed to redo broadcast");
       setIsLoading(false);
     }

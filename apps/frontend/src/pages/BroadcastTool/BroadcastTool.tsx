@@ -26,7 +26,7 @@ const BroadcastTool: React.FC = () => {
 
       localStorage.setItem("broadcast_user", JSON.stringify(res));
       setIsAuthorized(true);
-    } catch (err) {
+    } catch  {
       toastError("Failed to login");
     }
   };

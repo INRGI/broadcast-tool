@@ -152,7 +152,7 @@ const LaunchBroadcastModal: React.FC<LaunchBroadcastModalProps> = ({
       setIsLoading(false);
 
       onSuccess(result);
-    } catch (error) {
+    } catch  {
       toastError("Failed to make broadcast");
       setIsLoading(false);
     }

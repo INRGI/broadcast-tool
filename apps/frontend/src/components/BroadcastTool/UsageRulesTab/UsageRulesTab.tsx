@@ -67,7 +67,7 @@ const UsageRulesTab: React.FC<UsageRulesTabProps> = ({
             JSON.stringify({ timestamp: now, data: freshData })
           );
           data = freshData;
-        } catch (error) {
+        } catch  {
           toastError("Failed to fetch sheets");
           setIsLoading(false);
           return;
