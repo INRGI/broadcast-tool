@@ -2,7 +2,6 @@ import { Provider } from "@nestjs/common";
 import { GetAllDomainsService } from "./services/get-all-domains/get-all-domains.service";
 import { BroadcastController } from "./controllers/broadcast.message.controller";
 import { GetBroadcastsListService } from "./services/get-broadcasts-list/get-broadcasts-list.service";
-import { UpdateCellByDateAndDomainService } from "./services/update-cell-by-date-and-domain/update-cell-by-date-and-domain.service";
 import { MakeBroadcastService } from "./services/make-broadcast/make-broadcast.service";
 import { GetClickableCopiesService } from "./services/get-clickable-copies/get-clickable-copies.service";
 import { GetConvertableCopiesService } from "./services/get-convertable-copies/get-convertable-copies.service";
@@ -34,7 +33,6 @@ export const serviceProviders: Provider[] = [
   GetAllDomainsService,
   GetBroadcastDomainsListService,
   GetBroadcastsListService,
-  UpdateCellByDateAndDomainService,
   MakeBroadcastService,
   GetClickableCopiesService,
   GetConvertableCopiesService,
