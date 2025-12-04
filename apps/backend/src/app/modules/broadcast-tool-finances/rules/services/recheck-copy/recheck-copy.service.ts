@@ -8,7 +8,6 @@ export class RecheckCopyService {
     const {
       copyName,
       sendingDate,
-      broadcastDomain,
       adminBroadcastConfig,
       broadcastRules,
       productsData,

@@ -26,7 +26,5 @@ import { TaskModule } from './infrastructure/tasks/task.module';
       inject: [ConfigService],
     }),
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
