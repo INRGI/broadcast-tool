@@ -6,6 +6,7 @@ import { BroadcastToolFinancesModule } from './modules/broadcast-tool-finances/b
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from './infrastructure/tasks/task.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [    
@@ -17,6 +18,7 @@ import { TaskModule } from './infrastructure/tasks/task.module';
     }),
     ScheduleModule.forRoot(),
     TaskModule,
+    AuthModule,
     BroadcastToolFinancesModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

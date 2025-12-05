@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const authApiUrl = "/api/finances/broadcast-tool/auth";
+const authApiUrl = "/api/broadcast-tool/auth";
 
 export const googleAuth = async (
   id_token: string

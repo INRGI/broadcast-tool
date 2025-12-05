@@ -10,7 +10,7 @@ import { AdminsService } from "../services/admins.service";
 
 const client = new OAuth2Client(process.env.AUTH_GOOGLE_CLIENT_ID);
 
-@Controller("finances/broadcast-tool/auth")
+@Controller("broadcast-tool/auth")
 export class AuthController {
   constructor(
     private readonly userService: UserService,
