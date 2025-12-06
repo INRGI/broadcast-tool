@@ -9,7 +9,7 @@ import { GetDomainBroadcastByTeamService } from "../../../broadcast/services/get
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
 import { BroadcastDomainRequestDto } from "@epc-services/interface-adapters";
-import { GetBlacklistedCopiesService } from "../../../bigQuery/services/get-blacklisted-copies/get-blacklisted-copies.service";
+import { GetBlacklistedCopiesService } from "../../../../bigQuery/services/get-blacklisted-copies/get-blacklisted-copies.service";
 
 @Injectable()
 export class ValidateCopyService {

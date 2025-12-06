@@ -13,7 +13,7 @@ import { GetTestableCopiesService } from "../get-testable-copies/get-testable-co
 import { BroadcastAssignerService } from "../broadcast-assigner/broadcast-assigner.service";
 import { GetAllDomainsDataService } from "../../../monday/services/get-all-domains-data/get-all-domains-data.service";
 import { GetAllProductsDataService } from "../../../monday/services/get-all-products-data/get-all-products-data.service";
-import { GetDomainsRevenueService } from "../../../bigQuery/services/get-domains-revenue/get-domains-revenue.service";
+import { GetDomainsRevenueService } from "../../../../bigQuery/services/get-domains-revenue/get-domains-revenue.service";
 import { GetAllPriorityProductsService } from "../../../priority/services/get-all-priority-products/get-all-priority-products.service";
 import { AddPriorityCopyIndicatorService } from "../add-priority-copy-indicator/add-priority-copy-indicator.service";
 import { ForceCopiesToRandomDomainsService } from "../force-copies-to-random-domains/force-copies-to-random-domains.service";
@@ -26,7 +26,7 @@ import { ForceProductsToRandomDomainsService } from "../force-products-to-random
 import { ForcePartnersToRandomDomainsService } from "../force-partners-to-random-domains/force-partners-to-random-domains.service";
 import { CalculateBroadcastSendingService } from "../calculate-broadcast-sending/calculate-broadcast-sending.service";
 import { CreateBroadcastRulesProps } from "../../../rules/domain/types/broadcast-rules.types";
-import { GetBlacklistedCopiesService } from "../../../bigQuery/services/get-blacklisted-copies/get-blacklisted-copies.service";
+import { GetBlacklistedCopiesService } from "../../../../bigQuery/services/get-blacklisted-copies/get-blacklisted-copies.service";
 
 @Injectable()
 export class MakeBroadcastService {

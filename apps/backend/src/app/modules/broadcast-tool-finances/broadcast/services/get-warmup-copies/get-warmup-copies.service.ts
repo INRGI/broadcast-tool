@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GetWarmupCopiesPayload } from './get-warmup-copies.payload';
-import { GetCopiesWarmupService } from '../../../bigQuery/services/get-copies-warmup/get-copies-warmup.service';
+import { GetCopiesWarmupService } from '../../../../bigQuery/services/get-copies-warmup/get-copies-warmup.service';
 
 @Injectable()
 export class GetWarmupCopiesService {

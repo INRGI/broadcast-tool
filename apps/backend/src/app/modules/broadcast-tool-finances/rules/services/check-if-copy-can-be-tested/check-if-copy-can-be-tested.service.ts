@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { CheckIfCopyCanBeTestedPayload } from "./check-if-copy-can-be-tested.payload";
-import { GetCopyClicksService } from "../../../bigQuery/services/get-copy-clicks/get-copy-clicks.service";
+import { GetCopyClicksService } from "../../../../bigQuery/services/get-copy-clicks/get-copy-clicks.service";
 import { cleanCopyName } from "../../utils/cleanCopyName";
 
 @Injectable()

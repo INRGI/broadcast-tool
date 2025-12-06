@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { GetConvertableCopiesPayload } from "./get-convertable-copies.payload";
-import { GetCopiesWithConversionsService } from "../../../bigQuery/services/get-copies-with-conversions/get-copies-with-conversions.service";
+import { GetCopiesWithConversionsService } from "../../../../bigQuery/services/get-copies-with-conversions/get-copies-with-conversions.service";
 
 @Injectable()
 export class GetConvertableCopiesService {

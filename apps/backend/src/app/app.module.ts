@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from './infrastructure/tasks/task.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { BigQueryModule } from './modules/bigQuery/bigQuery.module';
 
 @Module({
   imports: [    
@@ -19,6 +20,7 @@ import { AuthModule } from './modules/auth/auth.module';
     ScheduleModule.forRoot(),
     TaskModule,
     AuthModule,
+    BigQueryModule,
     BroadcastToolFinancesModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

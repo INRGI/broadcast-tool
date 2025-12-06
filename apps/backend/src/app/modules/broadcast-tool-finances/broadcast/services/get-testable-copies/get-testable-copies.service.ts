@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { GetTestableCopiesPayload } from "./get-testable-copies.payload";
-import { GetCopiesForTestService } from "../../../bigQuery/services/get-copies-for-test/get-copies-for-test.service";
+import { GetCopiesForTestService } from "../../../../bigQuery/services/get-copies-for-test/get-copies-for-test.service";
 import { GetNewTestCopiesService } from "../../../monday/services/get-new-test-copies/get-new-test-copies.service";
 
 @Injectable()

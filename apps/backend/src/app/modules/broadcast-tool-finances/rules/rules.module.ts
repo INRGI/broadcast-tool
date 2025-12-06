@@ -6,7 +6,7 @@ import {
 } from "./rules.providers";
 import { BroadcastRulesRepositoryModule } from "../../../infrastructure/database/repositories/broadcast-rules/broadcast-rules.repository.module";
 import { MondayModule } from "../monday/monday.module";
-import { BigQueryModule } from "../bigQuery/bigQuery.module";
+import { BigQueryModule } from "../../bigQuery/bigQuery.module";
 
 @Module({
   imports: [BroadcastRulesRepositoryModule, MondayModule, BigQueryModule],

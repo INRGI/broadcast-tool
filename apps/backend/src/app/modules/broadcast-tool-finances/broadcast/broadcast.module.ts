@@ -10,7 +10,7 @@ import { GDriveApiModule } from "@epc-services/gdrive-api";
 import { PriorityModule } from "../priority/priority.module";
 import { GdriveApiOptionsFactoryService } from "../../../infrastructure/options-factory/gdrive-api.options-factory.service";
 import { RulesModule } from "../rules/rules.module";
-import { BigQueryModule } from "../bigQuery/bigQuery.module";
+import { BigQueryModule } from "../../bigQuery/bigQuery.module";
 import { CopyVerifyModule } from "../copy-verify/copy-verify.module";
 import { MondayModule } from "../monday/monday.module";
 import { CacheModule } from "@nestjs/cache-manager";

@@ -9,7 +9,7 @@ import { MondayModule } from "../monday/monday.module";
 import { RulesModule } from "../rules/rules.module";
 import { BroadcastModule } from "../broadcast/broadcast.module";
 import { CacheModule } from "@nestjs/cache-manager";
-import { BigQueryModule } from "../bigQuery/bigQuery.module";
+import { BigQueryModule } from "../../bigQuery/bigQuery.module";
 
 @Module({
   imports: [

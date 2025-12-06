@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { GetClickableCopiesPayload } from "./get-clickable-copies.payload";
-import { GetCopiesWithClicksService } from "../../../bigQuery/services/get-copies-with-clicks/get-copies-with-clicks.service";
+import { GetCopiesWithClicksService } from "../../../../bigQuery/services/get-copies-with-clicks/get-copies-with-clicks.service";
 
 @Injectable()
 export class GetClickableCopiesService {

@@ -21,7 +21,7 @@ import { AddPriorityCopyIndicatorService } from "../add-priority-copy-indicator/
 import { CheckIfProductPriorityService } from "../../../rules/services/check-if-product-priority/check-if-product-priority.service";
 import { cleanProductName } from "../../../rules/utils/cleanProductName";
 import { CalculateBroadcastSendingService } from "../calculate-broadcast-sending/calculate-broadcast-sending.service";
-import { GetBlacklistedCopiesService } from "../../../bigQuery/services/get-blacklisted-copies/get-blacklisted-copies.service";
+import { GetBlacklistedCopiesService } from "../../../../bigQuery/services/get-blacklisted-copies/get-blacklisted-copies.service";
 
 @Injectable()
 export class RedoBroadcastService {
